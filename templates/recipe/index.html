@@ -65,40 +65,216 @@
         </div>
     </nav>
 
-    <div class="container-fluid" style="background-image: url('/static/img/index_background.jpg'); background-size: cover; height: 100vh;">
-        <div class="container">
+    <div class="container bg-light">
             <div class="row">
-
-                <div class="col-6"></div>
-
-                <div class="col-6">
-
-                    <div class="mt-4">
-                        <h2 class="text-white">Find your recipe</h2>
-                        <p class="text-white fs-5">
-                            Find recipes by choosing a category of dishes or use the search, and cook to your heart's
-                            content!
-                        </p>
-                    </div>
-
-                    <div class="mt-4">
-                        <h2 class="text-white">Category search</h2>
-                        <p class="text-white">Find your recipe using categories</p>
-                        <a class="btn btn-outline-success me-3" href="#">Find by category</a>
-                    </div>
-
-                    <div class="mt-4">
-                        <h2 class="text-white">Search by name</h2>
-                        <p class="text-white">Do a search to quickly find the recipe you need.</p>
-                        <form class="d-flex col-lg-8" role="search" action="" method="POST">
-                            <input class="form-control me-2" type="search"
-                               placeholder="Enter the full name of your recipe" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">Search</button>
-                        </form>
+                <div class="col-lg-3 mt-2">
+                    <h1>Special Recipe</h1>
+                    <form class="d-flex mb-2" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Enter recipe name" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Find</button>
+                    </form>
+                    <div class="list-group">
+                        <a class="list-group-item list-group-item-action bg-dark-subtle" href="#">All Recipes</a>
+                        <a class="list-group-item list-group-item-action" href="#">Meat</a>
+                        <a class="list-group-item list-group-item-action" href="#">Poultry Meat</a>
+                        <a class="list-group-item list-group-item-action" href="#">Fish</a>
+                        <a class="list-group-item list-group-item-action" href="#">Seafood</a>
+                        <a class="list-group-item list-group-item-action" href="#">Eggs</a>
                     </div>
                 </div>
+                <div class="col-lg-9 mt-2">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                            <img src="/static/img/index_carousel_pizza.jpg" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                            <img src="/static/img/index_carousel_sandwich.jpg" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                            <img src="/static/img/index_carousel_steak.jpg" class="d-block w-100" alt="...">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_pizza.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-success">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_sandwich.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-success">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_steak.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-success">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_pizza.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-success">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_sandwich.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-success">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_steak.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-success">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_pizza.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-success">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_sandwich.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-success">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_steak.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a href="#" class="btn btn-outline-success">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                            <li class="page-item"><a class="page-link bg-dark-subtle" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-        </div>
     </div>
 
     <footer class="bg-dark">
