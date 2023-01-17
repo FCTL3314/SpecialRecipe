@@ -1,4 +1,5 @@
 from django.db import models
+from accounts.models import User
 
 
 class Category(models.Model):
@@ -24,3 +25,15 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Saves(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'save'
+        verbose_name_plural = 'saves'
+
+    def __str__(self):
+        return f'User: {self.user.username} | Recipe {self.recipe.name}'
