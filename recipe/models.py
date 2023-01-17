@@ -27,6 +27,12 @@ class Recipe(models.Model):
         return self.name
 
 
+class Ingredient(models.Model):
+    name = models.CharField(max_length=32)
+    amount = models.CharField(max_length=32)
+    recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
+
+
 class Saves(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
