@@ -14,6 +14,7 @@ class Category(models.Model):
 
 
 class Recipe(models.Model):
+    image = models.ImageField(upload_to='recipe_images')
     name = models.CharField(max_length=32)
     description = models.CharField(max_length=128)
     cooking_description = models.TextField()
