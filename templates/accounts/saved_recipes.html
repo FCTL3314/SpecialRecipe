@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/static/icon/icon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <title>Title</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand text-white mb-1" href="#">Special Recipe</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#">Recipes</a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="You must be logged in">
+                            <a class="nav-link disabled" href="#">Saved Recipes</a>
+                        </div>
+                    </li>
+
+                </ul>
+
+                <div class="nav-item me-4">
+                    <a class="link text-white text-decoration-none" href="#">Sign In</a>
+                </div>
+
+                <div class="nav-item">
+                    <a class="link text-white text-decoration-none" href="#">Log In</a>
+                </div>
+
+                <div class="dropdown">
+                    <a class="dropdown-toggle text-decoration-none text-white" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Username
+                        <img class="rounded-circle mb-1" width="32" height="32" src="/static/icon/default_user_image.png"
+                             alt="profile">
+                    </a>
+                    <ul class="dropdown-menu bg-dark">
+                        <li>
+                            <a href="#" class="dropdown-item text-white">Saved Recipes</a>
+                        </li>
+
+                        <li>
+                            <a href="#" class="dropdown-item text-white">Profile</a>
+                        </li>
+
+                        <li><hr class="dropdown-divider bg-dark"></li>
+                        <li>
+                            <a href="#" class="dropdown-item text-danger">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container bg-light">
+            <div class="row">
+                <div class="col-lg-3 mt-2">
+                    <h1>Recipes</h1>
+                    <form class="d-flex mb-2" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Enter recipe name" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Find</button>
+                    </form>
+                    <div class="list-group">
+                        <a class="list-group-item list-group-item-action bg-dark-subtle" href="#">All Recipes</a>
+                        <a class="list-group-item list-group-item-action" href="#">Meat</a>
+                        <a class="list-group-item list-group-item-action" href="#">Poultry Meat</a>
+                        <a class="list-group-item list-group-item-action" href="#">Fish</a>
+                        <a class="list-group-item list-group-item-action" href="#">Seafood</a>
+                        <a class="list-group-item list-group-item-action" href="#">Eggs</a>
+                    </div>
+                </div>
+                <div class="col-lg-9 mt-2">
+
+                    <div>
+                        <h1>Your Saved Recipes</h1>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_pizza.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a type="button" class="link-warning text-decoration-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
+                                            <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14
+                                            15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path>
+                                        </svg>
+                                        1 Saves
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_sandwich.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a type="button" class="link-warning text-decoration-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8
+                                            13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1
+                                            1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"></path>
+                                        </svg>
+                                        0 Saves
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_steak.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a type="button" class="link-warning text-decoration-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8
+                                            13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1
+                                            1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"></path>
+                                        </svg>
+                                        0 Saves
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <a href="#">
+                                    <img src="/static/img/index_carousel_pizza.jpg" class="card-img-top" alt="card_img">
+                                </a>
+                                <div class="card-body">
+                                    <a class="link-dark text-decoration-none" href="#">
+                                        <h5 class="card-title">Card title</h5>
+                                    </a>
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the
+                                        card's content.
+                                    </p>
+                                    <a type="button" class="link-warning text-decoration-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8
+                                            13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1
+                                            1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"></path>
+                                        </svg>
+                                        0 Saves
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                            <li class="page-item"><a class="page-link bg-dark-subtle" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+    </div>
+
+    <footer class="bg-dark">
+        <div class="container text-center text-white py-4">
+            <h3>About</h3>
+            <p>
+                This website is designed to quickly find recipes, but if you have your own recipe, you can share it by
+                posting it on the site.
+            </p>
+            <hr class="divider border-2">
+            <small>Copyright &copy; 2023 Special Recipe</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+            crossorigin="anonymous"></script>
+</body>
+</html>
