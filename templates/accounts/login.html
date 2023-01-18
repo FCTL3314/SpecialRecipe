@@ -9,28 +9,30 @@
 
             <div class="container bg-secondary-subtle rounded-4 mt-5 col-md-4 shadow-lg">
 
-                <form action="" method="POST">
+                <form action="{% url 'accounts:login' %}" method="POST">
+
+                    {% csrf_token %}
 
                     <div class="mb-4">
                         <h2 class="text-center mt-2">Sign In</h2>
                     </div>
 
                     <div class="mb-4">
-                        <label for="exampleInputEmail1" class="form-label">Username or Email</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1"
-                               placeholder="Enter Username or Email">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Username or Email</label>
+                        {{ form.username }}
                     </div>
 
                     <div class="mb-4">
-                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1"
-                               placeholder="Enter Password">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                        {{ form.password }}
                     </div>
 
                     <div class="d-flex">
                         <div class="mb-4 form-check me-auto">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">Remember me</label>
+                            {{ form.remember_me }}
+                            <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
+                                Remember me
+                            </label>
                         </div>
                         <div>
                             <a href="#" class="link-secondary text-decoration-none">Forgot password</a>
@@ -44,7 +46,9 @@
                     <div class="text-center mb-3">
                         <div>
                             <p class="my-0">or</p>
-                            <a class="link-secondary text-decoration-none" href="#">Sign Up</a>
+                            <a class="link-secondary text-decoration-none" href="{% url 'accounts:registration' %}">
+                                Sign Up
+                            </a>
                         </div>
                     </div>
 
