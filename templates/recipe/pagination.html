@@ -5,7 +5,7 @@
                                 <a class="page-link" href="{% if page_obj.has_previous %}
                                                            {% url 'recipe:category_paginator' selected_category page_obj.previous_page_number %}
                                                            {% endif %}">
-                                    Previous
+                                    <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
         {% else %}
@@ -13,7 +13,7 @@
                                 <a class="page-link" href="{% if page_obj.has_previous %}
                                                            {% url 'recipe:paginator' page_obj.previous_page_number %}
                                                            {% endif %}">
-                                    Previous
+                                    <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
         {% endif %}
@@ -39,7 +39,7 @@
                                 <a class="page-link" href="{% if page_obj.has_next %}
                                                            {% url 'recipe:category_paginator' selected_category page_obj.next_page_number %}
                                                            {% endif %}">
-                                    Next
+                                    <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
         {% else %}
@@ -47,7 +47,7 @@
                                 <a class="page-link" href="{% if page_obj.has_next %}
                                                            {% url 'recipe:paginator' page_obj.next_page_number %}
                                                            {% endif %}">
-                                    Next
+                                    <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
         {% endif %}
