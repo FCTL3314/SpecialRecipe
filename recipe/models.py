@@ -30,7 +30,6 @@ class Recipe(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=32)
-    amount = models.CharField(max_length=32)
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
 
 
