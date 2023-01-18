@@ -3,24 +3,18 @@
 
 
 {% block content %}
-    <div class="container bg-light">
+    <div class="container bg-light min-vh-100">
             <div class="row">
                 <div class="col-lg-8 my-2">
-                    <div class="">
-                        <img class="img-fluid rounded-3" src="{% static 'img/index_carousel_pizza.jpg' %}"
+                    <div>
+                        <img class="img-fluid rounded-3" src="{{ recipe.image.url }}"
                              alt="recipe_image">
                     </div>
                     <div>
-                        <h1 class="text-truncate">Pizza with olives and mozzarella cheese</h1>
+                        <h1 class="text-truncate">{{ recipe.name }}</h1>
                     </div>
                     <div>
-                        <h4>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, commodi delectus dolore dolorem
-                            facilis fugiat harum hic ipsa, ipsam ipsum iste laborum laudantium nihil obcaecati, possimus
-                            quaerat quidem quo rem repellat repellendus rerum sint voluptates. A, amet autem deleniti
-                            dolore ea hic iure laudantium minima officia optio placeat, possimus reiciendis similique
-                            voluptatem voluptates? Animi architecto atque dolor dolorem eligendi error fugit, minima
-                            nesciunt pariatur quos rem repellendus reprehenderit sint, ut voluptatem. Aut autem maiores
-                            obcaecati perferendis quia quidem ratione voluptatibus?</h4>
+                        <h4>{{ recipe.cooking_description }}</h4>
                     </div>
                 </div>
                 <div class="col-lg-4 my-2">
@@ -29,18 +23,11 @@
                     </div>
                     <div class="mb-3 d-flex">
                         <ul>
-                            <li>
-                                <p>An item</p>
-                            </li>
-                            <li>
-                                <p>A second item</p>
-                            </li>
-                            <li>
-                                <p>A third item</p>
-                            </li>
-                            <li>
-                                <p>A fourth item</p>
-                            </li>
+                            {% for ingredient in ingredients %}
+                                <li>
+                                    <p>{{ ingredient.name }}</p>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
