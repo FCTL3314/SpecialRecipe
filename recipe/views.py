@@ -32,7 +32,7 @@ class DescriptionView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        recipe = Recipe.objects.all().get(id=self.kwargs.get('category_id'))
+        recipe = Recipe.objects.all().get(id=self.kwargs.get('recipe_id'))
         ingredients = Ingredient.objects.filter(recipe=recipe)
         context['recipe'] = recipe
         context['ingredients'] = ingredients
