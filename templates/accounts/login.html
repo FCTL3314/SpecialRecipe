@@ -1,72 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/static/icon/icon.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'recipe/base.html' %}
+{% load static %}
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" data-bs-theme="dark">
-        <div class="container">
-            <a class="navbar-brand text-white mb-1" href="#">Special Recipe</a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#">Recipes</a>
-                    </li>
-                    <li class="nav-item">
-                        <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="You must be logged in">
-                            <a class="nav-link disabled" href="#">Saved Recipes</a>
-                        </div>
-                    </li>
 
-                </ul>
-
-                <div class="nav-item me-4">
-                    <a class="link text-white text-decoration-none" href="#">Sign In</a>
-                </div>
-
-                <div class="nav-item">
-                    <a class="link text-white text-decoration-none" href="#">Log In</a>
-                </div>
-
-                <div class="dropdown">
-                    <a class="dropdown-toggle text-decoration-none text-white" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Username
-                        <img class="rounded-circle mb-1" width="32" height="32"
-                             src="/static/icon/default_user_image.png"
-                             alt="default_user_image">
-                    </a>
-                    <ul class="dropdown-menu bg-dark">
-                        <li>
-                            <a href="#" class="dropdown-item text-white">Saved Recipes</a>
-                        </li>
-
-                        <li>
-                            <a href="#" class="dropdown-item text-white">Profile</a>
-                        </li>
-
-                        <li><hr class="dropdown-divider bg-dark"></li>
-                        <li>
-                            <a href="#" class="dropdown-item text-danger">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </nav>
-
+{% block content %}
     <div class="container bg-light min-vh-100">
 
         <div class="row">
@@ -119,21 +55,4 @@
         </div>
 
     </div>
-
-    <footer class="bg-dark">
-        <div class="container text-center text-white py-4">
-            <h3>About</h3>
-            <p>
-                This website is designed to quickly find recipes, but if you have your own recipe, you can share it by
-                posting it on the site.
-            </p>
-            <hr class="divider border-2">
-            <small>Copyright &copy; 2023 Special Recipe</small>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-            crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}
