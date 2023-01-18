@@ -2,10 +2,15 @@ from django.contrib import admin
 from recipe.models import Category, Recipe, Ingredient, Saves
 
 
+class RecipeInlineAdmin(admin.TabularInline):
+    model = Recipe
+    fields = ('name', 'description')
+    ordering = ('name',)
+
+
 class IngredientInlineAdmin(admin.TabularInline):
     model = Ingredient
-    list_display = ('name', 'recipe')
-    search_fields = ('name',)
+    fields = ('name',)
     ordering = ('name',)
 
 
@@ -14,6 +19,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
     ordering = ('name',)
+    inlines = (RecipeInlineAdmin,)
 
 
 @admin.register(Recipe)
