@@ -1,6 +1,7 @@
+from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 
-from recipe.models import Category, Recipe
+from recipe.models import Category, Recipe, Ingredient
 
 
 class RecipesListView(ListView):
@@ -23,4 +24,17 @@ class RecipesListView(ListView):
         context['title'] = 'Special Recipe - Recipes'
         context['categories'] = Category.objects.all()
         context['selected_category'] = self.kwargs.get('category_id')
+        return context
+
+
+class DescriptionView(TemplateView):
+    template_name = 'recipe/recipe_description.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        recipe = Recipe.objects.all().get(id=self.kwargs.get('category_id'))
+        ingredients = Ingredient.objects.filter(recipe=recipe)
+        context['recipe'] = recipe
+        context['ingredients'] = ingredients
+        context['title'] = f'Special Recipe - {recipe.name}'
         return context
