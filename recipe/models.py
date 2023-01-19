@@ -19,10 +19,14 @@ class Recipe(models.Model):
     description = models.CharField(max_length=128)
     cooking_description = models.TextField()
     category = models.ForeignKey(to=Category, on_delete=models.PROTECT)
+    saves = models.ManyToManyField(User)
 
     class Meta:
         verbose_name = 'recipe'
         verbose_name_plural = 'recipes'
+
+    def total_saves(self):
+        return self.saves.count()
 
     def __str__(self):
         return self.name
@@ -31,15 +35,3 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=48)
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
-
-
-class Saves(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = 'save'
-        verbose_name_plural = 'saves'
-
-    def __str__(self):
-        return f'User: {self.user.username} | Recipe {self.recipe.name}'
