@@ -41,9 +41,13 @@
                     <div class="dropdown">
                     <a class="dropdown-toggle text-decoration-none text-white" href="#" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Username
+                        {{ request.user.username }}
                         <img class="rounded-circle mb-1" width="32" height="32"
-                             src="{% static 'icon/default_user_image.png' %}"
+                             src="{% if request.user.image %}
+                                      {{ request.user.image.url }}
+                                  {% else %}
+                                      {% static 'icon/default_user_image.png' %}
+                                  {% endif %}"
                              alt="profile">
                     </a>
                     <ul class="dropdown-menu bg-dark">
@@ -52,7 +56,9 @@
                         </li>
 
                         <li>
-                            <a href="#" class="dropdown-item text-white">Profile</a>
+                            <a href="{% url 'accounts:profile' request.user.id%}" class="dropdown-item text-white">
+                                Profile
+                            </a>
                         </li>
 
                         <li><hr class="dropdown-divider bg-dark"></li>
