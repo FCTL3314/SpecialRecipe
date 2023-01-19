@@ -10,7 +10,7 @@ class UserRegistrationView(CreateView):
     model = User
     form_class = UserRegistrationForm
     template_name = 'accounts/registration.html'
-    success_url = reverse_lazy('recipe:recipes')
+    success_url = reverse_lazy('accounts:login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
