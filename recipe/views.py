@@ -59,7 +59,7 @@ class SavesListView(ListView):
 
     def get_queryset(self):
         recipes = super().get_queryset()
-        return recipes.filter(saves=self.request.user)
+        return recipes.filter(saves=self.request.user).order_by('name')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
