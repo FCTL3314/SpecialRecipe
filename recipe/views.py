@@ -14,19 +14,20 @@ class RecipesListView(ListView):
     paginate_by = 3
 
     def get_queryset(self):
-        products = super().get_queryset()
+        recipes = super().get_queryset()
         category_id = self.kwargs.get('category_id')
         if category_id:
-            return products.filter(category_id=category_id).order_by('name')
+            return recipes.filter(category_id=category_id).order_by('name')
         else:
-            return products.all().order_by('name')
+            return recipes.all().order_by('name')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
         context['title'] = 'Special Recipe - Recipes'
         context['categories'] = Category.objects.all()
         context['selected_category'] = self.kwargs.get('category_id')
-        context['user_saves'] = Recipe.objects.filter(saves__username=self.request.user.username)
+        if self.request.user.is_authenticated:
+            context['user_saves'] = self.object_list.filter(saves=self.request.user)
         return context
 
 
@@ -40,6 +41,23 @@ class DescriptionView(TemplateView):
         context['recipe'] = recipe
         context['ingredients'] = ingredients
         context['title'] = f'Special Recipe - {recipe.name}'
+        return context
+
+
+class SavesListView(ListView):
+    model = Recipe
+    context_object_name = 'saved_recipes'
+    template_name = 'accounts/saved_recipes.html'
+
+    paginate_by = 3
+
+    def get_queryset(self):
+        recipes = super().get_queryset()
+        return recipes.filter(saves=self.request.user)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['title'] = f'Special Recipe - {self.request.user.username}\'s saves'
         return context
 
 
