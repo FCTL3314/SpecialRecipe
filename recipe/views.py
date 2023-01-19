@@ -2,8 +2,10 @@ from django.shortcuts import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from recipe.models import Category, Recipe, Ingredient
+from recipe.forms import SearchForm
 
 
 class RecipesListView(ListView):
@@ -16,7 +18,10 @@ class RecipesListView(ListView):
     def get_queryset(self):
         recipes = super().get_queryset()
         category_id = self.kwargs.get('category_id')
-        if category_id:
+        search = self.request.GET.get('search')
+        if search:
+            return recipes.filter(Q(name__icontains=search) | Q(description__icontains=search))
+        elif category_id:
             return recipes.filter(category_id=category_id).order_by('name')
         else:
             return recipes.all().order_by('name')
@@ -26,6 +31,7 @@ class RecipesListView(ListView):
         context['title'] = 'Special Recipe - Recipes'
         context['categories'] = Category.objects.all()
         context['selected_category'] = self.kwargs.get('category_id')
+        context['form'] = SearchForm
         if self.request.user.is_authenticated:
             context['user_saves'] = self.object_list.filter(saves=self.request.user)
         return context
