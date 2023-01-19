@@ -7,8 +7,8 @@
             <div class="row">
                 <div class="col-lg-3 my-2">
                     <h1>Recipes</h1>
-                    <form class="d-flex mb-2" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Enter recipe name" aria-label="Search">
+                    <form class="d-flex mb-2" action="{% url 'recipe:recipes' %}" role="search" method="get">
+                        {{ form.search }}
                         <button class="btn btn-outline-success" type="submit">Find</button>
                     </form>
                     <div class="list-group">
