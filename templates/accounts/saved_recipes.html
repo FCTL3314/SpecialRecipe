@@ -5,16 +5,17 @@
 {% block content %}
     <div class="container bg-light min-vh-100">
         <div>
-            <h1>Your Saved Recipes</h1>
+            <h1 class="text-center">Your Saved Recipes</h1>
         </div>
         <div class="row">
-            {% for recipe in saved_recipes %}
-                <div class="col-lg-3 mb-3">
-                    <div class="card h-100">
-                        <a href="{% url 'recipe:description' recipe.id %}">
-                            <img src="{{ recipe.image.url }}" class="card-img-top"
-                                 alt="recipe_img">
-                        </a>
+            {% if saved_recipes %}
+                {% for recipe in saved_recipes %}
+                    <div class="col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <a href="{% url 'recipe:description' recipe.id %}">
+                                <img src="{{ recipe.image.url }}" class="card-img-top"
+                                     alt="recipe_img">
+                            </a>
                         <div class="card-body">
                             <a class="link-dark text-decoration-none"
                                href="{% url 'recipe:description' recipe.id %}">
@@ -35,6 +36,9 @@
                     </div>
                 </div>
             {% endfor %}
+            {% else %}
+                <h3 class="text-center">It looks like you don't have any saved recipes yet.</h3>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
