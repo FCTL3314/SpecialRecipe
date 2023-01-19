@@ -75,7 +75,7 @@ class SendVerificationEmailView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         email = kwargs.get('email')
-        user = User.objects.get(email=email)
+        user = get_object_or_404(User, email=email)
         valid_verifications = EmailVerification.objects.filter(user=user, expiration__gt=now())
         if user.is_verified:
             messages.warning(request, 'You have already verified your email.')
@@ -102,7 +102,7 @@ class EmailVerificationView(TemplateView):
     def get(self, request, *args, **kwargs):
         code = kwargs.get('code')
         email = kwargs.get('email')
-        user = User.objects.get(email=email)
+        user = get_object_or_404(User, email=email)
         email_verification = get_object_or_404(EmailVerification, user=user, code=code)
         if user.is_verified:
             messages.warning(request, 'Your email has already been verified.')
