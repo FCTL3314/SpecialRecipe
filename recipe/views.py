@@ -20,7 +20,7 @@ class RecipesListView(ListView):
         category_id = self.kwargs.get('category_id')
         search = self.request.GET.get('search')
         if search:
-            return recipes.filter(Q(name__icontains=search) | Q(description__icontains=search))
+            return recipes.filter(Q(name__icontains=search) | Q(description__icontains=search)).order_by('name')
         elif category_id:
             return recipes.filter(category_id=category_id).order_by('name')
         else:
