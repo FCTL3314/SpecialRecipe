@@ -1,80 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/static/icon/icon.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <title>Title</title>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" data-bs-theme="dark">
-        <div class="container">
-            <a class="navbar-brand text-white mb-1" href="#">Special Recipe</a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#">Recipes</a>
-                    </li>
-                    <li class="nav-item">
-                        <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="You must be logged in">
-                            <a class="nav-link disabled" href="#">Saved Recipes</a>
-                        </div>
-                    </li>
+{% extends 'recipe/base.html' %}
+{% load static %}
 
-                </ul>
 
-                <div class="nav-item me-4">
-                    <a class="link text-white text-decoration-none" href="#">Sign In</a>
-                </div>
-
-                <div class="nav-item">
-                    <a class="link text-white text-decoration-none" href="#">Log In</a>
-                </div>
-
-                <div class="dropdown">
-                    <a class="dropdown-toggle text-decoration-none text-white" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Username
-                        <img class="rounded-circle mb-1" width="32" height="32"
-                             src="/static/icon/default_user_image.png"
-                             alt="default_user_image">
-                    </a>
-                    <ul class="dropdown-menu bg-dark">
-                        <li>
-                            <a href="#" class="dropdown-item text-white">Saved Recipes</a>
-                        </li>
-
-                        <li>
-                            <a href="#" class="dropdown-item text-white">Profile</a>
-                        </li>
-
-                        <li><hr class="dropdown-divider bg-dark"></li>
-                        <li>
-                            <a href="#" class="dropdown-item text-danger">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </nav>
-
+{% block content %}
     <div class="container bg-light min-vh-100">
             <div class="row">
-                <div class="col-lg-3 my-3">
-                    <div class="rounded-circle text-center">
-                        <img src="/static/icon/default_user_image.png" width="192" height="192"
-                             alt="default_user_image">
+                {% if user.id == request.user.id %}
+                    <div class="col-lg-3 my-3">
+                    <div class="text-center">
+                        <img class="rounded-circle" src="{% if user.image %}
+                                                             {{ user.image.url }}
+                                                         {% else %}
+                                                             {% static 'icon/default_user_image.png' %}
+                                                         {% endif %}" width="192" height="192" alt="default_user_image">
                     </div>
                     <div>
-                        <h2 class="text-center text-truncate">Username</h2>
+                        <h2 class="text-center text-truncate">{{ user.username }}</h2>
                     </div>
                     <div class="list-group rounded-top-2 rounded-bottom-2 ">
                         <a class="list-group-item list-group-item-action text-dark bg-dark-subtle disabled" href="#">
@@ -112,65 +53,69 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-lg-9 my-3">
+                    <div class="col-lg-9 my-3">
                     <div class="row mt-4">
                         <div class="mb-4">
-                            <h2>Username's Settings</h2>
+                            <h2>{{ user.username }}'s Settings</h2>
                         </div>
                         <div class="row">
                             <div>
-                                <form action="" method="POST">
+                                <form action="{% url 'accounts:profile' user.id %}" method="POST"
+                                      enctype="multipart/form-data">
+
+                                    {% csrf_token %}
+
                                     <div class="mb-4">
-                                        <label for="inputUsername" class="form-label">Username</label>
-                                        <input type="text" id="inputUsername" class="form-control" value="Username">
+                                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                                            Username
+                                        </label>
+                                        {{ form.username }}
                                     </div>
                                     <div class="mb-4">
-                                        <label for="inputFirstName" class="form-label">First Name</label>
-                                        <input type="text" id="inputFirstName" class="form-control"
-                                               placeholder="Alex">
+                                        <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                            First Name
+                                        </label>
+                                        {{ form.first_name }}
                                     </div>
                                     <div class="mb-4">
-                                        <label for="inputLastName" class="form-label">Last Name</label>
-                                        <input type="text" id="inputLastName" class="form-control" placeholder="Miller">
+                                        <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                            Last Name
+                                        </label>
+                                        {{ form.last_name }}
                                     </div>
-                                    <fieldset disabled>
-                                        <div class="mb-4">
-                                        <label for="inputEmail" class="form-label">Email</label>
-                                        <input type="text" class="form-control" id="inputEmail" value="UserMail@email.com">
-                                    </div>
-                                    </fieldset>
                                     <div class="mb-4">
-                                        <label for="inputImage" class="form-label">Image</label>
+                                        <label for="{{ form.email.id_for_label }}" class="form-label ">Email</label>
+                                        {{ form.email }}
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
                                         <div class="input-group">
-                                            <input type="file" class="form-control" id="inputImage"
-                                                   aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                            {{ form.image }}
                                         </div>
                                     </div>
                                     <div>
-                                        <a class="btn btn-outline-success" href="#">Update</a>
+                                        <button class="btn btn-outline-success" type="submit">Update</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% else %}
+                    <div class="text-center my-3">
+                        <img class="rounded-circle" src="{% if user.image %}
+                                                             {{ user.image.url }}
+                                                         {% else %}
+                                                             {% static 'icon/default_user_image.png' %}
+                                                         {% endif %}" width="192" height="192" alt="default_user_image">
+                    </div>
+                    <div>
+                        <h2 class="text-center text-truncate">{{ user.username }}</h2>
+                    </div>
+                    <div class="text-center">
+                        <h4>You cannot view another user's profile.</h4>
+                    </div>
+                {% endif %}
             </div>
     </div>
-
-    <footer class="bg-dark">
-        <div class="container text-center text-white py-4">
-            <h3>About</h3>
-            <p>
-                This website is designed to quickly find recipes, but if you have your own recipe, you can share it by
-                posting it on the site.
-            </p>
-            <hr class="divider border-2">
-            <small>Copyright &copy; 2023 Special Recipe</small>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-            crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}
