@@ -3,6 +3,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
+from django.shortcuts import get_object_or_404
 
 from recipe.models import Category, Recipe, Ingredient
 from recipe.forms import SearchForm
@@ -17,13 +18,14 @@ class RecipesListView(ListView):
 
     def get_queryset(self):
         recipes = super().get_queryset()
-        category_id = self.kwargs.get('category_id')
+        category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
         if search:
             return recipes.filter(Q(name__icontains=search) | Q(description__icontains=search)).annotate(
                 saves_count=Count('saves')).order_by('-saves_count')
-        elif category_id:
-            return recipes.filter(category_id=category_id).annotate(saves_count=Count('saves')).order_by('-saves_count')
+        elif category_slug:
+            return recipes.filter(category__slug=category_slug).annotate(
+                saves_count=Count('saves')).order_by('-saves_count')
         else:
             return recipes.annotate(saves_count=Count('saves')).order_by('-saves_count')
 
@@ -31,7 +33,7 @@ class RecipesListView(ListView):
         context = super().get_context_data()
         context['title'] = 'Special Recipe - Recipes'
         context['categories'] = Category.objects.all()
-        context['selected_category'] = self.kwargs.get('category_id')
+        context['selected_category'] = self.kwargs.get('category_slug')
         context['form'] = SearchForm(initial={'search': self.request.GET.get('search')})
         context['popular_recipes'] = Recipe.objects.annotate(saves_count=Count('saves')).order_by('-saves_count')[:3]
         if self.request.user.is_authenticated:
@@ -44,7 +46,7 @@ class DescriptionView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        recipe = Recipe.objects.all().get(slug=self.kwargs.get('slug'))
+        recipe = get_object_or_404(Recipe, slug=self.kwargs.get('recipe_slug'))
         ingredients = Ingredient.objects.filter(recipe=recipe)
         context['recipe'] = recipe
         context['ingredients'] = ingredients
