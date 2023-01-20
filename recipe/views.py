@@ -12,7 +12,7 @@ from recipe.forms import SearchForm
 class RecipesListView(ListView):
     model = Recipe
     context_object_name = 'recipes'
-    template_name = 'recipe/recipe.html'
+    template_name = 'recipe/index.html'
 
     paginate_by = 3
 
