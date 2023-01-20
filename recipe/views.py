@@ -32,7 +32,8 @@ class RecipesListView(ListView):
         context['title'] = 'Special Recipe - Recipes'
         context['categories'] = Category.objects.all()
         context['selected_category'] = self.kwargs.get('category_id')
-        context['form'] = SearchForm
+        context['form'] = SearchForm(initial={'search': self.request.GET.get('search')})
+        context['popular_recipes'] = Recipe.objects.annotate(saves_count=Count('saves')).order_by('-saves_count')[:3]
         if self.request.user.is_authenticated:
             context['user_saves'] = self.object_list.filter(saves=self.request.user)
         return context
