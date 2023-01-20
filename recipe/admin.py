@@ -27,4 +27,5 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
     search_fields = ('name',)
     ordering = ('name',)
+    prepopulated_fields = {'slug': ('name',)}
     inlines = (IngredientInlineAdmin,)
