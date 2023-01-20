@@ -12,13 +12,13 @@
                 {% for recipe in saved_recipes %}
                     <div class="col-lg-3 mb-3">
                         <div class="card h-100">
-                            <a href="{% url 'recipe:description' recipe.id %}">
+                            <a href="{% url 'recipe:description' recipe.slug %}">
                                 <img src="{{ recipe.image.url }}" class="card-img-top"
                                      alt="recipe_img">
                             </a>
                         <div class="card-body">
                             <a class="link-dark text-decoration-none"
-                               href="{% url 'recipe:description' recipe.id %}">
+                               href="{% url 'recipe:description' recipe.slug %}">
                                 <h5 class="card-title">{{ recipe.name }}</h5>
                             </a>
                             <p class="card-text">{{ recipe.description }}</p>

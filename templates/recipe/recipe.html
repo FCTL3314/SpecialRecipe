@@ -38,7 +38,7 @@
                             </div>
                             <div class="carousel-inner rounded-2">
                                 {% for recipe in popular_recipes %}
-                                    <a href="{% url 'recipe:description' recipe.id %}">
+                                    <a href="{% url 'recipe:description' recipe.slug %}">
                                         <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
                                             <img src="{{ recipe.image.url }}" class="d-block w-100"
                                                  alt="carousel_first_image">
@@ -63,13 +63,13 @@
                         {% for recipe in recipes %}
                             <div class="col-lg-4 col-md-6 mb-3">
                                 <div class="card h-100">
-                                <a href="{% url 'recipe:description' recipe.id %}">
+                                <a href="{% url 'recipe:description' recipe.slug %}">
                                     <img src="{{ recipe.image.url }}" class="card-img-top"
                                          alt="recipe_img">
                                 </a>
                                 <div class="card-body">
                                     <a class="link-dark text-decoration-none"
-                                       href="{% url 'recipe:description' recipe.id %}">
+                                       href="{% url 'recipe:description' recipe.slug %}">
                                         <h5 class="card-title">{{ recipe.name }}</h5>
                                     </a>
                                     <p class="card-text">{{ recipe.description }}</p>
