@@ -19,6 +19,7 @@ class Recipe(models.Model):
     description = models.CharField(max_length=128)
     cooking_description = models.TextField()
     category = models.ForeignKey(to=Category, on_delete=models.PROTECT)
+    slug = models.SlugField(unique=True)
     saves = models.ManyToManyField(User)
 
     class Meta:
