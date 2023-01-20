@@ -13,14 +13,14 @@
         </form>
         <div class="list-group">
           <a class="list-group-item list-group-item-action{% if not selected_category and not request.GET.search %}
-                                                            text-dark bg-dark-subtle disabled
+                                                            text-dark bg-body-secondary disabled
                                                           {% endif %}"
              href="{% url 'index' %}">
             All Recipes
           </a>
           {% for category in categories %}
             <a class="list-group-item list-group-item-action {% if selected_category == category.slug %}
-                                                               text-dark bg-dark-subtle disabled
+                                                               text-dark bg-body-secondary disabled
                                                              {% endif %}"
                href="{% url 'recipe:category' category.slug %}">
               {{ category.name }}
