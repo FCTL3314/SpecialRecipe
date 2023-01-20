@@ -1,55 +1,55 @@
 <nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-        {% if selected_category %}
-            <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
-                                <a class="page-link" href="{% if page_obj.has_previous %}
-                                                           {% url 'recipe:category_paginator' selected_category page_obj.previous_page_number %}
-                                                           {% endif %}">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-        {% else %}
-            <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
-                                <a class="page-link" href="{% if page_obj.has_previous %}
-                                                           {% url 'recipe:paginator' page_obj.previous_page_number %}
-                                                           {% endif %}">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-        {% endif %}
-        {% for page in paginator.page_range %}
-            {% if selected_category %}
-                <li class="page-item">
-                                    <a class="page-link {% if page_obj.number == page %} disabled {% endif %}"
-                                       href="{% url 'recipe:category_paginator' selected_category page %}">
-                                        {{ page }}
-                                    </a>
-                                </li>
-            {% else %}
-                <li class="page-item">
-                                    <a class="page-link {% if page_obj.number == page %} disabled {% endif %}"
-                                       href="{% url 'recipe:paginator' page %}">
-                                        {{ page }}
-                                    </a>
-                                </li>
-            {% endif %}
-        {% endfor %}
-        {% if selected_category %}
-            <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
-                                <a class="page-link" href="{% if page_obj.has_next %}
-                                                           {% url 'recipe:category_paginator' selected_category page_obj.next_page_number %}
-                                                           {% endif %}">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-        {% else %}
-            <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
-                                <a class="page-link" href="{% if page_obj.has_next %}
-                                                           {% url 'recipe:paginator' page_obj.next_page_number %}
-                                                           {% endif %}">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-        {% endif %}
-    </ul>
+  <ul class="pagination justify-content-center">
+    {% if selected_category %}
+      <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
+        <a class="page-link" href="{% if page_obj.has_previous %}
+                                     {% url 'recipe:category_paginator' selected_category page_obj.previous_page_number %}
+                                   {% endif %}">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
+        <a class="page-link" href="{% if page_obj.has_previous %}
+                                     {% url 'recipe:paginator' page_obj.previous_page_number %}
+                                   {% endif %}">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {% endif %}
+    {% for page in paginator.page_range %}
+      {% if selected_category %}
+        <li class="page-item">
+          <a class="page-link {% if page_obj.number == page %} disabled {% endif %}"
+             href="{% url 'recipe:category_paginator' selected_category page %}">
+            {{ page }}
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link {% if page_obj.number == page %} disabled {% endif %}"
+             href="{% url 'recipe:paginator' page %}">
+            {{ page }}
+          </a>
+        </li>
+      {% endif %}
+    {% endfor %}
+    {% if selected_category %}
+      <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+        <a class="page-link" href="{% if page_obj.has_next %}
+                                     {% url 'recipe:category_paginator' selected_category page_obj.next_page_number %}
+                                   {% endif %}">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+        <a class="page-link" href="{% if page_obj.has_next %}
+                                     {% url 'recipe:paginator' page_obj.next_page_number %}
+                                   {% endif %}">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% endif %}
+  </ul>
 </nav>

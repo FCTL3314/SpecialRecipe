@@ -3,119 +3,109 @@
 
 
 {% block content %}
-    <div class="container bg-light min-vh-100">
-            <div class="row">
-                {% if user.id == request.user.id %}
-                    <div class="col-lg-3 my-3">
-                    <div class="text-center">
-                        <img class="rounded-circle" src="{% if user.image %}
-                                                             {{ user.image.url }}
-                                                         {% else %}
-                                                             {% static 'icon/default_user_image.png' %}
-                                                         {% endif %}" width="192" height="192" alt="default_user_image">
-                    </div>
-                    <div>
-                        <h2 class="text-center text-truncate">{{ user.username }}</h2>
-                    </div>
-                    <div class="list-group rounded-top-2 rounded-bottom-2 ">
-                        <a class="list-group-item list-group-item-action text-dark bg-dark-subtle disabled" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                 class="bi bi-house-fill mb-1" viewBox="0 0 16 16">
-                                <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646
+  <div class="container bg-light min-vh-100">
+    <div class="row">
+      {% if user.id == request.user.id %}
+        <div class="col-lg-3 my-3">
+          <div class="text-center">
+            <img class="rounded-circle" src="{% if user.image %}
+                                               {{ user.image.url }}
+                                             {% else %}
+                                               {% static 'icon/default_user_image.png' %}
+                                             {% endif %}" width="192" height="192" alt="default_user_image">
+          </div>
+          <div>
+            <h2 class="text-center text-truncate">{{ user.username }}</h2>
+          </div>
+          <div class="list-group rounded-top-2 rounded-bottom-2 ">
+            <a class="list-group-item list-group-item-action text-dark bg-dark-subtle disabled" href="#">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                   class="bi bi-house-fill mb-1" viewBox="0 0 16 16">
+                <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646
                                 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707
                                 1.5Z">
-                                </path>
-                                <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2
-                                13.5V9.293l6-6Z">
-                                </path>
-                            </svg>
-                            Account
-                        </a>
-                        <a class="list-group-item list-group-item-action disabled" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                 class="bi bi-key-fill mb-1" viewBox="0 0 16 16">
-                                <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1
+                </path>
+                <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"></path>
+              </svg>
+              Account
+            </a>
+            <a class="list-group-item list-group-item-action disabled" href="#">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                   class="bi bi-key-fill mb-1" viewBox="0 0 16 16">
+                <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1
                                 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
-                            </svg>
-                            Password
-                        </a>
-                        <a class="list-group-item list-group-item-action disabled" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                 class="bi bi-person-fill mb-1" viewBox="0 0 16 16">
-                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0
-                                0 6Z">
-                                </path>
-                            </svg>
-                            Security
-                        </a>
-                        <a class="list-group-item list-group-item-action link-danger" href="{% url 'accounts:logout' %}">
-                            Logout
-                        </a>
-                    </div>
-                </div>
-                    <div class="col-lg-9 my-3">
-                    <div class="row mt-4">
-                        <div class="mb-4">
-                            <h2>{{ user.username }}'s Settings</h2>
-                        </div>
-                        <div class="row">
-                            <div>
-                                <form action="{% url 'accounts:profile' user.id %}" method="POST"
-                                      enctype="multipart/form-data">
-
-                                    {% csrf_token %}
-
-                                    <div class="mb-4">
-                                        <label for="{{ form.username.id_for_label }}" class="form-label">
-                                            Username
-                                        </label>
-                                        {{ form.username }}
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="{{ form.first_name.id_for_label }}" class="form-label">
-                                            First Name
-                                        </label>
-                                        {{ form.first_name }}
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="{{ form.last_name.id_for_label }}" class="form-label">
-                                            Last Name
-                                        </label>
-                                        {{ form.last_name }}
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="{{ form.email.id_for_label }}" class="form-label ">Email</label>
-                                        {{ form.email }}
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
-                                        <div class="input-group">
-                                            {{ form.image }}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <button class="btn btn-outline-success" type="submit">Update</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% else %}
-                    <div class="text-center my-3">
-                        <img class="rounded-circle" src="{% if user.image %}
-                                                             {{ user.image.url }}
-                                                         {% else %}
-                                                             {% static 'icon/default_user_image.png' %}
-                                                         {% endif %}" width="192" height="192" alt="default_user_image">
-                    </div>
-                    <div>
-                        <h2 class="text-center text-truncate">{{ user.username }}</h2>
-                    </div>
-                    <div class="text-center">
-                        <h4>You cannot view another user's profile.</h4>
-                    </div>
-                {% endif %}
+              </svg>
+              Password
+            </a>
+            <a class="list-group-item list-group-item-action disabled" href="#">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                   class="bi bi-person-fill mb-1" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
+              </svg>
+              Security
+            </a>
+            <a class="list-group-item list-group-item-action link-danger" href="{% url 'accounts:logout' %}">
+              Logout
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-9 my-3">
+          <div class="row mt-4">
+            <div class="mb-4">
+              <h2>{{ user.username }}'s Settings</h2>
             </div>
+            <div class="row">
+              <div>
+                <form action="{% url 'accounts:profile' user.id %}" method="POST" enctype="multipart/form-data">
+
+                  {% csrf_token %}
+
+                  <div class="mb-4">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                    {{ form.username }}
+                  </div>
+                  <div class="mb-4">
+                    <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                    {{ form.first_name }}
+                  </div>
+                  <div class="mb-4">
+                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                    {{ form.last_name }}
+                  </div>
+                  <div class="mb-4">
+                    <label for="{{ form.email.id_for_label }}" class="form-label ">Email</label>
+                    {{ form.email }}
+                  </div>
+                  <div class="mb-4">
+                    <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
+                    <div class="input-group">
+                      {{ form.image }}
+                    </div>
+                  </div>
+                  <div>
+                    <button class="btn btn-outline-success" type="submit">Update</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="text-center my-3">
+          <img class="rounded-circle" src="{% if user.image %}
+                                             {{ user.image.url }}
+                                           {% else %}
+                                             {% static 'icon/default_user_image.png' %}
+                                           {% endif %}"
+               width="192" height="192" alt="default_user_image">
+        </div>
+        <div>
+          <h2 class="text-center text-truncate">{{ user.username }}</h2>
+        </div>
+        <div class="text-center">
+          <h4>You cannot view another user's profile.</h4>
+        </div>
+      {% endif %}
     </div>
+  </div>
 {% endblock %}

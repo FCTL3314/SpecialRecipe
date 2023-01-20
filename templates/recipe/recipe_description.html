@@ -3,34 +3,33 @@
 
 
 {% block content %}
-    <div class="container bg-light min-vh-100">
-            <div class="row">
-                <div class="col-lg-8 my-2">
-                    <div>
-                        <img class="img-fluid rounded-3" src="{{ recipe.image.url }}"
-                             alt="recipe_image">
-                    </div>
-                    <div>
-                        <h1 class="text-truncate">{{ recipe.name }}</h1>
-                    </div>
-                    <div>
-                        <h4>{{ recipe.cooking_description }}</h4>
-                    </div>
-                </div>
-                <div class="col-lg-4 my-2">
-                    <div class="mb-3">
-                        <h3>Ingredients</h3>
-                    </div>
-                    <div class="mb-3 d-flex">
-                        <ul>
-                            {% for ingredient in ingredients %}
-                                <li>
-                                    <p>{{ ingredient.name }}</p>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
+  <div class="container bg-light min-vh-100">
+    <div class="row">
+      <div class="col-lg-8 my-2">
+        <div>
+          <img class="img-fluid rounded-3" src="{{ recipe.image.url }}" alt="recipe_image">
+        </div>
+        <div>
+          <h1 class="text-truncate">{{ recipe.name }}</h1>
+        </div>
+        <div>
+          <h4>{{ recipe.cooking_description }}</h4>
+        </div>
+      </div>
+      <div class="col-lg-4 my-2">
+        <div class="mb-3">
+          <h3>Ingredients</h3>
+        </div>
+        <div class="mb-3 d-flex">
+          <ul>
+            {% for ingredient in ingredients %}
+              <li>
+                <p>{{ ingredient.name }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 {% endblock %}
