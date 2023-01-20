@@ -3,7 +3,7 @@
 
 
 {% block content %}
-    <div class="container bg-light">
+    <div class="container bg-light min-vh-100">
             <div class="row">
                 <div class="col-lg-3 my-2">
                     <h1>Recipes</h1>
@@ -29,36 +29,37 @@
                     </div>
                 </div>
                 <div class="col-lg-9 mt-2">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                        </div>
-                        <div class="carousel-inner rounded-2">
-                            {% for recipe in recipes|slice:":3" %}
-                                <a href="{% url 'recipe:description' recipe.id %}">
-                                    <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
-                                        <img src="{{ recipe.image.url }}" class="d-block w-100"
-                                             alt="carousel_first_image">
-                                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-25 rounded-2 p-0 pb-2">
-                                            <h1 class="text-light">{{ recipe.name }}</h1>
-                                            <h4 class="text-light">{{ recipe.description }}</h4>
+                    {% if recipes %}
+                        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            </div>
+                            <div class="carousel-inner rounded-2">
+                                {% for recipe in popular_recipes %}
+                                    <a href="{% url 'recipe:description' recipe.id %}">
+                                        <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
+                                            <img src="{{ recipe.image.url }}" class="d-block w-100"
+                                                 alt="carousel_first_image">
+                                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-25 rounded-2 p-0 pb-2">
+                                                <h1 class="text-light">{{ recipe.name }}</h1>
+                                                <h4 class="text-light">{{ recipe.description }}</h4>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            {% endfor %}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                    <div class="row mt-4">
+                        <div class="row mt-4">
                         {% for recipe in recipes %}
                             <div class="col-lg-4 col-md-6 mb-3">
                                 <div class="card h-100">
@@ -101,7 +102,18 @@
                             </div>
                         {% endfor %}
                     </div>
-                    {% include 'recipe/pagination.html' %}
+                        {% include 'recipe/pagination.html' %}
+                    {% else %}
+                        <div class="text-center">
+                            <h1>Nothing was found.</h1>
+                            <h4>
+                                Nothing was found based on your search results.
+                                Try to simplify or reformulate your request.
+                                After all, the recipe you are looking for may not exist.
+                                Click all recipes to return to the main page.
+                            </h4>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
     </div>
