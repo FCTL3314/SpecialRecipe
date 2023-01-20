@@ -19,6 +19,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
     ordering = ('name',)
+    prepopulated_fields = {'slug': ('name',)}
     inlines = (RecipeInlineAdmin,)
 
 
