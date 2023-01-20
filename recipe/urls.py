@@ -7,7 +7,6 @@ from recipe.views import RecipesListView, DescriptionView, SavesListView, add_to
 app_name = 'recipe'
 
 urlpatterns = [
-    path('', RecipesListView.as_view(), name='recipes'),
     path('description/<slug:recipe_slug>/', DescriptionView.as_view(), name='description'),
     path('category/<slug:category_slug>/', RecipesListView.as_view(), name='category'),
     path('page/<int:page>/', RecipesListView.as_view(), name='paginator'),
