@@ -19,10 +19,10 @@
                             All Recipes
                         </a>
                         {% for category in categories %}
-                            <a class="list-group-item list-group-item-action {% if selected_category == category.id %}
+                            <a class="list-group-item list-group-item-action {% if selected_category == category.slug %}
                                                                                  text-dark bg-dark-subtle disabled
                                                                              {% endif %}"
-                               href="{% url 'recipe:category' category.id %}">
+                               href="{% url 'recipe:category' category.slug %}">
                                 {{ category.name }}
                             </a>
                         {% endfor %}
