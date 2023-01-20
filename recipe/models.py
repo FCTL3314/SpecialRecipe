@@ -4,6 +4,7 @@ from accounts.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=32)
+    slug = models.SlugField(unique=True)
 
     class Meta:
         verbose_name = 'category'
