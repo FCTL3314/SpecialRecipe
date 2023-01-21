@@ -31,15 +31,19 @@ class UserLoginView(LoginView):
         return context
 
 
-class UserProfileView(UpdateView):
+class UserProfileView(SuccessMessageMixin, UpdateView):
     model = User
     form_class = UserProfileForm
+    success_message = 'Profile updated successfully!'
     template_name = 'accounts/profile.html'
 
     def get_success_url(self):
-        return reverse_lazy('accounts:profile', args={self.request.user.id})
+        return reverse_lazy('accounts:profile', args={self.object.id})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['title'] = f'Special Recipe - {self.request.user.username}\'s profile'
+        form = kwargs.get('form')
+        if form and form.errors:
+            context['user'] = User.objects.get(id=self.object.id)
+        context['title'] = f'Special Recipe - {self.object.username}\'s profile'
         return context
