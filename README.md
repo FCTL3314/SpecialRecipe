@@ -6,6 +6,8 @@
 
 • It is desirable that the images of the recipes be in the resolution of **1920x1200**.
 
+• For correct display, **at least 3 recipes must be created** regardless of the category.
+
 # Requirements
 
 • Python 3.11
