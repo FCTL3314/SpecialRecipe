@@ -26,11 +26,14 @@ class UserLoginView(LoginView):
     template_name = 'accounts/login.html'
     success_url = reverse_lazy('recipe:recipes')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        form = kwargs.get('form')
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
         if form and form.errors:
             messages.warning(self.request, 'Invalid username/email or password.')
+        return response
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
         context['title'] = 'Special Recipe - Login'
         return context
 
