@@ -1,6 +1,7 @@
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 from django.urls import reverse_lazy
 
 from accounts.models import User
@@ -27,6 +28,9 @@ class UserLoginView(LoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
+        form = kwargs.get('form')
+        if form and form.errors:
+            messages.warning(self.request, 'Invalid username/email or password.')
         context['title'] = 'Special Recipe - Login'
         return context
 
