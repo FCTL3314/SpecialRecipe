@@ -26,6 +26,13 @@ class UserLoginView(LoginView):
     template_name = 'accounts/login.html'
     success_url = reverse_lazy('recipe:recipes')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        remember_me = form.cleaned_data.get('remember_me')
+        if not remember_me:
+            self.request.session.set_expiry(1800)
+        return response
+
     def form_invalid(self, form):
         response = super().form_invalid(form)
         if form and form.errors:
