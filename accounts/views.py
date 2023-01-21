@@ -1,15 +1,17 @@
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LoginView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 
 from accounts.models import User
 from accounts.forms import UserRegistrationForm, UserLoginForm, UserProfileForm
 
 
-class UserRegistrationView(CreateView):
+class UserRegistrationView(SuccessMessageMixin, CreateView):
     model = User
     form_class = UserRegistrationForm
     template_name = 'accounts/registration.html'
+    success_message = 'You have successfully registered!'
     success_url = reverse_lazy('accounts:login')
 
     def get_context_data(self, **kwargs):
