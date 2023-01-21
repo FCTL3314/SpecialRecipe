@@ -54,6 +54,23 @@
             <div class="mb-4">
               <h2>{{ user.username }}'s Settings</h2>
             </div>
+            {% if form.errors %}
+              <div class="alert alert-warning" role="alert">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                      <li>
+                        {{ error }}
+                      </li>
+                    {% endfor %}
+                {% endfor %}
+              </div>
+            {% elif messages %}
+              <div class="alert alert-success" role="alert">
+                {% for message in messages %}
+                  {{ message }}
+                {% endfor %}
+              </div>
+            {% endif %}
             <div class="row">
               <div>
                 <form action="{% url 'accounts:profile' user.id %}" method="POST" enctype="multipart/form-data">
