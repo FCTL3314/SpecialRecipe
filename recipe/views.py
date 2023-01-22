@@ -14,7 +14,7 @@ class RecipesListView(ListView):
     context_object_name = 'recipes'
     template_name = 'recipe/index.html'
 
-    paginate_by = 3
+    paginate_by = 9
 
     def get_queryset(self):
         recipes = super().get_queryset()
