@@ -57,11 +57,9 @@ class SavesListView(ListView):
     context_object_name = 'saved_recipes'
     template_name = 'accounts/saved_recipes.html'
 
-    paginate_by = 3
-
     def get_queryset(self):
         recipes = super().get_queryset()
-        return recipes.filter(saves=self.request.user).annotate(saves_count=Count('saves')).order_by('-saves_count')
+        return recipes.filter(saves=self.request.user).order_by('name')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
