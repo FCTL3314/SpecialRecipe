@@ -17,7 +17,7 @@ class UserRegistrationView(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['title'] = 'Special Recipe - Registration'
+        context['title'] = 'Special Recipe | Registration'
         return context
 
 
@@ -41,7 +41,7 @@ class UserLoginView(LoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['title'] = 'Special Recipe - Login'
+        context['title'] = 'Special Recipe | Login'
         return context
 
 
@@ -59,5 +59,5 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
         form = kwargs.get('form')
         if form and form.errors:
             context['user'] = User.objects.get(id=self.object.id)
-        context['title'] = f'Special Recipe - {self.object.username}\'s profile'
+        context['title'] = f'Special Recipe | {self.object.username}\'s profile'
         return context

@@ -30,7 +30,7 @@ class RecipesListView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
-        context['title'] = 'Special Recipe - Recipes'
+        context['title'] = 'Special Recipe | Recipes'
         context['categories'] = Category.objects.all()
         context['selected_category'] = self.kwargs.get('category_slug')
         context['form'] = SearchForm(initial={'search': self.request.GET.get('search')})
@@ -49,7 +49,7 @@ class DescriptionView(TemplateView):
         ingredients = Ingredient.objects.filter(recipe=recipe)
         context['recipe'] = recipe
         context['ingredients'] = ingredients
-        context['title'] = f'Special Recipe - {recipe.name}'
+        context['title'] = f'Special Recipe | {recipe.name}'
         return context
 
 
@@ -64,7 +64,7 @@ class SavesListView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
-        context['title'] = f'Special Recipe - {self.request.user.username}\'s saves'
+        context['title'] = f'Special Recipe | {self.request.user.username}\'s saves'
         return context
 
 
