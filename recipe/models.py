@@ -21,7 +21,7 @@ class Recipe(models.Model):
     cooking_description = models.TextField()
     category = models.ForeignKey(to=Category, on_delete=models.PROTECT)
     slug = models.SlugField(unique=True)
-    saves = models.ManyToManyField(User, null=True, blank=True)
+    saves = models.ManyToManyField(User, blank=True)
 
     class Meta:
         verbose_name = 'recipe'
