@@ -21,13 +21,11 @@ class RecipesListView(ListView):
         category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
         if search:
-            return recipes.filter(Q(name__icontains=search) | Q(description__icontains=search)).annotate(
-                saves_count=Count('saves')).order_by('-saves_count')
+            return recipes.filter(Q(name__icontains=search) | Q(description__icontains=search)).order_by('name')
         elif category_slug:
-            return recipes.filter(category__slug=category_slug).annotate(
-                saves_count=Count('saves')).order_by('-saves_count')
+            return recipes.filter(category__slug=category_slug).order_by('name')
         else:
-            return recipes.annotate(saves_count=Count('saves')).order_by('-saves_count')
+            return recipes.order_by('name')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
@@ -73,14 +71,14 @@ class SavesListView(ListView):
 
 @login_required()
 def add_to_saved(request, recipe_id):
-    recipe = Recipe.objects.get(id=recipe_id)
+    recipe = get_object_or_404(Recipe, id=recipe_id)
     recipe.saves.add(request.user)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
 @login_required()
 def remove_from_saved(request, recipe_id):
-    recipe = Recipe.objects.get(id=recipe_id)
+    recipe = get_object_or_404(Recipe, id=recipe_id)
     save = recipe.saves.get(id=request.user.id)
     recipe.saves.remove(save)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
