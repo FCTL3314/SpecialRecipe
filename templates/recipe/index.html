@@ -107,7 +107,11 @@
               </div>
             {% endfor %}
           </div>
-          {% include 'recipe/pagination.html' %}
+          {% if selected_category %}
+            {% include 'recipe/inclusion/category_pagination.html' %}
+          {% else %}
+            {% include 'recipe/inclusion/pagination.html' %}
+          {% endif %}
         {% else %}
           <div class="text-center">
             <h1>Nothing was found.</h1>

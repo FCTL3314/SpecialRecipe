@@ -1,0 +1,45 @@
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
+        <a class="page-link" href="{% if page_obj.has_previous %}
+                                     {% url 'recipe:paginator' page_obj.previous_page_number %}
+                                   {% endif %}">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {% if page_obj.number|add:'-4' > 1 %}
+      <li class="page-item">
+          <a class="page-link" href="{% url 'recipe:paginator' page_obj.number|add:'-5' %}">
+            <span aria-hidden="true">&hellip;</span>
+          </a>
+        </li>
+    {% endif %}
+    {% for page in paginator.page_range %}
+      <li class="page-item">
+          {% if page_obj.number == page %}
+            <a class="page-link disabled" href="{% url 'recipe:paginator' page %}">
+              {{ page }}
+            </a>
+          {% elif page > page_obj.number|add:'-5' and page < page_obj.number|add:'5' %}
+            <a class="page-link" href="{% url 'recipe:paginator' page %}">
+              {{ page }}
+            </a>
+          {% endif %}
+        </li>
+    {% endfor %}
+    {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+      <li class="page-item">
+          <a class="page-link" href="{% url 'recipe:paginator' page_obj.number|add:'5' %}">
+            <span aria-hidden="true">&hellip;</span>
+          </a>
+        </li>
+    {% endif %}
+    <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+        <a class="page-link" href="{% if page_obj.has_next %}
+                                     {% url 'recipe:paginator' page_obj.next_page_number %}
+                                   {% endif %}">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+  </ul>
+</nav>
