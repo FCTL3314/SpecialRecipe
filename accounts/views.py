@@ -1,11 +1,11 @@
-from django.views.generic.edit import CreateView, UpdateView
+from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
 from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView
 
+from accounts.forms import UserLoginForm, UserProfileForm, UserRegistrationForm
 from accounts.models import User
-from accounts.forms import UserRegistrationForm, UserLoginForm, UserProfileForm
 
 
 class UserRegistrationView(SuccessMessageMixin, CreateView):

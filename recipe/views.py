@@ -1,12 +1,11 @@
-from django.shortcuts import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
+from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Count
-from django.shortcuts import get_object_or_404
 
-from recipe.models import Category, Recipe, Ingredient
 from recipe.forms import SearchForm
+from recipe.models import Category, Ingredient, Recipe
 
 
 class RecipesListView(ListView):

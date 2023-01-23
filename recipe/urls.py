@@ -1,8 +1,8 @@
-from django.urls import path
 from django.contrib.auth.decorators import login_required
+from django.urls import path
 
-from recipe.views import RecipesListView, DescriptionView, SavesListView, add_to_saved, remove_from_saved
-
+from recipe.views import (DescriptionView, RecipesListView, SavesListView,
+                          add_to_saved, remove_from_saved)
 
 app_name = 'recipe'
 
