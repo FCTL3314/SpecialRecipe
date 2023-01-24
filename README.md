@@ -16,6 +16,8 @@
 
 • Pillow 9.4.0
 
+• django-debug-toolbar 3.8.1
+
 # Images
 • **Recipes page**
 
