@@ -2,7 +2,7 @@
   <ul class="pagination justify-content-center">
     {% if page_obj.has_previous %}
       <li class="page-item">
-        <a class="page-link" href="{% url 'recipe:category_paginator' selected_category page_obj.previous_page_number %}">
+        <a class="page-link" href="{% url 'recipe:category-paginator' selected_category page_obj.previous_page_number %}">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
@@ -15,7 +15,7 @@
     {% endif %}
     {% if page_obj.number|add:'-4' > 1 %}
       <li class="page-item">
-        <a class="page-link" href="{% url 'recipe:category_paginator' selected_category page_obj.number|add:'-5' %}">
+        <a class="page-link" href="{% url 'recipe:category-paginator' selected_category page_obj.number|add:'-5' %}">
           <span aria-hidden="true">&hellip;</span>
         </a>
       </li>
@@ -24,12 +24,12 @@
       <li class="page-item">
           {% if page_obj.number == page %}
             <a class="page-link {% if page_obj.number == page %} disabled {% endif %}"
-               href="{% url 'recipe:category_paginator' selected_category page %}">
+               href="{% url 'recipe:category-paginator' selected_category page %}">
               {{ page }}
             </a>
           {% elif page > page_obj.number|add:'-5' and page < page_obj.number|add:'5' %}
             <a class="page-link {% if page_obj.number == page %} disabled {% endif %}"
-               href="{% url 'recipe:category_paginator' selected_category page %}">
+               href="{% url 'recipe:category-paginator' selected_category page %}">
               {{ page }}
             </a>
           {% endif %}
@@ -37,14 +37,14 @@
     {% endfor %}
     {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
       <li class="page-item">
-        <a class="page-link" href="{% url 'recipe:category_paginator' selected_category page_obj.number|add:'5' %}">
+        <a class="page-link" href="{% url 'recipe:category-paginator' selected_category page_obj.number|add:'5' %}">
           <span aria-hidden="true">&hellip;</span>
         </a>
       </li>
     {% endif %}
     {% if page_obj.has_next %}
       <li class="page-item">
-        <a class="page-link" href="{% url 'recipe:category_paginator' selected_category page_obj.next_page_number %}">
+        <a class="page-link" href="{% url 'recipe:category-paginator' selected_category page_obj.next_page_number %}">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
