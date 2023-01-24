@@ -80,7 +80,7 @@
                     <p class="card-text">{{ recipe.description }}</p>
                     {% if recipe in user_saves %}
                       <a type="button" class="link-warning text-decoration-none"
-                         href="{% url 'recipe:remove_from_saved' recipe.id %}">
+                         href="{% url 'recipe:remove-from-saved' recipe.id %}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                              fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
                           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0
@@ -91,7 +91,7 @@
                       </a>
                     {% else %}
                       <a type="button" class="link-warning text-decoration-none"
-                         href="{% url 'recipe:add_to_saved' recipe.id %}">
+                         href="{% url 'recipe:add-to-saved' recipe.id %}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                              fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
                           <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8
