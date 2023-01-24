@@ -7,4 +7,5 @@ class SearchForm(forms.Form):
         'placeholder': 'Enter recipe name',
         'type': 'search',
         'aria-label': 'Search',
+        'autocomplete': 'off',
     }))
