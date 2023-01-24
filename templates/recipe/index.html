@@ -109,6 +109,8 @@
           </div>
           {% if selected_category %}
             {% include 'recipe/inclusion/category_pagination.html' %}
+          {% elif request.GET.search %}
+            {% include 'recipe/inclusion/search_pagination.html' %}
           {% else %}
             {% include 'recipe/inclusion/pagination.html' %}
           {% endif %}
@@ -116,8 +118,7 @@
           <div class="text-center">
             <h1>Nothing was found.</h1>
             <h4>
-              Nothing was found based on your search results. Try to simplify or reformulate your request.
-              After all, the recipe you are looking for may not exist. Click all recipes to return to the main page.
+              Looks like the site couldn't find anything you wanted.
             </h4>
           </div>
         {% endif %}
