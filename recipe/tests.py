@@ -7,7 +7,7 @@ from django.urls import reverse
 from recipe.models import Category, Recipe
 
 
-class RecipeListViewTestCase(TestCase):
+class RecipesListViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
     def setUp(self):
