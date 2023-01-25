@@ -4,7 +4,7 @@ from django.db.models import Count, Q
 from django.test import TestCase
 from django.urls import reverse
 
-from recipe.models import Category, Recipe
+from recipe.models import Category, Recipe, Ingredient
 
 
 class RecipesListViewTestCase(TestCase):
@@ -57,3 +57,23 @@ class RecipesListViewTestCase(TestCase):
             ).order_by('name'))[:self.paginate_by]
         )
         self.assertEqual(response.context_data['selected_category'], None)
+
+
+class DescriptionViewTestCase(TestCase):
+    fixtures = ['category.json', 'recipe.json', 'ingredient.json']
+
+    def setUp(self):
+        self.recipes = Recipe.objects.all()
+
+    def test_view(self):
+        recipe = self.recipes.first()
+        ingredients = Ingredient.objects.filter(recipe=recipe)
+
+        path = reverse('recipe:description', kwargs={'recipe_slug': recipe.slug})
+        response = self.client.get(path)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, 'recipe/recipe_description.html')
+        self.assertEqual(response.context_data['title'], f'Special Recipe | {recipe.name}')
+        self.assertEqual(response.context_data['recipe'], recipe)
+        self.assertEqual(list(response.context_data['ingredients']), list(ingredients))
