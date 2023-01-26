@@ -4,7 +4,7 @@ from django.db.models import Count, Q
 from django.test import TestCase
 from django.urls import reverse
 
-from recipe.models import Category, Recipe, Ingredient
+from recipe.models import Category, Ingredient, Recipe
 
 
 class RecipesListViewTestCase(TestCase):
