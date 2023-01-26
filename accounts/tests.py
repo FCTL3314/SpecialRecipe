@@ -11,10 +11,10 @@ class UserRegistrationViewTestCase(TestCase):
     def setUp(self):
         self.path = reverse('accounts:registration')
         self.data = {
-            'username': 'testuser',
+            'username': 'TestUser',
             'email': 'testuser@mail.com',
-            'password1': 'testuserpassword',
-            'password2': 'testuserpassword',
+            'password1': 'qnjCmk27yzKTCWWiwdYH',
+            'password2': 'qnjCmk27yzKTCWWiwdYH',
         }
 
     def _common_tests(self, response):
