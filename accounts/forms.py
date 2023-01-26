@@ -6,7 +6,7 @@ from accounts.models import User
 
 
 class UserRegistrationForm(UserCreationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={
+    username = forms.CharField(min_length=4, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Username',
     }))
