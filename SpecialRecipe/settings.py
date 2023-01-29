@@ -31,6 +31,7 @@ INTERNAL_IPS = [
     '127.0.0.1'
 ]
 
+DOMAIN_NAME = 'http://127.0.0.1:8000'
 
 # Application definition
 
@@ -150,3 +151,7 @@ LOGIN_URL = '/accounts/login/'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Email
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
