@@ -228,3 +228,53 @@ class SendVerificationEmailViewTestCase(TestCase):
 
         self._common_tests(response)
         self.assertContains(response, f'You have already verified your email.')
+
+
+class EmailVerificationViewTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='TestUser',
+            email='testuser@mail.com',
+            password='qnjCmk27yzKTCWWiwdYH',
+        )
+        expiration = now() + timedelta(hours=48)
+        self.email_verification = EmailVerification.objects.create(code=uuid4(), user=self.user, expiration=expiration)
+        self.client.login(username='TestUser', email='testuser@mail.com', password='qnjCmk27yzKTCWWiwdYH')
+        self.path = reverse(
+            'accounts:email-verification',
+            kwargs={'email': self.user.email, 'code': self.email_verification.code}
+        )
+
+    def _common_tests(self, response):
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], 'Email verification')
+        self.assertTemplateUsed(response, 'accounts/email_verification/complete.html')
+
+    def test_view_success(self):
+        self.assertFalse(self.user.is_verified)
+
+        response = self.client.get(self.path)
+
+        self._common_tests(response)
+        self.assertContains(response, 'Your email address has been successfully verified.')
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_verified)
+
+    def test_view_user_already_verified(self):
+        self.user.is_verified = True
+        self.user.save()
+
+        response = self.client.get(self.path)
+
+        self._common_tests(response)
+        self.assertContains(response, f'Your email has already been verified.')
+
+    def test_view_link_has_expired(self):
+        self.email_verification.expiration -= timedelta(hours=72)
+        self.email_verification.save()
+
+        response = self.client.get(self.path)
+
+        self._common_tests(response)
+        self.assertContains(response, f'The link has expired.')
