@@ -1,0 +1,19 @@
+{% extends 'recipe/base.html' %}
+{% load static %}
+
+
+{% block content %}
+  <div class="container bg-light min-vh-100">
+    <div class="row justify-content-center">
+      <div class="row col-md-6">
+        <div class="text-center mt-5">
+        <h2>Please verify your email</h2>
+        {% for message in messages %}
+          <p class="alert alert-{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+        <h3>You can close this page.</h3>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
