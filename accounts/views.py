@@ -89,6 +89,11 @@ class SendVerificationEmailView(TemplateView):
                                       'you don\'t see it, you may need to check your spam folder.')
         return super().get(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Sending a verification email'
+        return context
+
 
 class EmailVerificationView(TemplateView):
     template_name = 'accounts/email_verification/complete.html'
@@ -107,3 +112,8 @@ class EmailVerificationView(TemplateView):
         else:
             messages.warning(request, 'An unknown error occurred while verifying your email, please try again later.')
         return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Email verification'
+        return context
