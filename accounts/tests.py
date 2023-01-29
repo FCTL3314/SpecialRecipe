@@ -1,9 +1,12 @@
+from datetime import timedelta
+from uuid import uuid4
 from http import HTTPStatus
 
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.timezone import now
 
-from accounts.models import User
+from accounts.models import EmailVerification, User
 
 
 class UserRegistrationViewTestCase(TestCase):
@@ -175,3 +178,53 @@ class UserLoginViewTestCase(TestCase):
 
         self._common_tests(response)
         self.assertContains(response, 'Invalid username/email or password.')
+
+
+class SendVerificationEmailViewTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='TestUser',
+            email='testuser@mail.com',
+            password='qnjCmk27yzKTCWWiwdYH',
+        )
+        self.client.login(username='TestUser', email='testuser@mail.com', password='qnjCmk27yzKTCWWiwdYH')
+        self.path = reverse('accounts:send-verification-email', args={self.user.email})
+
+    def _common_tests(self, response):
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], 'Sending a verification email')
+        self.assertTemplateUsed(response, 'accounts/email_verification/sending_information.html')
+
+    def test_view_success(self):
+        self.assertFalse(EmailVerification.objects.filter(user=self.user))
+
+        response = self.client.get(self.path)
+
+        self._common_tests(response)
+        self.assertContains(response, f'We send an email to {self.user.email}.')
+
+        email_verification = EmailVerification.objects.filter(user=self.user)
+
+        self.assertTrue(email_verification)
+        self.assertEqual(email_verification.first().expiration.date(), (now() + timedelta(hours=48)).date())
+
+    def test_view_previous_email_not_expired(self):
+        expiration = now() + timedelta(hours=48)
+        EmailVerification.objects.create(code=uuid4(), user=self.user, expiration=expiration)
+
+        self.assertTrue(EmailVerification.objects.first())
+
+        response = self.client.get(self.path)
+
+        self._common_tests(response)
+        self.assertContains(response, f'The last sent email has not expired yet, use it to verify your email address.')
+
+    def test_view_user_already_verified(self):
+        self.user.is_verified = True
+        self.user.save()
+
+        response = self.client.get(self.path)
+
+        self._common_tests(response)
+        self.assertContains(response, f'You have already verified your email.')
