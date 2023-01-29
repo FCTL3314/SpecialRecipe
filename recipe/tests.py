@@ -102,3 +102,27 @@ class AddToSavedViewTestCase(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertRedirects(response, reverse('index'))
         self.assertTrue(self.recipe.saves.filter(id=self.user.id))
+
+
+class RemoveFromSavedViewTestCase(TestCase):
+    fixtures = ['category.json', 'recipe.json']
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='TestUser',
+            email='testuser@mail.com',
+            password='qnjCmk27yzKTCWWiwdYH'
+        )
+        self.client.login(username='TestUser', email='testuser@mail.com', password='qnjCmk27yzKTCWWiwdYH')
+        self.recipe = Recipe.objects.first()
+        self.recipe.saves.add(self.user)
+        self.path = reverse('recipe:remove-from-saved', args={self.recipe.id})
+
+    def test_view(self):
+        self.assertTrue(self.recipe.saves.filter(id=self.user.id))
+
+        response = self.client.get(self.path, HTTP_REFERER=reverse('index'))
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(response, reverse('index'))
+        self.assertFalse(self.recipe.saves.filter(id=self.user.id))
