@@ -4,7 +4,7 @@ from django.db.models import Count, Q
 from django.test import TestCase
 from django.urls import reverse
 
-from recipe.models import Category, Ingredient, Recipe
+from recipe.models import Category, Ingredient, Recipe, User
 
 
 class RecipesListViewTestCase(TestCase):
@@ -79,3 +79,26 @@ class DescriptionViewTestCase(TestCase):
         self.assertEqual(response.context_data['title'], f'Special Recipe | {recipe.name}')
         self.assertEqual(response.context_data['recipe'], recipe)
         self.assertEqual(list(response.context_data['ingredients']), list(ingredients))
+
+
+class AddToSavedViewTestCase(TestCase):
+    fixtures = ['category.json', 'recipe.json']
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='TestUser',
+            email='testuser@mail.com',
+            password='qnjCmk27yzKTCWWiwdYH'
+        )
+        self.client.login(username='TestUser', email='testuser@mail.com', password='qnjCmk27yzKTCWWiwdYH')
+        self.recipe = Recipe.objects.first()
+        self.path = reverse('recipe:add-to-saved', args={self.recipe.id})
+
+    def test_view(self):
+        self.assertFalse(self.recipe.saves.filter(id=self.user.id))
+
+        response = self.client.get(self.path, HTTP_REFERER=reverse('index'))
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(response, reverse('index'))
+        self.assertTrue(self.recipe.saves.filter(id=self.user.id))
