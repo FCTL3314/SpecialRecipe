@@ -1,0 +1,25 @@
+{% extends 'recipe/base.html' %}
+{% load static %}
+
+
+{% block content %}
+  <div class="container bg-light min-vh-100">
+    <div class="row justify-content-center">
+      <div class="row col-md-6">
+        <div class="text-center mt-5">
+        <h2>Email verification</h2>
+        {% for message in messages %}
+          <p class="alert alert-{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+        <h3>
+          Click
+          <a class="text-decoration-none" href="{% url 'accounts:profile' request.user.id %}">
+            here
+          </a>
+          to return to your profile.
+        </h3>
+      </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
