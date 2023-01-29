@@ -110,7 +110,7 @@ class EmailVerificationView(TemplateView):
             user.save()
             messages.success(request, 'Your email address has been successfully verified.')
         else:
-            messages.warning(request, 'An unknown error occurred while verifying your email, please try again later.')
+            messages.warning(request, 'The link has expired.')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
