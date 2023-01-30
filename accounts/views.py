@@ -62,9 +62,7 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        form = kwargs.get('form')
-        if form and form.errors:
-            context['user'] = User.objects.get(id=self.object.id)
+        self.object.refresh_from_db()
         context['title'] = f'Special Recipe | {self.object.username}\'s profile'
         return context
     
