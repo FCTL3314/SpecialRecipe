@@ -1,7 +1,8 @@
 from datetime import timedelta
-from uuid import uuid4
 from http import HTTPStatus
+from uuid import uuid4
 
+from django.contrib.staticfiles.finders import find
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
@@ -43,6 +44,7 @@ class UserRegistrationViewTestCase(TestCase):
 
     def test_user_registration_post_short_username(self):
         username = 'abc'
+
         short_username_data = self.data.copy()
         short_username_data['username'] = username
 
@@ -72,6 +74,7 @@ class UserRegistrationViewTestCase(TestCase):
 
     def test_user_registration_post_weak_password(self):
         password = '123456'
+
         weak_password_data = self.data.copy()
         weak_password_data['password1'] = password
         weak_password_data['password2'] = password
@@ -157,6 +160,7 @@ class UserLoginViewTestCase(TestCase):
 
     def test_user_login_post_invalid_username(self):
         username = 'InvalidUsername'
+
         invalid_username_data = self.data.copy()
         invalid_username_data['username'] = username
 
@@ -169,6 +173,7 @@ class UserLoginViewTestCase(TestCase):
 
     def test_user_login_post_invalid_password(self):
         password = 'InvalidPassword'
+
         invalid_password_data = self.data.copy()
         invalid_password_data['password'] = password
 
@@ -278,3 +283,71 @@ class EmailVerificationViewTestCase(TestCase):
 
         self._common_tests(response)
         self.assertContains(response, f'The link has expired.')
+
+
+class UserProfileViewTestCase(TestCase):
+
+    def setUp(self):
+        self.data = {
+            'username': 'TestUserUpdated',
+            'first_name': 'Test',
+            'last_name': 'User',
+            'email': 'testuserupdated@mail.com',
+        }
+        self.password = 'qnjCmk27yzKTCWWiwdYH'
+        self.user = User.objects.create_user(
+            username='TestUser',
+            email='testuser@mail.com',
+            password='qnjCmk27yzKTCWWiwdYH',
+        )
+        self.client.login(username='TestUser', email='testuser@mail.com', password=self.password)
+        self.path = reverse('accounts:profile', args={self.user.id})
+
+    def _common_tests(self, response, user):
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], f'Special Recipe | {user.username}\'s profile')
+        self.assertTemplateUsed(response, 'accounts/profile.html')
+
+    def test_view_get(self):
+        response = self.client.get(self.path)
+
+        self._common_tests(response, self.user)
+
+    def test_view_post_success(self):
+        self.assertEqual(self.user.username, 'TestUser')
+        self.assertEqual(self.user.first_name, '')
+        self.assertEqual(self.user.last_name, '')
+        self.assertEqual(self.user.email, 'testuser@mail.com')
+        self.assertFalse(self.user.image)
+
+        with open(find('icon/default_user_image.png'), 'rb') as image:
+            self.data['image'] = image
+            response = self.client.post(self.path, self.data, follow=True)
+
+        self.user.refresh_from_db()
+        self._common_tests(response, self.user)
+        self.assertEqual(self.user.username, 'TestUserUpdated')
+        self.assertEqual(self.user.first_name, 'Test')
+        self.assertEqual(self.user.last_name, 'User')
+        self.assertEqual(self.user.email, 'testuserupdated@mail.com')
+        self.assertTrue(self.user.image)
+        self.assertContains(response, 'Profile updated successfully!')
+
+    def test_view_post_username_taken(self):
+        username = 'User'
+        email = 'user@mail.com'
+
+        username_taken_data = self.data.copy()
+        username_taken_data['username'] = username
+        username_taken_data['email'] = email
+
+        self.assertFalse(User.objects.filter(username=username, email=email))
+
+        User.objects.create_user(username=username, email=email, password=self.password)
+
+        response = self.client.post(self.path, username_taken_data, follow=True)
+
+        self.user.refresh_from_db()
+        self._common_tests(response, self.user)
+        self.assertTrue(User.objects.filter(username=username, email=email))
+        self.assertContains(response, 'A user with that username already exists.')
