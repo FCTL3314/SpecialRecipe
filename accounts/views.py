@@ -60,9 +60,12 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('accounts:profile', args={self.object.id})
 
+    def form_invalid(self, form):
+        self.object.refresh_from_db()
+        return super().form_invalid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        self.object.refresh_from_db()
         context['title'] = f'Special Recipe | {self.object.username}\'s profile'
         return context
     
