@@ -282,7 +282,7 @@ class EmailVerificationViewTestCase(TestCase):
         response = self.client.get(self.path)
 
         self._common_tests(response)
-        self.assertContains(response, f'The link has expired.')
+        self.assertContains(response, f'The verification link has expired.')
 
 
 class UserProfileViewTestCase(TestCase):
