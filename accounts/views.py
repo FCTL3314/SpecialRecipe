@@ -33,17 +33,15 @@ class UserLoginView(LoginView):
     success_url = reverse_lazy('recipe:recipes')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
         remember_me = form.cleaned_data.get('remember_me')
         if not remember_me:
             self.request.session.set_expiry(1800)
-        return response
+        return super().form_valid(form)
 
     def form_invalid(self, form):
-        response = super().form_invalid(form)
-        if form and form.errors:
+        if form.errors:
             messages.warning(self.request, 'Invalid username/email or password.')
-        return response
+        return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -111,7 +109,7 @@ class EmailVerificationView(TemplateView):
             user.save()
             messages.success(request, 'Your email address has been successfully verified.')
         else:
-            messages.warning(request, 'The link has expired.')
+            messages.warning(request, 'The verification link has expired.')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
