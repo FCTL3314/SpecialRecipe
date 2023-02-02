@@ -12,6 +12,7 @@ class RecipesListView(ListView):
     model = Recipe
     context_object_name = 'recipes'
     template_name = 'recipe/index.html'
+    ordering = ('name',)
 
     paginate_by = 9
 
@@ -21,11 +22,11 @@ class RecipesListView(ListView):
         search = self.request.GET.get('search')
         if search:
             return recipes.filter(
-                Q(name__icontains=search) | Q(description__icontains=search)).order_by('name').prefetch_related('saves')
+                Q(name__icontains=search) | Q(description__icontains=search)).prefetch_related('saves')
         elif category_slug:
-            return recipes.filter(category__slug=category_slug).order_by('name').prefetch_related('saves')
+            return recipes.filter(category__slug=category_slug).prefetch_related('saves')
         else:
-            return recipes.order_by('name').prefetch_related('saves')
+            return recipes.prefetch_related('saves')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
@@ -56,10 +57,11 @@ class SavesListView(ListView):
     model = Recipe
     context_object_name = 'saved_recipes'
     template_name = 'accounts/saved_recipes.html'
+    ordering = ('name',)
 
     def get_queryset(self):
         recipes = super().get_queryset()
-        return recipes.filter(saves=self.request.user).order_by('name').prefetch_related('saves')
+        return recipes.filter(saves=self.request.user).prefetch_related('saves')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
