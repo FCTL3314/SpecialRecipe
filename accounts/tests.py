@@ -42,6 +42,10 @@ class UserRegistrationViewTestCase(TestCase):
         self.assertRedirects(response, reverse('accounts:login'))
         self.assertTrue(User.objects.filter(username=username).exists())
 
+        user = User.objects.get(username=username)
+
+        self.assertTrue(user.slug, user.username.lower())
+
     def test_user_registration_post_short_username(self):
         username = 'abc'
 
@@ -301,7 +305,7 @@ class UserProfileViewTestCase(TestCase):
             password='qnjCmk27yzKTCWWiwdYH',
         )
         self.client.login(username='TestUser', email='testuser@mail.com', password=self.password)
-        self.path = reverse('accounts:profile', args={self.user.id})
+        self.path = reverse('accounts:profile', args={self.user.slug})
 
     def _common_tests(self, response, user):
         self.assertEqual(response.status_code, HTTPStatus.OK)
