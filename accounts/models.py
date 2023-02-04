@@ -32,12 +32,13 @@ class EmailVerification(models.Model):
     def send_verification_email(self):
         link = reverse('accounts:email-verification', kwargs={'email': self.user.email, 'code': self.code})
         verification_link = settings.DOMAIN_NAME + link
-        subject = f'{self.user.username}\'s email confirmation.'
-        message = f'To verify this email address, follow this link: {verification_link}'
+
+        subject = f'{self.user.username}\'s email verification.'
+        message = f'To verify your email address, follow this link: {verification_link}'
         send_mail(
             subject=subject,
             message=message,
-            from_email='email@example.com',
+            from_email=settings.EMAIL_HOST_USER,
             recipient_list=[self.user.email],
             fail_silently=False,
         )
