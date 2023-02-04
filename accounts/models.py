@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.timezone import now
 
 
@@ -10,6 +11,11 @@ class User(AbstractUser):
     image = models.ImageField(upload_to='user_images', null=True, blank=True)
     email = models.EmailField(db_index=True, unique=True, max_length=254)
     is_verified = models.BooleanField(default=False)
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.username)
+        return super().save()
 
     def clean(self):
         self.email = self.email.lower()
