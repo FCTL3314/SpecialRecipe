@@ -53,7 +53,7 @@
               <a href="{% url 'recipe:saves' %}" class="dropdown-item text-white">Saved Recipes</a>
             </li>
             <li>
-              <a href="{% url 'accounts:profile' request.user.id %}" class="dropdown-item text-white">Profile</a>
+              <a href="{% url 'accounts:profile' request.user.slug %}" class="dropdown-item text-white">Profile</a>
             </li>
             <li>
               <hr class="dropdown-divider bg-dark">

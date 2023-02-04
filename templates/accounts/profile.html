@@ -73,7 +73,7 @@
             {% endif %}
             <div class="row">
               <div>
-                <form action="{% url 'accounts:profile' user.id %}" method="POST" enctype="multipart/form-data">
+                <form action="{% url 'accounts:profile' user.slug %}" method="POST" enctype="multipart/form-data">
 
                   {% csrf_token %}
 
