@@ -13,7 +13,7 @@
         {% endfor %}
         <h3>
           Click
-          <a class="text-decoration-none" href="{% url 'accounts:profile' request.user.id %}">
+          <a class="text-decoration-none" href="{% url 'accounts:profile' request.user.slug %}">
             here
           </a>
           to return to your profile.
