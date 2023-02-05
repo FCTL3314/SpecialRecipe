@@ -71,7 +71,7 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
 
 
 class SendVerificationEmailView(TemplateView):
-    template_name = 'accounts/email_verification/sending_information.html'
+    template_name = 'accounts/email/email_verification_sending_info.html'
 
     def get(self, request, *args, **kwargs):
         email = kwargs.get('email')
@@ -97,7 +97,7 @@ class SendVerificationEmailView(TemplateView):
 
 
 class EmailVerificationView(TemplateView):
-    template_name = 'accounts/email_verification/complete.html'
+    template_name = 'accounts/email/email_verification_complete.html'
 
     def get(self, request, *args, **kwargs):
         code = kwargs.get('code')

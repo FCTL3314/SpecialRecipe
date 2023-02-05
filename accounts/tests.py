@@ -203,7 +203,7 @@ class SendVerificationEmailViewTestCase(TestCase):
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context_data['title'], 'Sending a verification email')
-        self.assertTemplateUsed(response, 'accounts/email_verification/sending_information.html')
+        self.assertTemplateUsed(response, 'accounts/email/email_verification_sending_info.html')
 
     def test_view_success(self):
         self.assertFalse(EmailVerification.objects.filter(user=self.user))
@@ -258,7 +258,7 @@ class EmailVerificationViewTestCase(TestCase):
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context_data['title'], 'Email verification')
-        self.assertTemplateUsed(response, 'accounts/email_verification/complete.html')
+        self.assertTemplateUsed(response, 'accounts/email/email_verification_complete.html')
 
     def test_view_success(self):
         self.assertFalse(self.user.is_verified)
