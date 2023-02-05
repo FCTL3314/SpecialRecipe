@@ -9,6 +9,8 @@ from django.utils.timezone import now
 
 from accounts.models import EmailVerification, User
 
+from humanize import naturaldelta
+
 
 class UserRegistrationViewTestCase(TestCase):
 
@@ -220,14 +222,16 @@ class SendVerificationEmailViewTestCase(TestCase):
 
     def test_view_previous_email_not_expired(self):
         expiration = now() + timedelta(hours=48)
-        EmailVerification.objects.create(code=uuid4(), user=self.user, expiration=expiration)
+        verification = EmailVerification.objects.create(code=uuid4(), user=self.user, expiration=expiration)
 
         self.assertTrue(EmailVerification.objects.first())
 
         response = self.client.get(self.path)
 
         self._common_tests(response)
-        self.assertContains(response, f'The last sent email has not expired yet, use it to verify your email address.')
+
+        seconds_left = naturaldelta(verification.created + timedelta(minutes=1) - now())
+        self.assertContains(response, f'Please wait {seconds_left} to resend the confirmation email.')
 
     def test_view_user_already_verified(self):
         self.user.is_verified = True
