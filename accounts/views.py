@@ -2,7 +2,9 @@ from datetime import timedelta
 from uuid import uuid4
 
 from django.contrib import messages
-from django.contrib.auth.views import (LoginView, PasswordResetConfirmView,
+from django.contrib.auth.views import (LoginView, PasswordResetCompleteView,
+                                       PasswordResetConfirmView,
+                                       PasswordResetDoneView,
                                        PasswordResetView)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
@@ -121,6 +123,7 @@ class EmailVerificationView(TemplateView):
 
 
 class PwdResetView(SuccessMessageMixin, PasswordResetView):
+    title = 'Special Recipe | Password reset'
     template_name = 'accounts/password/reset_password.html'
     form_class = PwdResetForm
     success_url = reverse_lazy('accounts:password_reset_done')
@@ -129,8 +132,19 @@ class PwdResetView(SuccessMessageMixin, PasswordResetView):
                       'you’ve entered the address you registered with, and check your spam folder.'
 
 
+class PwdResetDoneView(PasswordResetDoneView):
+    title = 'Special Recipe | Reset sent'
+    template_name = 'accounts/password/password_reset_done.html'
+
+
 class PwdResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView):
+    title = 'Special Recipe | New password creation'
     template_name = 'accounts/password/password_reset_confirm.html'
     form_class = SetPwdForm
     success_url = reverse_lazy('accounts:password_reset_complete')
     success_message = 'Your password has been set. You can now sign into your account with the new password.'
+
+
+class PwdResetCompleteView(PasswordResetCompleteView):
+    title = 'Special Recipe | Reset complete'
+    template_name = 'accounts/password/password_reset_complete.html'

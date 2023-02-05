@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import (LogoutView, PasswordResetCompleteView,
-                                       PasswordResetDoneView)
+from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from accounts.decorators import logout_required
-from accounts.views import (EmailVerificationView, SendVerificationEmailView,
-                            UserLoginView, PwdResetConfirmView,
-                            PwdResetView, UserProfileView,
+from accounts.views import (EmailVerificationView, PwdResetCompleteView,
+                            PwdResetConfirmView, PwdResetDoneView,
+                            PwdResetView, SendVerificationEmailView,
+                            UserLoginView, UserProfileView,
                             UserRegistrationView)
 
 app_name = 'accounts'
@@ -23,17 +23,11 @@ urlpatterns = [
     ),
     path('verify/<str:email>/<uuid:code>/', login_required(EmailVerificationView.as_view()), name='email-verification'),
     path('password_reset/', logout_required(PwdResetView.as_view()), name='reset_password'),
-    path(
-        'password_reset/done/',
-        logout_required(PasswordResetDoneView.as_view(template_name='accounts/password/password_reset_done.html')),
-        name='password_reset_done'
-    ),
+    path('password_reset/done/', logout_required(PwdResetDoneView.as_view()), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', logout_required(PwdResetConfirmView.as_view()), name='password_reset_confirm'),
     path(
         'reset/done/',
-        logout_required(
-            PasswordResetCompleteView.as_view(template_name='accounts/password/password_reset_complete.html')
-        ),
+        logout_required(PwdResetCompleteView.as_view(template_name='accounts/password/password_reset_complete.html')),
         name='password_reset_complete'
     ),
 ]
