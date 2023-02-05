@@ -16,7 +16,7 @@
           {% if messages %}
             {% for message in messages %}
               <div class="alert alert-{{ message.tags }}" role="alert">
-                  {{ message }}
+                {{ message }}
               </div>
             {% endfor %}
           {% endif %}
@@ -36,7 +36,9 @@
               </label>
             </div>
             <div>
-              <a href="#" class="link-secondary text-decoration-none">Forgot password</a>
+              <a href="{% url 'accounts:reset_password' %}" class="link-secondary text-decoration-none">
+                Forgot password ?
+              </a>
             </div>
           </div>
           <div class="text-center">
