@@ -18,6 +18,8 @@ from accounts.forms import (PwdResetForm, SetPwdForm, UserLoginForm,
                             UserProfileForm, UserRegistrationForm)
 from accounts.models import EmailVerification, User
 
+from humanize import naturaldelta
+
 
 class UserRegistrationView(SuccessMessageMixin, CreateView):
     model = User
@@ -81,11 +83,12 @@ class SendVerificationEmailView(TemplateView):
         user = get_object_or_404(User, email=email)
         if user != request.user:
             raise PermissionDenied
-        valid_verifications = EmailVerification.objects.filter(user=user, expiration__gt=now())
+        valid_verifications = EmailVerification.objects.filter(user=user, expiration__gt=now()).order_by('-created')
         if user.is_verified:
             messages.warning(request, 'You have already verified your email.')
-        elif valid_verifications:
-            messages.warning(request, 'The last sent email has not expired yet, use it to verify your email address.')
+        elif valid_verifications.exists() and valid_verifications.first().created + timedelta(minutes=1) > now():
+            seconds_left = naturaldelta(valid_verifications.first().created + timedelta(minutes=1) - now())
+            messages.warning(request, f'Please wait {seconds_left} to resend the confirmation email.')
         else:
             expiration = now() + timedelta(hours=48)
             verification = EmailVerification.objects.create(code=uuid4(), user=user, expiration=expiration)
