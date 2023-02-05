@@ -2,7 +2,8 @@ from datetime import timedelta
 from uuid import uuid4
 
 from django.contrib import messages
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import (LoginView, PasswordResetConfirmView,
+                                       PasswordResetView)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -10,7 +11,8 @@ from django.utils.timezone import now
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 
-from accounts.forms import UserLoginForm, UserProfileForm, UserRegistrationForm
+from accounts.forms import (PwdResetForm, SetPwdForm, UserLoginForm,
+                            UserProfileForm, UserRegistrationForm)
 from accounts.models import EmailVerification, User
 
 
@@ -66,8 +68,8 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
         context = super().get_context_data()
         context['title'] = f'Special Recipe | {self.object.username}\'s profile'
         return context
-    
-    
+
+
 class SendVerificationEmailView(TemplateView):
     template_name = 'accounts/email_verification/sending_information.html'
 
@@ -116,3 +118,19 @@ class EmailVerificationView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Email verification'
         return context
+
+
+class PwdResetView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'accounts/password/reset_password.html'
+    form_class = PwdResetForm
+    success_url = reverse_lazy('accounts:password_reset_done')
+    success_message = 'We’ve emailed you instructions for setting your password, if an account exists with the email ' \
+                      'you entered. You should receive them shortly. If you don’t receive an email, please make sure ' \
+                      'you’ve entered the address you registered with, and check your spam folder.'
+
+
+class PwdResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView):
+    template_name = 'accounts/password/password_reset_confirm.html'
+    form_class = SetPwdForm
+    success_url = reverse_lazy('accounts:password_reset_complete')
+    success_message = 'Your password has been set. You can now sign into your account with the new password.'
