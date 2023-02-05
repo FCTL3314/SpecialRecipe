@@ -8,6 +8,7 @@ from django.contrib.auth.views import (LoginView, PasswordResetCompleteView,
                                        PasswordResetView)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.views.generic.base import TemplateView
@@ -78,6 +79,8 @@ class SendVerificationEmailView(TemplateView):
     def get(self, request, *args, **kwargs):
         email = kwargs.get('email')
         user = get_object_or_404(User, email=email)
+        if user != request.user:
+            raise PermissionDenied
         valid_verifications = EmailVerification.objects.filter(user=user, expiration__gt=now())
         if user.is_verified:
             messages.warning(request, 'You have already verified your email.')
@@ -105,6 +108,8 @@ class EmailVerificationView(TemplateView):
         code = kwargs.get('code')
         email = kwargs.get('email')
         user = get_object_or_404(User, email=email)
+        if user != request.user:
+            raise PermissionDenied
         email_verification = get_object_or_404(EmailVerification, user=user, code=code)
         if user.is_verified:
             messages.warning(request, 'Your email has already been verified.')
