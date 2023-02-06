@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.views import (LoginView, PasswordResetCompleteView,
                                        PasswordResetConfirmView,
                                        PasswordResetDoneView,
-                                       PasswordResetView)
+                                       PasswordResetView, PasswordChangeView, PasswordChangeDoneView)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
@@ -15,7 +15,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 
 from accounts.forms import (PwdResetForm, SetPwdForm, UserLoginForm,
-                            UserProfileForm, UserRegistrationForm)
+                            UserProfileForm, UserRegistrationForm, PwdChangeForm)
 from accounts.models import EmailVerification, User
 
 from humanize import naturaldelta
@@ -130,6 +130,21 @@ class EmailVerificationView(TemplateView):
         return context
 
 
+class PwdChangeView(SuccessMessageMixin, PasswordChangeView):
+    title = 'Special Recipe | Password change'
+    template_name = 'accounts/password/password_change.html'
+    form_class = PwdChangeForm
+    success_url = reverse_lazy('password_change_done')
+    success_message = 'Your password has been successfully updated!'
+
+
+class PwdChangeDoneView(SuccessMessageMixin, PasswordChangeDoneView):
+    title = 'Special Recipe | Password changed'
+    template_name = 'accounts/password/password_change_done.html'
+    form_class = PwdChangeForm
+    success_message = 'The password has been updated and saved.'
+
+
 class PwdResetView(SuccessMessageMixin, PasswordResetView):
     title = 'Special Recipe | Password reset'
     template_name = 'accounts/password/reset_password.html'
@@ -146,11 +161,18 @@ class PwdResetDoneView(PasswordResetDoneView):
 
 
 class PwdResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView):
-    title = 'Special Recipe | New password creation'
     template_name = 'accounts/password/password_reset_confirm.html'
     form_class = SetPwdForm
     success_url = reverse_lazy('accounts:password_reset_complete')
     success_message = 'Your password has been set. You can now sign into your account with the new password.'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.validlink:
+            context['title'] = 'Special Recipe | New password creation'
+        else:
+            context['title'] = 'Special Recipe | Password reset unsuccessful'
+        return context
 
 
 class PwdResetCompleteView(PasswordResetCompleteView):
