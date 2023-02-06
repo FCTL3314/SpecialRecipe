@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import (AuthenticationForm, PasswordResetForm,
                                        SetPasswordForm, UserChangeForm,
-                                       UserCreationForm)
+                                       UserCreationForm, PasswordChangeForm)
 
 from accounts.models import User
 
@@ -75,6 +75,25 @@ class UserProfileForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'image')
+
+
+class PwdChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter your old password',
+    }))
+    new_password1 = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter your new password',
+    }))
+    new_password2 = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter new password confirmation',
+    }))
+
+    class Meta:
+        model = User
+        fields = ('old_password', 'new_password1', 'new_password2')
 
 
 class PwdResetForm(PasswordResetForm):
