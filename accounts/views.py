@@ -141,7 +141,7 @@ class PwdChangeView(SuccessMessageMixin, PasswordChangeView):
 
 
 class PwdChangeDoneView(PasswordChangeDoneView):
-    title = 'Special Recipe | Password changed'
+    title = 'Special Recipe | Password change'
     template_name = 'accounts/password/password_change_done.html'
     form_class = PwdChangeForm
 
@@ -157,7 +157,7 @@ class PwdResetView(SuccessMessageMixin, PasswordResetView):
 
 
 class PwdResetDoneView(PasswordResetDoneView):
-    title = 'Special Recipe | Reset sent'
+    title = 'Special Recipe | Password reset'
     template_name = 'accounts/password/password_reset_done.html'
 
 
@@ -169,13 +169,10 @@ class PwdResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.validlink:
-            context['title'] = 'Special Recipe | New password creation'
-        else:
-            context['title'] = 'Special Recipe | Password reset unsuccessful'
+        context['title'] = 'Special Recipe | Password reset'
         return context
 
 
 class PwdResetCompleteView(PasswordResetCompleteView):
-    title = 'Special Recipe | Reset complete'
+    title = 'Special Recipe | Password reset'
     template_name = 'accounts/password/password_reset_complete.html'
