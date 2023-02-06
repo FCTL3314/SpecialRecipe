@@ -7,7 +7,7 @@ from accounts.views import (EmailVerificationView, PwdResetCompleteView,
                             PwdResetConfirmView, PwdResetDoneView,
                             PwdResetView, SendVerificationEmailView,
                             UserLoginView, UserProfileView,
-                            UserRegistrationView)
+                            UserRegistrationView, PwdChangeView, PwdChangeDoneView)
 
 app_name = 'accounts'
 
@@ -22,6 +22,8 @@ urlpatterns = [
         name='send-verification-email'
     ),
     path('verify/<str:email>/<uuid:code>/', login_required(EmailVerificationView.as_view()), name='email-verification'),
+    path('password_change/', PwdChangeView.as_view(), name='password_change'),
+    path('password_change/done/', PwdChangeDoneView.as_view(), name='password_change_done'),
     path('password_reset/', logout_required(PwdResetView.as_view()), name='reset_password'),
     path('password_reset/done/', logout_required(PwdResetDoneView.as_view()), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', logout_required(PwdResetConfirmView.as_view()), name='password_reset_confirm'),
