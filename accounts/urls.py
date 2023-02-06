@@ -3,11 +3,12 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from accounts.decorators import logout_required
-from accounts.views import (EmailVerificationView, PwdResetCompleteView,
+from accounts.views import (EmailVerificationView, PwdChangeDoneView,
+                            PwdChangeView, PwdResetCompleteView,
                             PwdResetConfirmView, PwdResetDoneView,
                             PwdResetView, SendVerificationEmailView,
                             UserLoginView, UserProfileView,
-                            UserRegistrationView, PwdChangeView, PwdChangeDoneView)
+                            UserRegistrationView)
 
 app_name = 'accounts'
 

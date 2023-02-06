@@ -2,23 +2,25 @@ from datetime import timedelta
 from uuid import uuid4
 
 from django.contrib import messages
-from django.contrib.auth.views import (LoginView, PasswordResetCompleteView,
+from django.contrib.auth.views import (LoginView, PasswordChangeDoneView,
+                                       PasswordChangeView,
+                                       PasswordResetCompleteView,
                                        PasswordResetConfirmView,
                                        PasswordResetDoneView,
-                                       PasswordResetView, PasswordChangeView, PasswordChangeDoneView)
+                                       PasswordResetView)
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
-
-from accounts.forms import (PwdResetForm, SetPwdForm, UserLoginForm,
-                            UserProfileForm, UserRegistrationForm, PwdChangeForm)
-from accounts.models import EmailVerification, User
-
 from humanize import naturaldelta
+
+from accounts.forms import (PwdChangeForm, PwdResetForm, SetPwdForm,
+                            UserLoginForm, UserProfileForm,
+                            UserRegistrationForm)
+from accounts.models import EmailVerification, User
 
 
 class UserRegistrationView(SuccessMessageMixin, CreateView):
@@ -138,11 +140,10 @@ class PwdChangeView(SuccessMessageMixin, PasswordChangeView):
     success_message = 'Your password has been successfully updated!'
 
 
-class PwdChangeDoneView(SuccessMessageMixin, PasswordChangeDoneView):
+class PwdChangeDoneView(PasswordChangeDoneView):
     title = 'Special Recipe | Password changed'
     template_name = 'accounts/password/password_change_done.html'
     form_class = PwdChangeForm
-    success_message = 'The password has been updated and saved.'
 
 
 class PwdResetView(SuccessMessageMixin, PasswordResetView):
