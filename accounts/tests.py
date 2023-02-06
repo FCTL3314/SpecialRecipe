@@ -213,7 +213,9 @@ class SendVerificationEmailViewTestCase(TestCase):
         response = self.client.get(self.path)
 
         self._common_tests(response)
-        self.assertContains(response, f'We send an email to {self.user.email}.')
+        self.assertContains(response, f'You\'re almost there! We send an email to {self.user.email}. '
+                                      'Just click on the link in that email to complete your verification if '
+                                      'you don\'t see it, you may need to check your spam folder.', html=True)
 
         email_verification = EmailVerification.objects.filter(user=self.user)
 
