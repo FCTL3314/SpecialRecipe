@@ -78,7 +78,7 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
 
 
 class SendVerificationEmailView(TemplateView):
-    template_name = 'accounts/email/email_verification_sending_info.html'
+    template_name = 'accounts/email/email_verification_done.html'
 
     def get(self, request, *args, **kwargs):
         email = kwargs.get('email')
@@ -95,9 +95,6 @@ class SendVerificationEmailView(TemplateView):
             expiration = now() + timedelta(hours=48)
             verification = EmailVerification.objects.create(code=uuid4(), user=user, expiration=expiration)
             verification.send_verification_email()
-            messages.success(request, f'You\'re almost there! We send an email to {email}. '
-                                      'Just click on the link in that email to complete your verification if '
-                                      'you don\'t see it, you may need to check your spam folder.')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -121,7 +118,6 @@ class EmailVerificationView(TemplateView):
         elif not email_verification.is_expired():
             user.is_verified = True
             user.save()
-            messages.success(request, 'Your email address has been successfully verified.')
         else:
             messages.warning(request, 'The verification link has expired.')
         return super().get(request, *args, **kwargs)
