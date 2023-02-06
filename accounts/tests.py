@@ -437,19 +437,18 @@ class PwdResetConfirmViewTestCase(TestCase):
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
         self.assertTemplateUsed(response, 'accounts/password/password_reset_confirm.html')
 
     def test_view_get_valid_url(self):
         response = self.client.get(self.valid_path, follow=True)
 
         self._common_tests(response)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
 
     def test_view_get_invalid_url(self):
         response = self.client.get(self.invalid_path)
 
         self._common_tests(response)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
         self.assertContains(response, 'The password reset link was invalid, possibly because it has already been used. '
                                       'Please request a new password reset.', html=True)
 
