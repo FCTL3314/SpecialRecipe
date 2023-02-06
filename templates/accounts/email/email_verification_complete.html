@@ -4,21 +4,32 @@
 
 {% block content %}
   <div class="container bg-light min-vh-100">
-    <div class="row justify-content-center">
-      <div class="row col-md-10">
-        <div class="text-center mt-5">
-        <h2>Email verification</h2>
-        {% for message in messages %}
-          <h4 class="alert alert-{{ message.tags }}">{{ message }}</h4>
-        {% endfor %}
-        <h3>
-          Click
-          <a class="text-decoration-none" href="{% url 'accounts:profile' request.user.slug %}">
-            here
-          </a>
-          to return to your profile.
-        </h3>
-      </div>
+    <div class="row">
+      <div class="container bg-secondary-subtle rounded-4 mt-5 col-md-8 shadow-lg">
+        <div class="text-center mt-2">
+          <h1>Email verification</h1>
+        </div>
+        <hr>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-warning">
+              <h3>{{ message }}</h3>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="alert alert-success">
+            <h3>Your email address has been successfully verified.</h3>
+          </div>
+        {% endif %}
+        <hr>
+        <div class="text-center mb-4">
+          <h3>
+            Click
+            <a class="link link-secondary text-decoration-none"
+               href="{% url 'accounts:profile' user.slug %}">here</a>
+            to go back to your profile.
+          </h3>
+        </div>
       </div>
     </div>
   </div>
