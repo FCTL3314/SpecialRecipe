@@ -17,13 +17,13 @@ from accounts.models import EmailVerification, User
 class UserRegistrationViewTestCase(TestCase):
 
     def setUp(self):
-        self.path = reverse('accounts:registration')
         self.data = {
             'username': 'TestUser',
             'email': 'testuser@mail.com',
             'password1': 'qnjCmk27yzKTCWWiwdYH',
             'password2': 'qnjCmk27yzKTCWWiwdYH',
         }
+        self.path = reverse('accounts:registration')
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -98,7 +98,6 @@ class UserRegistrationViewTestCase(TestCase):
 class UserLoginViewTestCase(TestCase):
 
     def setUp(self):
-        self.path = reverse('accounts:login')
         self.data = {
             'username': 'TestUser',
             'password': 'qnjCmk27yzKTCWWiwdYH',
@@ -108,6 +107,7 @@ class UserLoginViewTestCase(TestCase):
             email='testuser@mail.com',
             password=self.data['password']
         )
+        self.path = reverse('accounts:login')
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -196,12 +196,15 @@ class UserLoginViewTestCase(TestCase):
 class SendVerificationEmailViewTestCase(TestCase):
 
     def setUp(self):
+        username = 'TestUser'
+        email = 'testuser@mail.com'
+        password = 'qnjCmk27yzKTCWWiwdYH'
         self.user = User.objects.create_user(
-            username='TestUser',
-            email='testuser@mail.com',
-            password='qnjCmk27yzKTCWWiwdYH',
+            username=username,
+            email=email,
+            password=password,
         )
-        self.client.login(username='TestUser', email='testuser@mail.com', password='qnjCmk27yzKTCWWiwdYH')
+        self.client.login(username=username, email=email, password=password)
         self.path = reverse('accounts:send-verification-email', args={self.user.email})
 
     def _common_tests(self, response):
@@ -250,14 +253,17 @@ class SendVerificationEmailViewTestCase(TestCase):
 class EmailVerificationViewTestCase(TestCase):
 
     def setUp(self):
+        username = 'TestUser'
+        email = 'testuser@mail.com'
+        password = 'qnjCmk27yzKTCWWiwdYH'
         self.user = User.objects.create_user(
-            username='TestUser',
-            email='testuser@mail.com',
-            password='qnjCmk27yzKTCWWiwdYH',
+            username=username,
+            email=email,
+            password=password,
         )
+        self.client.login(username=username, email=email, password=password)
         expiration = now() + timedelta(hours=48)
         self.email_verification = EmailVerification.objects.create(code=uuid4(), user=self.user, expiration=expiration)
-        self.client.login(username='TestUser', email='testuser@mail.com', password='qnjCmk27yzKTCWWiwdYH')
         self.path = reverse(
             'accounts:email-verification',
             kwargs={'email': self.user.email, 'code': self.email_verification.code}
@@ -300,19 +306,21 @@ class EmailVerificationViewTestCase(TestCase):
 class UserProfileViewTestCase(TestCase):
 
     def setUp(self):
+        username = 'TestUser'
+        email = 'testuser@mail.com'
+        self.password = 'qnjCmk27yzKTCWWiwdYH'
         self.data = {
             'username': 'TestUserUpdated',
             'first_name': 'Test',
             'last_name': 'User',
             'email': 'testuserupdated@mail.com',
         }
-        self.password = 'qnjCmk27yzKTCWWiwdYH'
         self.user = User.objects.create_user(
-            username='TestUser',
-            email='testuser@mail.com',
-            password='qnjCmk27yzKTCWWiwdYH',
+            username=username,
+            email=email,
+            password=self.password,
         )
-        self.client.login(username='TestUser', email='testuser@mail.com', password=self.password)
+        self.client.login(username=username, email=email, password=self.password)
         self.path = reverse('accounts:profile', args={self.user.slug})
 
     def _common_tests(self, response, user):
@@ -394,7 +402,7 @@ class PwdResetDoneViewTestCase(TestCase):
         response = self.client.get(self.path)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Reset sent')
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
         self.assertTemplateUsed(response, 'accounts/password/password_reset_done.html')
 
 
@@ -419,13 +427,13 @@ class PwdResetConfirmViewTestCase(TestCase):
         response = self.client.get(self.valid_path, follow=True)
 
         self._common_tests(response)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | New password creation')
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
 
     def test_view_get_invalid_url(self):
         response = self.client.get(self.invalid_path)
 
         self._common_tests(response)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset unsuccessful')
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
         self.assertContains(response, 'The password reset link was invalid, possibly because it has already been used. '
                                       'Please request a new password reset.', html=True)
 
@@ -439,5 +447,61 @@ class PwdResetCompleteViewTestCase(TestCase):
         response = self.client.get(self.path)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Reset complete')
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
         self.assertTemplateUsed(response, 'accounts/password/password_reset_complete.html')
+
+
+class PwdChangeViewTestCase(TestCase):
+
+    def setUp(self):
+        username = 'TestUser'
+        email = 'testuser@mail.com'
+        password = 'qnjCmk27yzKTCWWiwdYH'
+        new_password = 'I2l^91VxMD!y'
+        self.data = {
+            'old_password': password,
+            'new_password1': new_password,
+            'new_password2': new_password,
+        }
+        self.user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+        )
+        self.client.login(username=username, email=email, password=password)
+        self.path = reverse('accounts:password_change')
+
+    def test_view_get(self):
+        response = self.client.get(self.path)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Password change')
+        self.assertTemplateUsed(response, 'accounts/password/password_change.html')
+
+    def test_view_post(self):
+        response = self.client.post(self.path, self.data)
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(response, reverse('accounts:password_change_done'))
+
+
+class PwdChangeDoneViewTestCase(TestCase):
+
+    def setUp(self):
+        username = 'TestUser'
+        email = 'testuser@mail.com'
+        password = 'qnjCmk27yzKTCWWiwdYH'
+        self.user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+        )
+        self.client.login(username=username, email=email, password=password)
+        self.path = reverse('accounts:password_change_done')
+
+    def test_view_get(self):
+        response = self.client.get(self.path)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Password change')
+        self.assertTemplateUsed(response, 'accounts/password/password_change_done.html')
