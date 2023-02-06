@@ -91,6 +91,16 @@ class PwdChangeForm(PasswordChangeForm):
         'placeholder': 'Enter new password confirmation',
     }))
 
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(user, *args, **kwargs)
+
+    def clean_new_password2(self):
+        new_password = self.cleaned_data['new_password1']
+        if self.user.check_password(new_password):
+            raise forms.ValidationError('The new password must be different from the old one.')
+        return super().clean_new_password2()
+
     class Meta:
         model = User
         fields = ('old_password', 'new_password1', 'new_password2')
@@ -116,6 +126,16 @@ class SetPwdForm(SetPasswordForm):
         'class': 'form-control',
         'placeholder': 'Confirm new password',
     }))
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(user, *args, **kwargs)
+
+    def clean_new_password2(self):
+        new_password = self.cleaned_data['new_password1']
+        if self.user.check_password(new_password):
+            raise forms.ValidationError('The new password must be different from the old one.')
+        return super().clean_new_password2()
 
     class Meta:
         model = User
