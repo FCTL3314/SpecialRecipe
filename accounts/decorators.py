@@ -14,6 +14,6 @@ def logout_required(function, redirect_url='accounts:profile'):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return function(request, *args, **kwargs)
-        return HttpResponseRedirect(reverse(redirect_url, args={request.user.id}))
+        return HttpResponseRedirect(reverse(redirect_url, args={request.user.slug}))
 
     return wrapper
