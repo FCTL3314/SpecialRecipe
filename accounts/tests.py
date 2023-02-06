@@ -2,14 +2,16 @@ from datetime import timedelta
 from http import HTTPStatus
 from uuid import uuid4
 
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.staticfiles.finders import find
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from django.utils.timezone import now
+from humanize import naturaldelta
 
 from accounts.models import EmailVerification, User
-
-from humanize import naturaldelta
 
 
 class UserRegistrationViewTestCase(TestCase):
@@ -361,3 +363,81 @@ class UserProfileViewTestCase(TestCase):
         self._common_tests(response, self.user)
         self.assertTrue(User.objects.filter(username=username, email=email))
         self.assertContains(response, 'A user with that username already exists.')
+
+
+class PwdResetViewTestCase(TestCase):
+
+    def setUp(self):
+        self.data = {'email': 'testuser@mail.com'}
+        self.path = reverse('accounts:reset_password')
+
+    def test_view_get(self):
+        response = self.client.get(self.path)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
+        self.assertTemplateUsed(response, 'accounts/password/reset_password.html')
+
+    def test_view_post(self):
+        response = self.client.post(self.path, self.data)
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(response, reverse('accounts:password_reset_done'))
+
+
+class PwdResetDoneViewTestCase(TestCase):
+    def setUp(self):
+        self.path = reverse('accounts:password_reset_done')
+        self.follow_path = reverse('accounts:reset_password')
+
+    def test_view_get(self):
+        response = self.client.get(self.path)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Reset sent')
+        self.assertTemplateUsed(response, 'accounts/password/password_reset_done.html')
+
+
+class PwdResetConfirmViewTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='TestUser',
+            email='testuser@mail.com',
+            password='qnjCmk27yzKTCWWiwdYH',
+        )
+        uidb64 = urlsafe_base64_encode(force_bytes(self.user.id))
+        token = PasswordResetTokenGenerator().make_token(self.user)
+        self.valid_path = reverse('accounts:password_reset_confirm', kwargs={'uidb64': uidb64, 'token': token})
+        self.invalid_path = reverse('accounts:password_reset_confirm', kwargs={'uidb64': 'invalid', 'token': 'invalid'})
+
+    def _common_tests(self, response):
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, 'accounts/password/password_reset_confirm.html')
+
+    def test_view_get_valid_url(self):
+        response = self.client.get(self.valid_path, follow=True)
+
+        self._common_tests(response)
+        self.assertEqual(response.context_data['title'], 'Special Recipe | New password creation')
+
+    def test_view_get_invalid_url(self):
+        response = self.client.get(self.invalid_path)
+
+        self._common_tests(response)
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset unsuccessful')
+        self.assertContains(response, 'The password reset link was invalid, possibly because it has already been used. '
+                                      'Please request a new password reset.', html=True)
+
+
+class PwdResetCompleteViewTestCase(TestCase):
+
+    def setUp(self):
+        self.path = reverse('accounts:password_reset_complete')
+
+    def test_view_get(self):
+        response = self.client.get(self.path)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Reset complete')
+        self.assertTemplateUsed(response, 'accounts/password/password_reset_complete.html')
