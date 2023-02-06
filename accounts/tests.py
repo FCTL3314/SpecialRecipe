@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.staticfiles.finders import find
+from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.encoding import force_bytes
@@ -214,6 +215,7 @@ class SendVerificationEmailViewTestCase(TestCase):
 
     def test_view_success(self):
         self.assertFalse(EmailVerification.objects.filter(user=self.user))
+        self.assertFalse(mail.outbox)
 
         response = self.client.get(self.path)
 
@@ -226,6 +228,7 @@ class SendVerificationEmailViewTestCase(TestCase):
 
         self.assertTrue(email_verification)
         self.assertEqual(email_verification.first().expiration.date(), (now() + timedelta(hours=48)).date())
+        self.assertTrue(mail.outbox)
 
     def test_view_previous_email_not_expired(self):
         expiration = now() + timedelta(hours=48)
@@ -239,6 +242,7 @@ class SendVerificationEmailViewTestCase(TestCase):
 
         seconds_left = naturaldelta(verification.created + timedelta(minutes=1) - now())
         self.assertContains(response, f'Please wait {seconds_left} to resend the confirmation email.')
+        self.assertFalse(mail.outbox)
 
     def test_view_user_already_verified(self):
         self.user.is_verified = True
@@ -248,6 +252,7 @@ class SendVerificationEmailViewTestCase(TestCase):
 
         self._common_tests(response)
         self.assertContains(response, f'You have already verified your email.')
+        self.assertFalse(mail.outbox)
 
 
 class EmailVerificationViewTestCase(TestCase):
@@ -376,7 +381,15 @@ class UserProfileViewTestCase(TestCase):
 class PwdResetViewTestCase(TestCase):
 
     def setUp(self):
-        self.data = {'email': 'testuser@mail.com'}
+        username = 'TestUser'
+        email = 'testuser@mail.com'
+        password = 'qnjCmk27yzKTCWWiwdYH'
+        self.data = {'email': email}
+        self.user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+        )
         self.path = reverse('accounts:reset_password')
 
     def test_view_get(self):
@@ -387,10 +400,13 @@ class PwdResetViewTestCase(TestCase):
         self.assertTemplateUsed(response, 'accounts/password/reset_password.html')
 
     def test_view_post(self):
+        self.assertFalse(mail.outbox)
+
         response = self.client.post(self.path, self.data)
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertRedirects(response, reverse('accounts:password_reset_done'))
+        self.assertTrue(mail.outbox)
 
 
 class PwdResetDoneViewTestCase(TestCase):
