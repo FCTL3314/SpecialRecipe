@@ -63,14 +63,21 @@ class UserProfileForm(UserChangeForm):
         'placeholder': 'Miller',
     }))
     email = forms.CharField(widget=forms.EmailInput(attrs={
-        'class': 'form-control bg-body-secondary',
-        'readonly': True,
+        'class': 'form-control',
     }))
     image = forms.ImageField(required=False, widget=forms.FileInput(attrs={
         'class': 'form-control',
         'type': 'file',
         'aria-label': 'Upload',
     }))
+
+    def save(self, commit=True):
+        old_email = self.initial.get('email')
+        new_email = self.cleaned_data.get('email')
+        if old_email != new_email:
+            self.instance.is_verified = False
+            self.instance.save()
+        return super().save(commit=True)
 
     class Meta:
         model = User
