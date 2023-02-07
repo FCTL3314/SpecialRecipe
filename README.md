@@ -8,6 +8,15 @@ as well as email confirmation.
 
 > ***The project was created for educational purposes.***
 
+# 🔥 Features
+
+* User profile
+* Registration / Authorization
+* Recipe markdown editing
+* Keyword search
+* Search by category
+* Bookmarks / Saves
+
 # ❕ Peculiarities
 
 * It is desirable that the images of the recipes be in the resolution of **1920x1200**.
@@ -25,19 +34,31 @@ as well as email confirmation.
 # 🌄 Images
 * **Recipes page**
 
-![firefox_g6vYxnmsqp](https://user-images.githubusercontent.com/97694131/214376291-e9e04db8-4811-4df8-b653-961204ac0dc3.jpg)
+![firefox_lO4OXAkeuP](https://user-images.githubusercontent.com/97694131/217355750-9c15d834-be50-480b-afc1-fd91b1de81bc.jpg)
 <hr>
 
-* **Recipe description page**
+* **Recipe description pages**
 
-![firefox_fQAXfHFMcj](https://user-images.githubusercontent.com/97694131/214378588-c2a69053-484e-42fc-ad4e-8f07dbf69d72.png)
+![firefox_C8ubXaM9ak](https://user-images.githubusercontent.com/97694131/217356003-aef46fb4-d86e-4726-85b8-2fee3ff92f67.png)
+![firefox_4poCeIv3eT](https://user-images.githubusercontent.com/97694131/217356024-c4a36ad9-637f-4d51-89ef-948ec6bbd24a.png)
+<hr>
+
+![firefox_46ITAmHec0](https://user-images.githubusercontent.com/97694131/217356246-e6b8b9cb-520d-42e1-a39f-68a6f1da8ccf.png)
+![firefox_QdyGI78jgt](https://user-images.githubusercontent.com/97694131/217356317-145cddd9-5bbb-4a9b-8b6c-cd4f017e607d.png)
 <hr>
 
 * **Saved recipes page**
 
-![firefox_nZWyrZ3lHl](https://user-images.githubusercontent.com/97694131/214376487-221f10ab-1598-46b8-84e3-7a8eafb8ca07.png)
+![firefox_BheSysFOWc](https://user-images.githubusercontent.com/97694131/217356592-f160fed0-7031-4d1e-a683-7a253d87e6c3.png)
 <hr>
 
-* **Profile page**
+* **Profile pages**
 
-![firefox_32tpg4TuAE](https://user-images.githubusercontent.com/97694131/214376493-2ea7828f-e550-4f08-873b-479da3e2b30e.png)
+![firefox_5lnp05Ypik](https://user-images.githubusercontent.com/97694131/217356708-abe557f9-d7ce-468d-9a50-41dd33de04d5.png)
+![firefox_odhtmwh6Sb](https://user-images.githubusercontent.com/97694131/217356721-54fa7144-e389-408a-b759-bfb22c912fc6.png)
+<hr>
+
+* **Authentication pages**
+
+![firefox_krstXnMHwi](https://user-images.githubusercontent.com/97694131/217356898-79659c57-a43a-459f-a727-1809f6c9428a.png)
+![firefox_a5rU6k7cej](https://user-images.githubusercontent.com/97694131/217356909-27cea54d-3238-411c-ac0e-7050f8550819.png)
