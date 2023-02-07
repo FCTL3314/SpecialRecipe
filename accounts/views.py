@@ -2,12 +2,7 @@ from datetime import timedelta
 from uuid import uuid4
 
 from django.contrib import messages
-from django.contrib.auth.views import (LoginView, PasswordChangeDoneView,
-                                       PasswordChangeView,
-                                       PasswordResetCompleteView,
-                                       PasswordResetConfirmView,
-                                       PasswordResetDoneView,
-                                       PasswordResetView)
+from django.contrib.auth import views as auth_views
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -17,15 +12,13 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from humanize import naturaldelta
 
-from accounts.forms import (PwdChangeForm, PwdResetForm, SetPwdForm,
-                            UserLoginForm, UserProfileForm,
-                            UserRegistrationForm)
+from accounts import forms as account_forms
 from accounts.models import EmailVerification, User
 
 
 class UserRegistrationView(SuccessMessageMixin, CreateView):
     model = User
-    form_class = UserRegistrationForm
+    form_class = account_forms.UserRegistrationForm
     template_name = 'accounts/registration.html'
     success_message = 'You have successfully registered!'
     success_url = reverse_lazy('accounts:login')
@@ -36,8 +29,8 @@ class UserRegistrationView(SuccessMessageMixin, CreateView):
         return context
 
 
-class UserLoginView(LoginView):
-    form_class = UserLoginForm
+class UserLoginView(auth_views.LoginView):
+    form_class = account_forms.UserLoginForm
     template_name = 'accounts/login.html'
     success_url = reverse_lazy('recipe:recipes')
 
@@ -60,9 +53,9 @@ class UserLoginView(LoginView):
 
 class UserProfileView(SuccessMessageMixin, UpdateView):
     model = User
-    form_class = UserProfileForm
+    form_class = account_forms.UserProfileForm
     success_message = 'Profile updated successfully!'
-    template_name = 'accounts/profile.html'
+    template_name = 'accounts/profile/profile.html'
 
     def get_success_url(self):
         return reverse_lazy('accounts:profile', args={self.object.slug})
@@ -73,8 +66,18 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['title'] = f'Special Recipe | {self.object.username}\'s profile'
+        context['title'] = f'Special Recipe | Profile - Account'
         return context
+
+
+class UserProfilePasswordView(SuccessMessageMixin, auth_views.PasswordChangeView):
+    template_name = 'accounts/profile/profile_password.html'
+    title = 'Special Recipe | Profile - Password'
+    form_class = account_forms.PwdChangeForm
+    success_message = 'Your password has been successfully updated!'
+
+    def get_success_url(self):
+        return reverse_lazy('accounts:profile-password', args={self.request.user.slug})
 
 
 class SendVerificationEmailView(TemplateView):
@@ -128,47 +131,24 @@ class EmailVerificationView(TemplateView):
         return context
 
 
-class PwdChangeView(SuccessMessageMixin, PasswordChangeView):
-    title = 'Special Recipe | Password change'
-    template_name = 'accounts/password/password_change.html'
-    form_class = PwdChangeForm
-    success_url = reverse_lazy('password_change_done')
-    success_message = 'Your password has been successfully updated!'
-
-
-class PwdChangeDoneView(PasswordChangeDoneView):
-    title = 'Special Recipe | Password change'
-    template_name = 'accounts/password/password_change_done.html'
-    form_class = PwdChangeForm
-
-
-class PwdResetView(SuccessMessageMixin, PasswordResetView):
+class PwdResetView(SuccessMessageMixin, auth_views.PasswordResetView):
     title = 'Special Recipe | Password reset'
     template_name = 'accounts/password/reset_password.html'
-    form_class = PwdResetForm
-    success_url = reverse_lazy('accounts:password_reset_done')
+    email_template_name = 'accounts/password/password_reset_email.html'
+    form_class = account_forms.PwdResetForm
+    success_url = reverse_lazy('accounts:reset_password')
     success_message = 'We’ve emailed you instructions for setting your password, if an account exists with the email ' \
                       'you entered. You should receive them shortly. If you don’t receive an email, please make sure ' \
                       'you’ve entered the address you registered with, and check your spam folder.'
 
 
-class PwdResetDoneView(PasswordResetDoneView):
-    title = 'Special Recipe | Password reset'
-    template_name = 'accounts/password/password_reset_done.html'
-
-
-class PwdResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView):
+class PwdResetConfirmView(SuccessMessageMixin, auth_views.PasswordResetConfirmView):
     template_name = 'accounts/password/password_reset_confirm.html'
-    form_class = SetPwdForm
-    success_url = reverse_lazy('accounts:password_reset_complete')
+    form_class = account_forms.SetPwdForm
+    success_url = reverse_lazy('accounts:login')
     success_message = 'Your password has been set. You can now sign into your account with the new password.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Special Recipe | Password reset'
         return context
-
-
-class PwdResetCompleteView(PasswordResetCompleteView):
-    title = 'Special Recipe | Password reset'
-    template_name = 'accounts/password/password_reset_complete.html'
