@@ -4,7 +4,7 @@
 Recipe search is presented by categories and keyword search, but users can also simply browse through 
 all available recipes.
 The site provides the ability to create / edit an account, change or reset the password if it has been lost, 
-as well as email confirmation.
+as well as email verification.
 
 > ***The project was created for educational purposes.***
 
@@ -19,7 +19,6 @@ as well as email confirmation.
 
 # ❕ Peculiarities
 
-* It is desirable that the images of the recipes be in the resolution of **1920x1200**.
 * For correct display, **at least 3 recipes must be created** regardless of the category.
 
 # 📜 Requirements
