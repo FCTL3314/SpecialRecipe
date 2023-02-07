@@ -71,7 +71,7 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
 
 
 class UserProfilePasswordView(SuccessMessageMixin, auth_views.PasswordChangeView):
-    template_name = 'accounts/profile/profile_password.html'
+    template_name = 'accounts/profile/profile.html'
     title = 'Special Recipe | Profile - Password'
     form_class = account_forms.PwdChangeForm
     success_message = 'Your password has been successfully updated!'

@@ -403,7 +403,7 @@ class UserProfilePasswordViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context_data['title'], 'Special Recipe | Profile - Password')
-        self.assertTemplateUsed(response, 'accounts/profile/profile_password.html')
+        self.assertTemplateUsed(response, 'accounts/profile/profile.html')
 
     def test_view_post(self):
         response = self.client.post(self.path, self.data)

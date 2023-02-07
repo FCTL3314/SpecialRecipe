@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from accounts.decorators import logout_required
 from accounts import views as account_view
+from accounts.decorators import logout_required
 
 app_name = 'accounts'
 
