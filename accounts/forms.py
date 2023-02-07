@@ -103,8 +103,9 @@ class PwdChangeForm(PasswordChangeForm):
         super().__init__(user, *args, **kwargs)
 
     def clean_new_password2(self):
-        new_password = self.cleaned_data['new_password1']
-        if self.user.check_password(new_password):
+        new_password1 = self.cleaned_data['new_password1']
+        new_password2 = self.cleaned_data['new_password2']
+        if new_password1 == new_password2 and self.user.check_password(new_password2):
             raise forms.ValidationError('The new password must be different from the old one.')
         return super().clean_new_password2()
 
