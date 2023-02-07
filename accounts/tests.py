@@ -328,15 +328,15 @@ class UserProfileViewTestCase(TestCase):
         self.client.login(username=username, email=email, password=self.password)
         self.path = reverse('accounts:profile', args={self.user.slug})
 
-    def _common_tests(self, response, user):
+    def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], f'Special Recipe | {user.username}\'s profile')
-        self.assertTemplateUsed(response, 'accounts/profile.html')
+        self.assertEqual(response.context_data['title'], f'Special Recipe | Profile - Account')
+        self.assertTemplateUsed(response, 'accounts/profile/profile.html')
 
     def test_view_get(self):
         response = self.client.get(self.path)
 
-        self._common_tests(response, self.user)
+        self._common_tests(response)
 
     def test_view_post_success(self):
         self.assertEqual(self.user.username, 'TestUser')
@@ -350,7 +350,7 @@ class UserProfileViewTestCase(TestCase):
             response = self.client.post(self.path, self.data, follow=True)
 
         self.user.refresh_from_db()
-        self._common_tests(response, self.user)
+        self._common_tests(response)
         self.assertEqual(self.user.username, 'TestUserUpdated')
         self.assertEqual(self.user.first_name, 'Test')
         self.assertEqual(self.user.last_name, 'User')
@@ -373,9 +373,43 @@ class UserProfileViewTestCase(TestCase):
         response = self.client.post(self.path, username_taken_data, follow=True)
 
         self.user.refresh_from_db()
-        self._common_tests(response, self.user)
+        self._common_tests(response)
         self.assertTrue(User.objects.filter(username=username, email=email))
         self.assertContains(response, 'A user with that username already exists.')
+
+
+class UserProfilePasswordViewTestCase(TestCase):
+
+    def setUp(self):
+        username = 'TestUser'
+        email = 'testuser@mail.com'
+        password = 'qnjCmk27yzKTCWWiwdYH'
+        new_password = 'I2l^91VxMD!y'
+        self.data = {
+            'old_password': password,
+            'new_password1': new_password,
+            'new_password2': new_password,
+        }
+        self.user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+        )
+        self.client.login(username=username, email=email, password=password)
+        self.path = reverse('accounts:profile-password', args={self.user.slug})
+
+    def test_view_get(self):
+        response = self.client.get(self.path)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context_data['title'], 'Special Recipe | Profile - Password')
+        self.assertTemplateUsed(response, 'accounts/profile/profile_password.html')
+
+    def test_view_post(self):
+        response = self.client.post(self.path, self.data)
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(response, self.path)
 
 
 class PwdResetViewTestCase(TestCase):
@@ -405,21 +439,8 @@ class PwdResetViewTestCase(TestCase):
         response = self.client.post(self.path, self.data)
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('accounts:password_reset_done'))
+        self.assertRedirects(response, self.path)
         self.assertTrue(mail.outbox)
-
-
-class PwdResetDoneViewTestCase(TestCase):
-    def setUp(self):
-        self.path = reverse('accounts:password_reset_done')
-        self.follow_path = reverse('accounts:reset_password')
-
-    def test_view_get(self):
-        response = self.client.get(self.path)
-
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
-        self.assertTemplateUsed(response, 'accounts/password/password_reset_done.html')
 
 
 class PwdResetConfirmViewTestCase(TestCase):
@@ -451,72 +472,3 @@ class PwdResetConfirmViewTestCase(TestCase):
         self._common_tests(response)
         self.assertContains(response, 'The password reset link was invalid, possibly because it has already been used. '
                                       'Please request a new password reset.', html=True)
-
-
-class PwdResetCompleteViewTestCase(TestCase):
-
-    def setUp(self):
-        self.path = reverse('accounts:password_reset_complete')
-
-    def test_view_get(self):
-        response = self.client.get(self.path)
-
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
-        self.assertTemplateUsed(response, 'accounts/password/password_reset_complete.html')
-
-
-class PwdChangeViewTestCase(TestCase):
-
-    def setUp(self):
-        username = 'TestUser'
-        email = 'testuser@mail.com'
-        password = 'qnjCmk27yzKTCWWiwdYH'
-        new_password = 'I2l^91VxMD!y'
-        self.data = {
-            'old_password': password,
-            'new_password1': new_password,
-            'new_password2': new_password,
-        }
-        self.user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password,
-        )
-        self.client.login(username=username, email=email, password=password)
-        self.path = reverse('accounts:password_change')
-
-    def test_view_get(self):
-        response = self.client.get(self.path)
-
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Password change')
-        self.assertTemplateUsed(response, 'accounts/password/password_change.html')
-
-    def test_view_post(self):
-        response = self.client.post(self.path, self.data)
-
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('accounts:password_change_done'))
-
-
-class PwdChangeDoneViewTestCase(TestCase):
-
-    def setUp(self):
-        username = 'TestUser'
-        email = 'testuser@mail.com'
-        password = 'qnjCmk27yzKTCWWiwdYH'
-        self.user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password,
-        )
-        self.client.login(username=username, email=email, password=password)
-        self.path = reverse('accounts:password_change_done')
-
-    def test_view_get(self):
-        response = self.client.get(self.path)
-
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Password change')
-        self.assertTemplateUsed(response, 'accounts/password/password_change_done.html')
