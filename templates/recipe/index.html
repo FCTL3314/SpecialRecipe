@@ -72,14 +72,14 @@
                     <img src="{{ recipe.image.url }}" class="card-img-top"
                          alt="recipe_img">
                   </a>
-                  <div class="card-body">
+                  <div class="card-body d-flex flex-column">
                     <a class="link-dark text-decoration-none"
                        href="{% url 'recipe:description' recipe.slug %}">
                       <h5 class="card-title">{{ recipe.name }}</h5>
                     </a>
                     <p class="card-text">{{ recipe.description }}</p>
                     {% if recipe in user_saves %}
-                      <a type="button" class="link-warning text-decoration-none"
+                      <a type="button" class="link-warning text-decoration-none mt-auto"
                          href="{% url 'recipe:remove-from-saved' recipe.id %}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                              fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
@@ -90,7 +90,7 @@
                         {{ recipe.total_saves }} Saves
                       </a>
                     {% else %}
-                      <a type="button" class="link-warning text-decoration-none"
+                      <a type="button" class="link-warning text-decoration-none mt-auto"
                          href="{% url 'recipe:add-to-saved' recipe.id %}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                              fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
