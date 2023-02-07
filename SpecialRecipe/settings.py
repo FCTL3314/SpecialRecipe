@@ -33,6 +33,7 @@ env = environ.Env(
     EMAIL_HOST_USER=str,
     EMAIL_HOST_PASSWORD=str,
     EMAIL_USE_SSL=bool,
+    RECIPES_PAGINATE_BY=int,
 )
 
 # Take environment variables from .env file.
@@ -202,3 +203,7 @@ else:
     EMAIL_HOST_USER = env('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
     EMAIL_USE_SSL = env('EMAIL_USE_SSL')
+
+# Recipes
+
+RECIPES_PAGINATE_BY = env('RECIPES_PAGINATE_BY')

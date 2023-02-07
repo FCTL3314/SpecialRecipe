@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
@@ -14,7 +15,7 @@ class RecipesListView(ListView):
     template_name = 'recipe/index.html'
     ordering = ('name',)
 
-    paginate_by = 9
+    paginate_by = settings.RECIPES_PAGINATE_BY
 
     def get_queryset(self):
         recipes = super().get_queryset()

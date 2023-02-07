@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+from django.conf import settings
 from django.db.models import Count, Q
 from django.test import TestCase
 from django.urls import reverse
@@ -11,7 +12,7 @@ class RecipesListViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
     def setUp(self):
-        self.paginate_by = 9
+        self.paginate_by = settings.RECIPES_PAGINATE_BY
         self.recipes = Recipe.objects.all()
         self.categories = Category.objects.all()
 
