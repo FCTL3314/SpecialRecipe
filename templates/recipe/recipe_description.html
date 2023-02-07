@@ -13,7 +13,7 @@
           <h1 class="text-truncate">{{ recipe.name }}</h1>
         </div>
         <div>
-          <h4>{{ recipe.cooking_description }}</h4>
+          {{ recipe.cooking_description|safe }}
         </div>
       </div>
       <div class="col-lg-4 my-2">

@@ -25,6 +25,7 @@ urlpatterns = [
     path('recipes/', include('recipe.urls', namespace='recipe')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('', RecipesListView.as_view(), name='index'),
+    path('summernote/', include('django_summernote.urls')),
 ]
 
 if settings.DEBUG:

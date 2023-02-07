@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from django_summernote.admin import SummernoteModelAdmin
+
 from recipe.models import Category, Ingredient, Recipe
 
 
@@ -25,7 +27,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
+class RecipeAdmin(SummernoteModelAdmin):
+    summernote_fields = ('cooking_description',)
     list_display = ('name', 'description')
     search_fields = ('name',)
     ordering = ('name',)
