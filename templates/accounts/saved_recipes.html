@@ -12,28 +12,7 @@
       {% if saved_recipes %}
         {% for recipe in saved_recipes %}
           <div class="col-lg-3 mb-3">
-            <div class="card h-100">
-              <a href="{% url 'recipe:description' recipe.slug %}">
-                <img src="{{ recipe.image.url }}" class="card-img-top" alt="recipe_img">
-              </a>
-              <div class="card-body">
-                <a class="link-dark text-decoration-none"
-                   href="{% url 'recipe:description' recipe.slug %}">
-                  <h5 class="card-title">{{ recipe.name }}</h5>
-                </a>
-                <p class="card-text">{{ recipe.description }}</p>
-                <a type="button" class="link-warning text-decoration-none"
-                   href="{% url 'recipe:remove-from-saved' recipe.id %}">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                       class="bi bi-bookmark-fill" viewBox="0 0 16 16">
-                    <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0
-                                          14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z">
-                    </path>
-                  </svg>
-                  {{ recipe.total_saves }} Saves
-                </a>
-              </div>
-            </div>
+            {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_active.html' %}
           </div>
         {% endfor %}
       {% else %}

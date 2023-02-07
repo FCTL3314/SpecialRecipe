@@ -67,43 +67,11 @@
           <div class="row mt-4">
             {% for recipe in recipes %}
               <div class="col-lg-4 col-md-6 mb-3">
-                <div class="card h-100">
-                  <a href="{% url 'recipe:description' recipe.slug %}">
-                    <img src="{{ recipe.image.url }}" class="card-img-top"
-                         alt="recipe_img">
-                  </a>
-                  <div class="card-body d-flex flex-column">
-                    <a class="link-dark text-decoration-none"
-                       href="{% url 'recipe:description' recipe.slug %}">
-                      <h5 class="card-title">{{ recipe.name }}</h5>
-                    </a>
-                    <p class="card-text">{{ recipe.description }}</p>
-                    {% if recipe in user_saves %}
-                      <a type="button" class="link-warning text-decoration-none mt-auto"
-                         href="{% url 'recipe:remove-from-saved' recipe.id %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                             fill="currentColor" class="bi bi-bookmark-fill" viewBox="0 0 16 16">
-                          <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0
-                                            14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z">
-                          </path>
-                        </svg>
-                        {{ recipe.total_saves }} Saves
-                      </a>
-                    {% else %}
-                      <a type="button" class="link-warning text-decoration-none mt-auto"
-                         href="{% url 'recipe:add-to-saved' recipe.id %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                             fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
-                          <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8
-                                            13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1
-                                            1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z">
-                          </path>
-                        </svg>
-                        {{ recipe.total_saves }} Saves
-                      </a>
-                    {% endif %}
-                  </div>
-                </div>
+                {% if recipe in user_saves %}
+                  {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_active.html' %}
+                {% else %}
+                  {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_inactive.html' %}
+                {% endif %}
               </div>
             {% endfor %}
           </div>
