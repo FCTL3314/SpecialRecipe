@@ -4,13 +4,15 @@ from django.template.loader import render_to_string
 
 from accounts.models import User
 from accounts.tasks import send_email
+from accounts.validators import case_insensitive_existence_check
 
 
 class UserRegistrationForm(auth_forms.UserCreationForm):
-    username = forms.CharField(min_length=4, widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Enter Username',
-    }))
+    username = forms.CharField(min_length=4, max_length=32, validators=[case_insensitive_existence_check],
+                               widget=forms.TextInput(attrs={
+                                   'class': 'form-control',
+                                   'placeholder': 'Enter Username',
+                               }))
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Email',
@@ -48,10 +50,11 @@ class UserLoginForm(auth_forms.AuthenticationForm):
 
 
 class UserProfileForm(auth_forms.UserChangeForm):
-    username = forms.CharField(min_length=4, widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'type': 'text',
-    }))
+    username = forms.CharField(min_length=4, max_length=32, validators=[case_insensitive_existence_check],
+                               widget=forms.TextInput(attrs={
+                                   'class': 'form-control',
+                                   'type': 'text',
+                               }))
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'type': 'text',
