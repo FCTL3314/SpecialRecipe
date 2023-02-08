@@ -24,7 +24,7 @@ class RecipesListView(ListView):
             recipes = recipes_cache
         else:
             recipes = super().get_queryset()
-            cache.set('recipes', recipes, 10)
+            cache.set('recipes', recipes, 60 * 60)
         category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
         if search:
