@@ -39,8 +39,8 @@ class EmailVerification(models.Model):
         link = reverse('accounts:email-verification', kwargs={'email': self.user.email, 'code': self.code})
         verification_link = settings.DOMAIN_NAME + link
 
-        subject = f'{self.user.username}\'s email verification.'
-        message = f'To verify your email address, follow this link: {verification_link}'
+        subject = f'Special Recipe | Email verification'
+        message = f'Hello, to verify your email address, follow the link below:\n\n{verification_link}'
         send_mail(
             subject=subject,
             message=message,

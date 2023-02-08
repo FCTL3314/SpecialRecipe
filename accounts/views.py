@@ -134,6 +134,7 @@ class EmailVerificationView(TemplateView):
 class PwdResetView(SuccessMessageMixin, auth_views.PasswordResetView):
     title = 'Special Recipe | Password reset'
     template_name = 'accounts/password/reset_password.html'
+    subject_template_name = 'accounts/password/password_reset_subject.html'
     email_template_name = 'accounts/password/password_reset_email.html'
     form_class = account_forms.PwdResetForm
     success_url = reverse_lazy('accounts:reset_password')
