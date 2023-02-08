@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
@@ -18,7 +19,12 @@ class RecipesListView(ListView):
     paginate_by = settings.RECIPES_PAGINATE_BY
 
     def get_queryset(self):
-        recipes = super().get_queryset()
+        recipes_cache = cache.get('recipes')
+        if recipes_cache:
+            recipes = recipes_cache
+        else:
+            recipes = super().get_queryset()
+            cache.set('recipes', recipes, 10)
         category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
         if search:
@@ -32,10 +38,25 @@ class RecipesListView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
         context['title'] = 'Special Recipe | Recipes'
-        context['categories'] = Category.objects.all()
+
+        categories_cache = cache.get('categories')
+        if categories_cache:
+            context['categories'] = categories_cache
+        else:
+            context['categories'] = Category.objects.all()
+            cache.set('categories', context['categories'], 60 * 60)
+
+        popular_recipes_cache = cache.get('popular_recipes')
+        if popular_recipes_cache:
+            context['popular_recipes'] = popular_recipes_cache
+        else:
+            context['popular_recipes'] = Recipe.objects.annotate(
+                saves_count=Count('saves')
+            ).order_by('-saves_count')[:3]
+            cache.set('popular_recipes', context['popular_recipes'], 3600 * 24)
+
         context['selected_category'] = self.kwargs.get('category_slug')
         context['form'] = SearchForm(initial={'search': self.request.GET.get('search')})
-        context['popular_recipes'] = Recipe.objects.annotate(saves_count=Count('saves')).order_by('-saves_count')[:3]
         if self.request.user.is_authenticated:
             context['user_saves'] = self.object_list.filter(saves=self.request.user)
         return context
