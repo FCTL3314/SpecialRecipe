@@ -1,12 +1,12 @@
 from django import forms
-from django.contrib.auth.forms import (AuthenticationForm, PasswordChangeForm,
-                                       PasswordResetForm, SetPasswordForm,
-                                       UserChangeForm, UserCreationForm)
+from django.contrib.auth import forms as auth_forms
+from django.template.loader import render_to_string
 
 from accounts.models import User
+from accounts.tasks import send_email
 
 
-class UserRegistrationForm(UserCreationForm):
+class UserRegistrationForm(auth_forms.UserCreationForm):
     username = forms.CharField(min_length=4, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Username',
@@ -29,7 +29,7 @@ class UserRegistrationForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
 
-class UserLoginForm(AuthenticationForm):
+class UserLoginForm(auth_forms.AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Username or Email',
@@ -47,7 +47,7 @@ class UserLoginForm(AuthenticationForm):
         fields = ('username', 'password')
 
 
-class UserProfileForm(UserChangeForm):
+class UserProfileForm(auth_forms.UserChangeForm):
     username = forms.CharField(min_length=4, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'type': 'text',
@@ -84,7 +84,7 @@ class UserProfileForm(UserChangeForm):
         fields = ('username', 'first_name', 'last_name', 'email', 'image')
 
 
-class PwdChangeForm(PasswordChangeForm):
+class PwdChangeForm(auth_forms.PasswordChangeForm):
     old_password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter your old password',
@@ -114,18 +114,29 @@ class PwdChangeForm(PasswordChangeForm):
         fields = ('old_password', 'new_password1', 'new_password2')
 
 
-class PwdResetForm(PasswordResetForm):
+class PwdResetForm(auth_forms.PasswordResetForm):
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Email',
     }))
+
+    def send_mail(self, subject_template_name, email_template_name,
+                  context, from_email, to_email, html_email_template_name=None):
+        raw_subject = render_to_string(subject_template_name)
+        subject = ''.join(raw_subject.splitlines())
+        message = render_to_string(email_template_name, context)
+        if html_email_template_name is not None:
+            html_message = render_to_string(html_email_template_name, context)
+            send_email.delay(subject=subject, message=message, emails_list=[to_email], html_message=html_message)
+        else:
+            send_email.delay(subject=subject, message=message, emails_list=[to_email])
 
     class Meta:
         model = User
         fields = ('email',)
 
 
-class SetPwdForm(SetPasswordForm):
+class SetPwdForm(auth_forms.SetPasswordForm):
     new_password1 = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter new password',

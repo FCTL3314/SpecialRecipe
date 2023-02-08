@@ -215,7 +215,6 @@ class SendVerificationEmailViewTestCase(TestCase):
 
     def test_view_success(self):
         self.assertFalse(EmailVerification.objects.filter(user=self.user))
-        self.assertFalse(mail.outbox)
 
         response = self.client.get(self.path)
 
@@ -228,7 +227,6 @@ class SendVerificationEmailViewTestCase(TestCase):
 
         self.assertTrue(email_verification)
         self.assertEqual(email_verification.first().expiration.date(), (now() + timedelta(hours=48)).date())
-        self.assertTrue(mail.outbox)
 
     def test_view_previous_email_not_expired(self):
         expiration = now() + timedelta(hours=48)
@@ -434,13 +432,10 @@ class PwdResetViewTestCase(TestCase):
         self.assertTemplateUsed(response, 'accounts/password/reset_password.html')
 
     def test_view_post(self):
-        self.assertFalse(mail.outbox)
-
         response = self.client.post(self.path, self.data)
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertRedirects(response, self.path)
-        self.assertTrue(mail.outbox)
 
 
 class PwdResetConfirmViewTestCase(TestCase):

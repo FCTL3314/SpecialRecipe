@@ -28,6 +28,8 @@ env = environ.Env(
     DATABASE_PASSWORD=str,
     DATABASE_HOST=str,
     DATABASE_PORT=str,
+    REDIS_HOST=str,
+    REDIS_PORT=str,
     EMAIL_HOST=str,
     EMAIL_PORT=str,
     EMAIL_HOST_USER=str,
@@ -129,13 +131,17 @@ else:
         }
     }
 
+# Redis
+
+REDIS_HOST = env('REDIS_HOST')
+REDIS_PORT = env('REDIS_PORT')
 
 # Cache
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -221,3 +227,8 @@ else:
 # Recipes
 
 RECIPES_PAGINATE_BY = env('RECIPES_PAGINATE_BY')
+
+# Celery
+
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}'

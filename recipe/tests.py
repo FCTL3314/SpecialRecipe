@@ -49,9 +49,10 @@ class RecipesListViewTestCase(TestCase):
 
     def test_list_view_search(self):
         search = 'pizza'
+        data = {'search': search}
 
-        path = reverse('index') + f'?search={search}'
-        response = self.client.get(path)
+        path = reverse('index')
+        response = self.client.get(path, data)
 
         self._common_tests(response)
         self.assertEqual(

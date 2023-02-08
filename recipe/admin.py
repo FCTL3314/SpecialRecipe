@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from django_summernote.admin import SummernoteModelAdmin
 
 from recipe.models import Category, Ingredient, Recipe

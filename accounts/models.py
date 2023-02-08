@@ -1,10 +1,12 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core.mail import send_mail
 from django.db import models
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
+
+from accounts.tasks import send_email
 
 
 class User(AbstractUser):
@@ -37,17 +39,17 @@ class EmailVerification(models.Model):
 
     def send_verification_email(self):
         link = reverse('accounts:email-verification', kwargs={'email': self.user.email, 'code': self.code})
-        verification_link = settings.DOMAIN_NAME + link
 
-        subject = f'Special Recipe | Email verification'
-        message = f'Hello, to verify your email address, follow the link below:\n\n{verification_link}'
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[self.user.email],
-            fail_silently=False,
-        )
+        context = {
+            'user': self.user,
+            'verification_link': settings.DOMAIN_NAME + link,
+        }
+
+        raw_subject = render_to_string('accounts/email/email_verification_subject.html')
+        subject = ''.join(raw_subject.splitlines())
+        message = render_to_string('accounts/email/email_verification_email.html', context)
+        emails_list = [self.user.email]
+        send_email.delay(subject=subject, message=message, emails_list=emails_list)
 
     def is_expired(self):
         return True if self.expiration < now() else False
