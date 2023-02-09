@@ -87,7 +87,7 @@ class UserProfileForm(auth_forms.UserChangeForm):
     def save(self, commit=True):
         old_email = self.initial.get('email')
         new_email = self.cleaned_data.get('email')
-        if old_email != new_email:
+        if old_email.lower() != new_email.lower():
             self.instance.is_verified = False
             self.instance.save()
         return super().save(commit=True)
