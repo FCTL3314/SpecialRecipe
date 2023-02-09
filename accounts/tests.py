@@ -64,7 +64,7 @@ class UserRegistrationViewTestCase(TestCase):
         self.assertFalse(User.objects.filter(username=username))
 
     def test_user_registration_post_username_taken(self):
-        username = self.data['username']
+        username = self.data['username'].lower()
         User.objects.create(username=username)
 
         response = self.client.post(self.path, self.data)
@@ -354,6 +354,32 @@ class UserProfileViewTestCase(TestCase):
         self.assertEqual(self.user.last_name, 'User')
         self.assertEqual(self.user.email, 'testuserupdated@mail.com')
         self.assertTrue(self.user.image)
+        self.assertContains(response, 'Profile updated successfully!')
+
+    def test_view_post_without_changing_username(self):
+        without_changing_username_data = self.data.copy()
+        without_changing_username_data['username'] = 'TestUser'
+
+        self.assertEqual(self.user.username, 'TestUser')
+
+        response = self.client.post(self.path, without_changing_username_data, follow=True)
+
+        self.user.refresh_from_db()
+        self._common_tests(response)
+        self.assertEqual(self.user.username, 'TestUser')
+        self.assertContains(response, 'Profile updated successfully!')
+
+    def test_view_post_without_changing_email(self):
+        without_changing_email_data = self.data.copy()
+        without_changing_email_data['email'] = 'testuser@mail.com'
+
+        self.assertEqual(self.user.email, 'testuser@mail.com')
+
+        response = self.client.post(self.path, without_changing_email_data, follow=True)
+
+        self.user.refresh_from_db()
+        self._common_tests(response)
+        self.assertEqual(self.user.email, 'testuser@mail.com')
         self.assertContains(response, 'Profile updated successfully!')
 
     def test_view_post_username_taken(self):

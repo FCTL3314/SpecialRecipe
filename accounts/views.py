@@ -73,7 +73,7 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
 class UserProfilePasswordView(SuccessMessageMixin, auth_views.PasswordChangeView):
     template_name = 'accounts/profile/profile.html'
     title = 'Special Recipe | Profile - Password'
-    form_class = account_forms.PwdChangeForm
+    form_class = account_forms.PasswordChangeForm
     success_message = 'Your password has been successfully updated!'
 
     def get_success_url(self):
@@ -136,7 +136,7 @@ class PwdResetView(SuccessMessageMixin, auth_views.PasswordResetView):
     template_name = 'accounts/password/reset_password.html'
     subject_template_name = 'accounts/password/password_reset_subject.html'
     email_template_name = 'accounts/password/password_reset_email.html'
-    form_class = account_forms.PwdResetForm
+    form_class = account_forms.PasswordResetForm
     success_url = reverse_lazy('accounts:reset_password')
     success_message = 'We’ve emailed you instructions for setting your password, if an account exists with the email ' \
                       'you entered. You should receive them shortly. If you don’t receive an email, please make sure ' \
@@ -145,7 +145,7 @@ class PwdResetView(SuccessMessageMixin, auth_views.PasswordResetView):
 
 class PwdResetConfirmView(SuccessMessageMixin, auth_views.PasswordResetConfirmView):
     template_name = 'accounts/password/password_reset_confirm.html'
-    form_class = account_forms.SetPwdForm
+    form_class = account_forms.SetPasswordForm
     success_url = reverse_lazy('accounts:login')
     success_message = 'Your password has been set. You can now sign into your account with the new password.'
 

@@ -1,18 +1,17 @@
 from django import forms
 from django.contrib.auth import forms as auth_forms
+from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 
 from accounts.models import User
 from accounts.tasks import send_email
-from accounts.validators import case_insensitive_existence_check
 
 
 class UserRegistrationForm(auth_forms.UserCreationForm):
-    username = forms.CharField(min_length=4, max_length=32, validators=[case_insensitive_existence_check],
-                               widget=forms.TextInput(attrs={
-                                   'class': 'form-control',
-                                   'placeholder': 'Enter Username',
-                               }))
+    username = forms.CharField(min_length=4, max_length=32, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter Username',
+    }))
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Email',
@@ -25,6 +24,12 @@ class UserRegistrationForm(auth_forms.UserCreationForm):
         'class': 'form-control',
         'placeholder': 'Confirm Password',
     }))
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username__iexact=username).exists():
+            raise ValidationError('A user with that username already exists.')
+        return username
 
     class Meta:
         model = User
@@ -46,15 +51,14 @@ class UserLoginForm(auth_forms.AuthenticationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'password')
+        fields = ('username', 'password', 'remember_me')
 
 
 class UserProfileForm(auth_forms.UserChangeForm):
-    username = forms.CharField(min_length=4, max_length=32, validators=[case_insensitive_existence_check],
-                               widget=forms.TextInput(attrs={
-                                   'class': 'form-control',
-                                   'type': 'text',
-                               }))
+    username = forms.CharField(min_length=4, max_length=32, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'type': 'text',
+    }))
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'type': 'text',
@@ -74,6 +78,12 @@ class UserProfileForm(auth_forms.UserChangeForm):
         'aria-label': 'Upload',
     }))
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if username != self.instance.username and User.objects.filter(username__iexact=username).exists():
+            raise ValidationError('A user with that username already exists.')
+        return username
+
     def save(self, commit=True):
         old_email = self.initial.get('email')
         new_email = self.cleaned_data.get('email')
@@ -87,7 +97,7 @@ class UserProfileForm(auth_forms.UserChangeForm):
         fields = ('username', 'first_name', 'last_name', 'email', 'image')
 
 
-class PwdChangeForm(auth_forms.PasswordChangeForm):
+class PasswordChangeForm(auth_forms.PasswordChangeForm):
     old_password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter your old password',
@@ -105,19 +115,19 @@ class PwdChangeForm(auth_forms.PasswordChangeForm):
         self.user = user
         super().__init__(user, *args, **kwargs)
 
-    def clean_new_password2(self):
+    def clean(self):
         new_password1 = self.cleaned_data['new_password1']
         new_password2 = self.cleaned_data['new_password2']
         if new_password1 == new_password2 and self.user.check_password(new_password2):
             raise forms.ValidationError('The new password must be different from the old one.')
-        return super().clean_new_password2()
+        return super().clean()
 
     class Meta:
         model = User
         fields = ('old_password', 'new_password1', 'new_password2')
 
 
-class PwdResetForm(auth_forms.PasswordResetForm):
+class PasswordResetForm(auth_forms.PasswordResetForm):
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Email',
@@ -139,7 +149,7 @@ class PwdResetForm(auth_forms.PasswordResetForm):
         fields = ('email',)
 
 
-class SetPwdForm(auth_forms.SetPasswordForm):
+class SetPasswordForm(auth_forms.SetPasswordForm):
     new_password1 = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter new password',
