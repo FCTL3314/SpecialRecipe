@@ -20,6 +20,7 @@
               </div>
             {% endfor %}
           {% endif %}
+          <hr>
           <div class="mb-4">
             <label for="{{ form.username.id_for_label }}" class="form-label">Username or Email</label>
             {{ form.username }}
@@ -29,7 +30,7 @@
             {{ form.password }}
           </div>
           <div class="d-flex">
-            <div class="mb-4 form-check me-auto">
+            <div class="form-check me-auto">
               {{ form.remember_me }}
               <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
                 Remember me
@@ -41,6 +42,7 @@
               </a>
             </div>
           </div>
+          <hr>
           <div class="text-center">
             <button type="submit" class="btn btn-outline-success">Submit</button>
           </div>

@@ -16,14 +16,15 @@
           {% if form.errors %}
             <div class="alert alert-warning" role="alert">
               {% for field, errors in form.errors.items %}
-                  {% for error in errors %}
-                    <li>
-                      {{ error }}
-                    </li>
-                  {% endfor %}
+                {% for error in errors %}
+                  <li>
+                    {{ error }}
+                  </li>
+                {% endfor %}
               {% endfor %}
             </div>
           {% endif %}
+          <hr>
           <div class="mb-4">
             <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
             {{ form.username }}
@@ -40,10 +41,11 @@
               and must not contain spaces or special characters.
             </div>
           </div>
-          <div class="mb-4">
+          <div>
             <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password</label>
             {{ form.password2 }}
           </div>
+          <hr>
           <div class="text-center">
             <button type="submit" class="btn btn-outline-success">Submit</button>
           </div>

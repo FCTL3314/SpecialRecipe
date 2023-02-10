@@ -20,7 +20,7 @@ urlpatterns = [
     path('verify/<str:email>/<uuid:code>/', login_required(account_view.EmailVerificationView.as_view()),
          name='email-verification'),
 
-    path('password_reset/', logout_required(account_view.PwdResetView.as_view()), name='reset_password'),
-    path('reset/<uidb64>/<token>/', logout_required(account_view.PwdResetConfirmView.as_view()),
+    path('password_reset/', logout_required(account_view.PasswordResetView.as_view()), name='reset_password'),
+    path('reset/<uidb64>/<token>/', logout_required(account_view.PasswordResetConfirmView.as_view()),
          name='password_reset_confirm'),
 ]

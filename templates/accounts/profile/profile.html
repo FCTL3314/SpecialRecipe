@@ -6,7 +6,7 @@
   <div class="container bg-light min-vh-100">
     <div class="row">
       {% if user.id == request.user.id %}
-        <div class="col-lg-3 my-3">
+        <div class="col-lg-3 my-4">
           <div class="text-center">
             <img class="rounded-circle" src="{% if user.image %}
                                                {{ user.image.url }}
@@ -48,8 +48,8 @@
             </a>
           </div>
         </div>
-        <div class="col-lg-9 my-3">
-          <div class="row mt-4">
+        <div class="col-lg-9 my-4">
+          <div class="row">
             {% if current_url_name == 'profile' %}
               {% include 'accounts/profile/inclusion/account_tab.html' %}
             {% elif current_url_name == 'profile-password' %}

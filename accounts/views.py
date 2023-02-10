@@ -131,7 +131,7 @@ class EmailVerificationView(TemplateView):
         return context
 
 
-class PwdResetView(SuccessMessageMixin, auth_views.PasswordResetView):
+class PasswordResetView(SuccessMessageMixin, auth_views.PasswordResetView):
     title = 'Special Recipe | Password reset'
     template_name = 'accounts/password/reset_password.html'
     subject_template_name = 'accounts/password/password_reset_subject.html'
@@ -143,7 +143,7 @@ class PwdResetView(SuccessMessageMixin, auth_views.PasswordResetView):
                       'you’ve entered the address you registered with, and check your spam folder.'
 
 
-class PwdResetConfirmView(SuccessMessageMixin, auth_views.PasswordResetConfirmView):
+class PasswordResetConfirmView(SuccessMessageMixin, auth_views.PasswordResetConfirmView):
     template_name = 'accounts/password/password_reset_confirm.html'
     form_class = account_forms.SetPasswordForm
     success_url = reverse_lazy('accounts:login')

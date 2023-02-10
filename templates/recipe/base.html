@@ -14,9 +14,9 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" data-bs-theme="dark">
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark" data-bs-theme="dark">
   <div class="container">
-    <p class="navbar-brand text-white mb-1">Special Recipe</p>
+    <p class="navbar-brand mb-1">Special Recipe</p>
     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
       </ul>
       {% if request.user.is_authenticated %}
         <div class="dropdown">
-          <a class="dropdown-toggle text-decoration-none text-white" href="#" role="button" data-bs-toggle="dropdown"
+          <a class="dropdown-toggle text-decoration-none link-light" role="button" data-bs-toggle="dropdown"
              aria-expanded="false">
             {{ request.user.username }}
             <img class="rounded-circle mb-1" width="32" height="32"
@@ -84,8 +84,7 @@
   <div class="container text-center text-white py-4">
     <h3>About</h3>
     <p>
-      This website has been created to quickly find the recipes you need, you can search
-      by category or search by keyword.
+      This site was created for educational purposes and was not designed for real use.
     </p>
     <hr class="divider border-2">
     <small>Copyright &copy; 2023 Special Recipe</small>

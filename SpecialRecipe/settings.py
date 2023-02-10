@@ -187,7 +187,7 @@ STATIC_URL = 'static/'
 if DEBUG:
     STATICFILES_DIRS = (BASE_DIR / 'static',)
 else:
-    STATIC_ROOT = BASE_DIR / 'media'
+    STATIC_ROOT = BASE_DIR / 'static'
 
 # Media files
 
