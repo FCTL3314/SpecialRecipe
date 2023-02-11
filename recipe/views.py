@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.db.models import Count, Q
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
+from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 
@@ -95,12 +96,19 @@ class SavesListView(ListView):
 def add_to_saved(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     recipe.saves.add(request.user)
-    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return HttpResponseRedirect(referer)
+    return HttpResponseRedirect(reverse('index'))
 
 
 @login_required()
 def remove_from_saved(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    save = recipe.saves.get(id=request.user.id)
-    recipe.saves.remove(save)
-    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    save = recipe.saves.filter(id=request.user.id)
+    if save.exists():
+        recipe.saves.remove(save.first())
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return HttpResponseRedirect(referer)
+    return HttpResponseRedirect(reverse('index'))
