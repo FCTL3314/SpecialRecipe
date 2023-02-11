@@ -97,7 +97,11 @@ class SendVerificationEmailView(TemplateView):
         else:
             expiration = now() + timedelta(hours=48)
             verification = EmailVerification.objects.create(code=uuid4(), user=user, expiration=expiration)
-            verification.send_verification_email()
+            verification.send_verification_email(
+                subject_template_name='accounts/email/email_verification_subject.html',
+                html_email_template_name='accounts/email/email_verification_email.html',
+                use_https=True,
+            )
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

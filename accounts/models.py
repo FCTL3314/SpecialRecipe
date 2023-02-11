@@ -37,17 +37,20 @@ class EmailVerification(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     expiration = models.DateTimeField()
 
-    def send_verification_email(self):
+    def send_verification_email(self, subject_template_name='accounts/email/email_verification_subject.html',
+                                html_email_template_name='accounts/email/email_verification_email.html',
+                                use_https=False):
         link = reverse('accounts:email-verification', kwargs={'email': self.user.email, 'code': self.code})
 
         context = {
             'user': self.user,
+            'protocol': 'https' if use_https else 'http',
             'verification_link': settings.DOMAIN_NAME + link,
         }
 
-        raw_subject = render_to_string('accounts/email/email_verification_subject.html')
+        raw_subject = render_to_string(subject_template_name)
         subject = ''.join(raw_subject.splitlines())
-        message = render_to_string('accounts/email/email_verification_email.html', context)
+        message = render_to_string(html_email_template_name, context)
         emails_list = [self.user.email]
         send_email.delay(subject=subject, message=message, emails_list=emails_list)
 
