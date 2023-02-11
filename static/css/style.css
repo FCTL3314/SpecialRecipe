@@ -1,5 +1,3 @@
-.card-img-top {
-    width: 100%;
-    height: 10vw;
-    object-fit: cover;
+.dropdown-menu-dark {
+    --bs-dropdown-link-active-bg: #C8C8C88C;
 }

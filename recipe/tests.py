@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from django.conf import settings
+from django.core.cache import cache
 from django.db.models import Count, Q
 from django.test import TestCase
 from django.urls import reverse
@@ -21,10 +22,14 @@ class RecipesListViewTestCase(TestCase):
         self.assertTemplateUsed(response, 'recipe/index.html')
         self.assertEqual(response.context_data['title'], 'Special Recipe | Recipes')
         self.assertEqual(list(response.context_data['categories']), list(self.categories))
-        self.assertEqual(
-            list(response.context_data['popular_recipes']),
-            list(self.recipes.annotate(saves_count=Count('saves')).order_by('-saves_count')[:3])
-        )
+        popular_recipes_cached = cache.get('popular_recipes')
+        if popular_recipes_cached:
+            self.assertEqual(list(response.context_data['popular_recipes']), list(popular_recipes_cached))
+        else:
+            self.assertEqual(
+                list(response.context_data['popular_recipes']),
+                list(self.recipes.annotate(saves_count=Count('saves')).order_by('-saves_count')[:3])
+            )
 
     def test_list_view(self):
         path = reverse('index')

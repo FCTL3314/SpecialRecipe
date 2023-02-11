@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="col-lg-9 my-2">
-        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-pause="hover">
           <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
                     aria-current="true" aria-label="Slide 1"></button>
@@ -76,7 +76,6 @@
               </div>
             {% endfor %}
           </div>
-          <hr>
           {% if selected_category %}
             {% include 'recipe/inclusion/category_pagination.html' %}
           {% elif request.GET.search %}

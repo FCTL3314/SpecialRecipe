@@ -20,11 +20,13 @@
         <div class="mb-3">
           <h3>Ingredients</h3>
         </div>
+        <hr>
         <div class="mb-3 d-flex">
           <ul>
             {% for ingredient in ingredients %}
               <li>
                 <p>{{ ingredient.name }}</p>
+                <hr>
               </li>
             {% endfor %}
           </ul>

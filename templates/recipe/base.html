@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark" data-bs-theme="dark">
+<nav class="navbar navbar-dark navbar-expand-sm bg-dark" data-bs-theme="dark">
   <div class="container">
     <p class="navbar-brand mb-1">Special Recipe</p>
     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
@@ -28,12 +28,19 @@
           <a class="nav-link" aria-current="page" href="{% url 'index' %}">Recipes</a>
         </li>
         <li class="nav-item">
-          <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="You must be logged in">
-            <a class="nav-link {% if not request.user.is_authenticated %}disabled{% endif %}"
-               href="{% url 'recipe:saves' %}">
-              Saved Recipes
-            </a>
-          </div>
+          {% if not request.user.is_authenticated %}
+            <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="You must be logged in">
+              <a class="nav-link disabled" href="{% url 'recipe:saves' %}">
+                My bookmarks
+              </a>
+            </div>
+          {% else %}
+            <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip">
+              <a class="nav-link" href="{% url 'recipe:saves' %}">
+                My bookmarks
+              </a>
+            </div>
+          {% endif %}
         </li>
       </ul>
       {% if request.user.is_authenticated %}
@@ -41,7 +48,7 @@
           <a class="dropdown-toggle text-decoration-none link-light" role="button" data-bs-toggle="dropdown"
              aria-expanded="false">
             {{ request.user.username }}
-            <img class="rounded-circle mb-1" width="32" height="32"
+            <img class="rounded-circle object-fit-cover mb-1" width="32" height="32"
                  src="{% if request.user.image %}
                         {{ request.user.image.url }}
                       {% else %}
@@ -49,18 +56,49 @@
                       {% endif %}"
                  alt="profile">
           </a>
-          <ul class="dropdown-menu bg-dark">
+          <ul class="dropdown-menu dropdown-menu-dark">
             <li>
-              <a href="{% url 'recipe:saves' %}" class="dropdown-item text-white">Saved Recipes</a>
-            </li>
-            <li>
-              <a href="{% url 'accounts:profile' request.user.slug %}" class="dropdown-item text-white">Profile</a>
+              <p class="dropdown-header text-center">Menubar</p>
             </li>
             <li>
               <hr class="dropdown-divider bg-dark">
             </li>
             <li>
-              <a href="{% url 'accounts:logout' %}" class="dropdown-item text-danger">Logout</a>
+              <a href="{% url 'accounts:profile' request.user.slug %}" class="dropdown-item text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-house-fill mb-1" viewBox="0 0 16 16">
+                  <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0
+                  .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"></path>
+                  <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"></path>
+                </svg>
+                Profile
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'recipe:saves' %}" class="dropdown-item text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-bookmarks-fill" viewBox="0 0 16 16">
+                  <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7
+                  13.101l-4.223 2.815A.5.5 0 0 1 2 15.5V4z"></path>
+                  <path d="M4.268 1A2 2 0 0 1 6 0h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L13
+                  13.768V2a1 1 0 0 0-1-1H4.268z"></path>
+                </svg>
+                Bookmarks
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider bg-dark">
+            </li>
+            <li>
+              <a href="{% url 'accounts:logout' %}" class="dropdown-item text-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-door-open-fill mb-1" viewBox="0 0 16 16">
+                  <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0
+                0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15H1.5zM11 2h.5a.5.5 0 0 1 .5.5V15h-1V2zm-2.5
+                8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z"></path>
+                </svg>
+                Logout
+              </a>
             </li>
           </ul>
         </div>

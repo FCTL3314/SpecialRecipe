@@ -1,5 +1,4 @@
 Django==3.2.16
-django-debug-toolbar==3.8.1
 django-environ==0.9.0
 django-summernote==0.8.20.0
 django-redis==5.2.0
