@@ -33,8 +33,43 @@ as well as email verification.
 * Django - 3.2.16
 * django-debug-toolbar - 3.8.1
 * django-environ - 0.9.0
+* django-summernote - 0.8.20.0
+* django-redis - 5.2.0
 * Pillow - 9.4.0
 * humanize - 4.6.0
+* celery - 5.2.7
+
+# 💽 Local installation
+
+1. Clone or download the repository.
+
+2. Create a virtual environment and install requirements from requirements/local.txt file.
+
+3. Create an .env file or rename .env.dist in .env and populate it with variables from .env.dist file.
+An example of filling in environment variables for local development:
+```
+# Project
+DEBUG=True
+SECRET_KEY=%q49hdw+=60wkj7(kl5+m_zv@!6wgjccl6e01u0zf+*c%8=fk@
+DOMAIN_NAME=127.0.0.1:8000
+ALLOWED_HOSTS=*
+
+# Redis
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+
+# Email
+EMAIL_HOST_USER=email@example.com
+
+# Recipes
+RECIPES_PAGINATE_BY=9
+```
+
+4. Make migrations
+```
+python manage.py makemigrations
+python manage.py migrate
+```
 
 # 🌄 Images
 * **Recipes page**
