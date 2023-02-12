@@ -12,24 +12,28 @@ as well as email verification.
 
 # 🔥 Features
 
-* User profile
-* Registration / Authorization
-* Recipe markdown editing
+* Bookmarks / Saves
 * Keyword search
 * Search by category
-* Bookmarks / Saves
+* Registration / Authorization
+* User profile
+* Profile editing
+* Email verification
+* Password change / reset
+* Recipe markdown editing
 
 # ❕ Peculiarities
 
 * For correct display, **at least 3 recipes must be created** regardless of the category.
+* For correct display of images, their **aspect ratio must be 16:10**. Example: **1440×900, 1536×960, 1680:1050, 1920x1200...**
 
 # 📜 Requirements
 
 * Python - 3.11
 * Django - 3.2.16
-* Pillow - 9.4.0
 * django-debug-toolbar - 3.8.1
 * django-environ - 0.9.0
+* Pillow - 9.4.0
 * humanize - 4.6.0
 
 # 🌄 Images
