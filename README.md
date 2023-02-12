@@ -6,6 +6,8 @@ all available recipes.
 The site provides the ability to create / edit an account, change or reset the password if it has been lost, 
 as well as email verification.
 
+**Link to the website:** https://special-recipe.space/
+
 > ***The project was created for educational purposes.***
 
 # 🔥 Features
@@ -33,31 +35,32 @@ as well as email verification.
 # 🌄 Images
 * **Recipes page**
 
-![firefox_lO4OXAkeuP](https://user-images.githubusercontent.com/97694131/217355750-9c15d834-be50-480b-afc1-fd91b1de81bc.jpg)
+![firefox_EbTImtf91k](https://user-images.githubusercontent.com/97694131/218304714-ae387f54-f6e1-4a38-986b-229b880d458a.png)
+![firefox_ICwvrpabC1](https://user-images.githubusercontent.com/97694131/218304717-3e6eda9a-ec33-4248-8629-f37d46b2ea27.png)
 <hr>
 
 * **Recipe description pages**
 
-![firefox_C8ubXaM9ak](https://user-images.githubusercontent.com/97694131/217356003-aef46fb4-d86e-4726-85b8-2fee3ff92f67.png)
-![firefox_4poCeIv3eT](https://user-images.githubusercontent.com/97694131/217356024-c4a36ad9-637f-4d51-89ef-948ec6bbd24a.png)
+![firefox_TcArWFj7V1](https://user-images.githubusercontent.com/97694131/218304936-0dd3ecc7-77c0-4b51-989b-189e22e14ee8.png)
+![firefox_QqiP4ViNXc](https://user-images.githubusercontent.com/97694131/218304938-12f614eb-eefc-45c2-9f08-b390f473c2ac.png)
 <hr>
 
-![firefox_46ITAmHec0](https://user-images.githubusercontent.com/97694131/217356246-e6b8b9cb-520d-42e1-a39f-68a6f1da8ccf.png)
-![firefox_QdyGI78jgt](https://user-images.githubusercontent.com/97694131/217356317-145cddd9-5bbb-4a9b-8b6c-cd4f017e607d.png)
+![firefox_Eeeu1dCB0l](https://user-images.githubusercontent.com/97694131/218304946-fdfdf99a-7a91-4c9f-a6b4-10dbf952c597.png)
+![firefox_UyFly3pelp](https://user-images.githubusercontent.com/97694131/218304952-a97b776b-4081-485c-9a22-034ebd15fb15.png)
 <hr>
 
-* **Saved recipes page**
+* **Bookmarks page**
 
-![firefox_BheSysFOWc](https://user-images.githubusercontent.com/97694131/217356592-f160fed0-7031-4d1e-a683-7a253d87e6c3.png)
+![firefox_40rdeV1FtQ](https://user-images.githubusercontent.com/97694131/218304895-655a1529-108d-4a5d-832d-6adbaa7bdaa3.png)
 <hr>
 
 * **Profile pages**
 
-![firefox_5lnp05Ypik](https://user-images.githubusercontent.com/97694131/217356708-abe557f9-d7ce-468d-9a50-41dd33de04d5.png)
-![firefox_odhtmwh6Sb](https://user-images.githubusercontent.com/97694131/217356721-54fa7144-e389-408a-b759-bfb22c912fc6.png)
+![firefox_8Ju1qXjySr](https://user-images.githubusercontent.com/97694131/218304973-4398f787-2241-4ec9-bfb8-85ecd3b0f8f3.png)
+![firefox_XdMnzOVPXR](https://user-images.githubusercontent.com/97694131/218304974-1d301bd9-2c2a-4a21-b199-4e8150084144.png)
 <hr>
 
 * **Authentication pages**
 
-![firefox_krstXnMHwi](https://user-images.githubusercontent.com/97694131/217356898-79659c57-a43a-459f-a727-1809f6c9428a.png)
-![firefox_a5rU6k7cej](https://user-images.githubusercontent.com/97694131/217356909-27cea54d-3238-411c-ac0e-7050f8550819.png)
+![firefox_TWTnPDoUww](https://user-images.githubusercontent.com/97694131/218304986-d633adce-fea7-42da-b7d9-2aa6dd0e149c.png)
+![firefox_6qLBkDuUnE](https://user-images.githubusercontent.com/97694131/218304988-07cc498c-ad37-451e-a439-378e480dbe0c.png)
