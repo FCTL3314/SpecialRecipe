@@ -46,6 +46,7 @@ as well as email verification.
 2. Create a virtual environment and install requirements from requirements/local.txt file.
 
 3. Create an .env file or rename .env.dist in .env and populate it with variables from .env.dist file.
+
 An example of filling in environment variables for local development:
 ```
 # Project
