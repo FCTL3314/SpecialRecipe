@@ -18,8 +18,10 @@ as well as email verification.
 * Registration / Authorization
 * User profile
 * Profile editing
-* Email verification
 * Password change / reset
+* Email verification
+* Postponed Tasks / Celery
+  * Delayed sending of emails
 * Recipe markdown editing
 
 # ❕ Peculiarities
