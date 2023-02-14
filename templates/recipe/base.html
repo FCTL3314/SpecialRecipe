@@ -42,6 +42,9 @@
             </div>
           {% endif %}
         </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="#footer">About</a>
+        </li>
       </ul>
       {% if request.user.is_authenticated %}
         <div class="dropdown">
@@ -118,7 +121,7 @@
 
 {% block content %} {% endblock %}
 
-<footer class="bg-dark">
+<footer id="footer" class="bg-dark">
   <div class="container text-center text-white py-4">
     <h3>About</h3>
     <p>
