@@ -20,12 +20,7 @@ class RecipesListView(ListView):
     paginate_by = settings.RECIPES_PAGINATE_BY
 
     def get_queryset(self):
-        recipes_cache = cache.get('recipes')
-        if recipes_cache:
-            recipes = recipes_cache
-        else:
-            recipes = super().get_queryset()
-            cache.set('recipes', recipes, 60 * 60)
+        recipes = super().get_queryset()
         category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
         if search:
@@ -66,9 +61,16 @@ class RecipesListView(ListView):
 class DescriptionView(TemplateView):
     template_name = 'recipe/recipe_description.html'
 
+    def get(self, request, *args, **kwargs):
+        recipe_slug = kwargs.get('recipe_slug')
+        recipe = get_object_or_404(Recipe, slug=recipe_slug)
+        recipe.views += 1
+        recipe.save()
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        recipe = get_object_or_404(Recipe, slug=self.kwargs.get('recipe_slug'))
+        recipe = get_object_or_404(Recipe, slug=kwargs.get('recipe_slug'))
         ingredients = Ingredient.objects.filter(recipe=recipe)
         context['recipe'] = recipe
         context['ingredients'] = ingredients

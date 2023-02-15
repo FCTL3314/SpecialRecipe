@@ -23,6 +23,7 @@ class Recipe(models.Model):
     category = models.ForeignKey(to=Category, on_delete=models.PROTECT)
     slug = models.SlugField(unique=True)
     saves = models.ManyToManyField(User, blank=True)
+    views = models.PositiveBigIntegerField(default=0)
 
     class Meta:
         verbose_name = 'recipe'

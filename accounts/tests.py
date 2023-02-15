@@ -103,7 +103,7 @@ class UserLoginViewTestCase(TestCase):
             'username': 'TestUser',
             'password': 'qnjCmk27yzKTCWWiwdYH',
         }
-        User.objects.create_user(
+        self.user = User.objects.create_user(
             username=self.data['username'],
             email='testuser@mail.com',
             password=self.data['password']
@@ -128,7 +128,7 @@ class UserLoginViewTestCase(TestCase):
         response = self.client.post(self.path, self.data)
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('index'))
+        self.assertRedirects(response, reverse('accounts:profile', args={self.user.slug}))
 
     def test_user_login_post_via_email(self):
         email = 'testuser@mail.com'
@@ -140,7 +140,7 @@ class UserLoginViewTestCase(TestCase):
         response = self.client.post(self.path, email_data)
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('index'))
+        self.assertRedirects(response, reverse('accounts:profile', args={self.user.slug}))
 
     def test_user_login_post_with_remember_be(self):
         username = self.data['username']
@@ -154,7 +154,7 @@ class UserLoginViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertEqual(response.cookies['sessionid']['max-age'], 1209600)
-        self.assertRedirects(response, reverse('index'))
+        self.assertRedirects(response, reverse('accounts:profile', args={self.user.slug}))
 
     def test_user_login_post_without_remember_me(self):
         username = self.data['username']
@@ -165,7 +165,7 @@ class UserLoginViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertEqual(response.cookies['sessionid']['max-age'], 1800)
-        self.assertRedirects(response, reverse('index'))
+        self.assertRedirects(response, reverse('accounts:profile', args={self.user.slug}))
 
     def test_user_login_post_invalid_username(self):
         username = 'InvalidUsername'

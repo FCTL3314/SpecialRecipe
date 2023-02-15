@@ -78,14 +78,18 @@ class DescriptionViewTestCase(TestCase):
         recipe = self.recipes.first()
         ingredients = Ingredient.objects.filter(recipe=recipe)
 
+        self.assertEqual(recipe.views, 0)
+
         path = reverse('recipe:description', kwargs={'recipe_slug': recipe.slug})
         response = self.client.get(path)
 
+        recipe.refresh_from_db()
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'recipe/recipe_description.html')
         self.assertEqual(response.context_data['title'], f'Special Recipe | {recipe.name}')
         self.assertEqual(response.context_data['recipe'], recipe)
         self.assertEqual(list(response.context_data['ingredients']), list(ingredients))
+        self.assertEqual(recipe.views, 1)
 
 
 class AddToSavedViewTestCase(TestCase):

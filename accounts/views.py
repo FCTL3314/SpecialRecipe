@@ -32,7 +32,9 @@ class UserRegistrationView(SuccessMessageMixin, CreateView):
 class UserLoginView(auth_views.LoginView):
     form_class = account_forms.UserLoginForm
     template_name = 'accounts/login.html'
-    success_url = reverse_lazy('recipe:recipes')
+
+    def get_success_url(self):
+        return reverse_lazy('accounts:profile', args={self.request.user.slug})
 
     def form_valid(self, form):
         remember_me = form.cleaned_data.get('remember_me')
