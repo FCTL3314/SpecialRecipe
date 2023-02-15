@@ -37,6 +37,7 @@ as well as email verification.
 * django-environ - 0.9.0
 * django-summernote - 0.8.20.0
 * django-redis - 5.2.0
+* django-cleanup - 7.0.0
 * Pillow - 9.4.0
 * humanize - 4.6.0
 * celery - 5.2.7

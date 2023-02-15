@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - ./data/redis/:/data/
+
+  django-gunicorn:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ./entrypoint.sh
+    volumes:
+      - ./static/:/usr/src/SpecialRecipe/static/
+      - ./media/:/usr/src/SpecialRecipe/media/
+    env_file:
+      - .env
+    expose:
+      - 8000
+    depends_on:
+      - redis
+
+  nginx:
+    build:
+      context: docker/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./static/:/usr/src/SpecialRecipe/static/
+      - ./media/:/usr/src/SpecialRecipe/media/
+    ports:
+      - "80:80"
+    depends_on:
+      - django-gunicorn
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A core worker -l INFO
+    env_file:
+      - .env
+    depends_on:
+      - django-gunicorn
+      - redis
