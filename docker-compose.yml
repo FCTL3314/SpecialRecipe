@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
 
@@ -9,14 +9,14 @@ services:
 
   django-gunicorn:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./Dockerfile
     entrypoint: ./entrypoint.sh
     volumes:
       - ./static/:/usr/src/SpecialRecipe/static/
       - ./media/:/usr/src/SpecialRecipe/media/
     env_file:
-      - .env
+      - ./.env
     expose:
       - 8000
     depends_on:
@@ -24,23 +24,26 @@ services:
 
   nginx:
     build:
-      context: docker/nginx
-      dockerfile: Dockerfile
+      context: ./docker/nginx
+      dockerfile: ./Dockerfile
     volumes:
       - ./static/:/usr/src/SpecialRecipe/static/
       - ./media/:/usr/src/SpecialRecipe/media/
+    env_file:
+      - ./.env
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - django-gunicorn
 
   celery:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     command: celery -A core worker -l INFO
     env_file:
-      - .env
+      - ./.env
     depends_on:
       - django-gunicorn
       - redis
