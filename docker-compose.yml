@@ -24,7 +24,7 @@ services:
 
   nginx:
     build:
-      context: ./docker/nginx
+      context: ./data/nginx
       dockerfile: ./Dockerfile
     volumes:
       - ./static/:/usr/src/SpecialRecipe/static/
