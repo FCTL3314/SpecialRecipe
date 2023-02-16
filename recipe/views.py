@@ -63,9 +63,14 @@ class DescriptionView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         recipe_slug = kwargs.get('recipe_slug')
-        recipe = get_object_or_404(Recipe, slug=recipe_slug)
-        recipe.views += 1
-        recipe.save()
+        ip = request.META.get('REMOTE_ADDR')
+        view = (ip, recipe_slug)
+        has_viewed = cache.get(view)
+        if not has_viewed:
+            cache.set(view, True, 60)
+            recipe = get_object_or_404(Recipe, slug=recipe_slug)
+            recipe.views += 1
+            recipe.save()
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
