@@ -14,6 +14,3 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements/production.txt
 
 COPY ./ ./
-
-RUN chmod a+x entrypoint.sh
-

@@ -42,49 +42,79 @@ as well as email verification.
 * humanize - 4.6.0
 * celery - 5.2.7
 
-# 💽 Local installation
+# 💽 Local: Development
 
 1. Clone or download the repository.
-
 2. Create a virtual environment and install requirements from requirements/local.txt file.
-
-3. Create an .env file or rename .env.dist in .env and populate it with variables from .env.dist file.
-
-* An example of filling in environment variables for local development:
-```
-# Project
-DEBUG=True
-SECRET_KEY=%q49hdw+=60wkj7(kl5+m_zv@!6wgjccl6e01u0zf+*c%8=fk@
-DOMAIN_NAME=127.0.0.1:8000
-ALLOWED_HOSTS=*
-
-# Redis
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
-
-# Email
-EMAIL_HOST_USER=email@example.com
-
-# Recipes
-RECIPES_PAGINATE_BY=9
-```
-
+3. Create an .env file or rename .env.dist in .env and populate it with development variables from .env.dist file:
+   * DEBUG
+   * SECRET_KEY
+   * DOMAIN_NAME
+   * ALLOWED_HOSTS
+   * REDIS_HOST
+   * REDIS_PORT
+   * EMAIL_HOST_USER
+   * RECIPES_PAGINATE_BY
 4. Make migrations:
-* `python manage.py makemigrations`
-* `python manage.py migrate`
-
+   * `python manage.py makemigrations`
+   * `python manage.py migrate`
 5. Run redis:
-
-* **Windows:** https://github.com/microsoftarchive/redis/releases
-* **Linux:** https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-22-04
-
+   * [**Windows**](https://github.com/microsoftarchive/redis/releases)
+   * [**Linux**](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-22-04)
 6. Run celery:
-
-* **Windows:** `celery -A core worker -l INFO -P solo`
-* **Linux:** `celery -A core worker -l INFO`
-
+   * **Windows:** `celery -A core worker -l INFO -P solo`
+   * **Linux:** `celery -A core worker -l INFO`
 7. Run development server:
-* `python manage.py runserver`
+   * `python manage.py runserver`
+
+# 🐳 Docker: Production
+
+> *All actions are performed in the project directory.*
+
+1. Clone or download the repository and go to its directory.
+2. Install docker and docker-compose:
+   * `apt install -y docker`
+   * `apt install -y docker-compose`
+3. Create an .env file or rename .env.dist in .env and populate it with all variables from .env.dist file.
+4. Open **init-letsencrypt.sh** script and change `domains=(your-domain.com www.your-domain.com)` to your domains.
+5. Open data/nginx/**nginx.conf** file and change `server_name your-domain.com www.your-domain.com;` to your domains.
+6. Grant executable rights to the all scripts:
+   * `chmod +x ./init-letsencrypt.sh`
+   * `chmod +x ./entrypoint.sh`
+7. Execute **init-letsencrypt.sh**: `./init-letsencrypt.sh`
+   > If you get `No such file or directory` exception, run the `sed -i -e 's/\r$//' init-letsencrypt.sh` command, 
+   > and then run the script again `./init-letsencrypt`.
+8. Add the following lines to the data/nginx/**nginx.conf** file:
+   ```
+   server {
+       listen 443 ssl;
+       server_name your-domain.com www.your-domain.com;
+       server_tokens off;
+
+       ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+       ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+       include /etc/letsencrypt/options-ssl-nginx.conf;
+       ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+       location / {
+           proxy_pass http://core;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+               proxy_set_header Host $host;
+               proxy_redirect off;
+       }
+
+       location /static/ {
+           alias /usr/src/SpecialRecipe/static/;
+       }
+
+       location /media/ {
+           alias /usr/src/SpecialRecipe/media/;
+       }
+   }
+   ```
+   > Don't forget to change `server_name your-domain.com www.your-domain.com;` to your domains.
+9. Start the services: `docker-compose up --build -d`
+10. Execute **init-letsencrypt.sh** again: `./init-letsencrypt.sh`
 
 # 🌄 Images
 * **Recipes page**
