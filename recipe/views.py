@@ -4,7 +4,7 @@ from django.core.cache import cache
 from django.db.models import Count, Q
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.urls import reverse
-from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from recipe.forms import SearchForm
@@ -58,28 +58,29 @@ class RecipesListView(ListView):
         return context
 
 
-class DescriptionView(TemplateView):
+class DescriptionView(DetailView):
+    model = Recipe
+    context_object_name = 'recipe'
+    slug_url_kwarg = 'recipe_slug'
     template_name = 'recipe/recipe_description.html'
 
     def get(self, request, *args, **kwargs):
-        recipe_slug = kwargs.get('recipe_slug')
+        response = super().get(request, *args, **kwargs)
         ip = request.META.get('REMOTE_ADDR')
+        recipe_slug = kwargs.get(self.slug_url_kwarg)
         view = (ip, recipe_slug)
         has_viewed = cache.get(view)
         if not has_viewed:
             cache.set(view, True, 60)
-            recipe = get_object_or_404(Recipe, slug=recipe_slug)
+            recipe = self.object
             recipe.views += 1
             recipe.save()
-        return super().get(request, *args, **kwargs)
+        return response
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        recipe = get_object_or_404(Recipe, slug=kwargs.get('recipe_slug'))
-        ingredients = Ingredient.objects.filter(recipe=recipe)
-        context['recipe'] = recipe
-        context['ingredients'] = ingredients
-        context['title'] = f'Special Recipe | {recipe.name}'
+        context['ingredients'] = Ingredient.objects.filter(recipe=self.object)
+        context['title'] = f'Special Recipe | {self.object.name}'
         return context
 
 
