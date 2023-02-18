@@ -154,6 +154,71 @@ CACHES = {
     }
 }
 
+# Logging
+
+FILE_HANDLER = {
+    'class': 'logging.handlers.RotatingFileHandler',
+    'maxBytes': 1024 * 1024 * 10,
+    'backupCount': 10,
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'detailed': {
+            'format': '[{asctime}] - {levelname} - {filename} on line {lineno}:\n{message}\n\n',
+            'datefmt': "%Y/%b/%d %H:%M:%S",
+            'style': '{',
+        },
+
+        'brief': {
+            'format': '[{asctime}] - {levelname}:\n{message}',
+            'datefmt': "%Y/%b/%d %H:%M:%S",
+            'style': '{',
+        },
+    },
+
+    'handlers': {
+        'file_django': dict(
+            FILE_HANDLER,
+            formatter='detailed',
+            filename='logs/django.log',
+        ),
+
+        'file_mailing': dict(
+            FILE_HANDLER,
+            formatter='brief',
+            filename='logs/mailing.log',
+            level='INFO',
+        ),
+
+        'file_accounts': dict(
+            FILE_HANDLER,
+            formatter='brief',
+            filename='logs/accounts.log',
+            level='INFO',
+        ),
+    },
+
+    'loggers': {
+        'django': {
+            'handlers': ['file_django'],
+            'level': 'WARNING',
+        },
+
+        "mailings": {
+            "handlers": ["file_mailing"],
+            "level": "INFO",
+        },
+
+        "accounts": {
+            "handlers": ["file_accounts"],
+            "level": "INFO",
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

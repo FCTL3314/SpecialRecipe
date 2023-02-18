@@ -15,6 +15,7 @@ services:
     volumes:
       - ./static/:/usr/src/SpecialRecipe/static/
       - ./media/:/usr/src/SpecialRecipe/media/
+      - ./logs/:/usr/src/SpecialRecipe/logs/
     env_file:
       - ./.env
     expose:
@@ -50,7 +51,9 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: celery -A core worker -l INFO
+    volumes:
+      - ./logs/:/usr/src/SpecialRecipe/logs/
+    command: celery -A core worker -l INFO --logfile logs/celery.log
     env_file:
       - ./.env
     depends_on:

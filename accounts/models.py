@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -7,6 +9,9 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 
 from accounts.tasks import send_email
+
+
+logger = logging.getLogger('mailings')
 
 
 class User(AbstractUser):
@@ -53,6 +58,7 @@ class EmailVerification(models.Model):
         message = render_to_string(html_email_template_name, context)
         emails_list = [self.user.email]
         send_email.delay(subject=subject, message=message, emails_list=emails_list)
+        logger.info(f'Request to send a verification email to {self.user.email}')
 
     def is_expired(self):
         return True if self.expiration < now() else False

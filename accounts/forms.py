@@ -1,3 +1,5 @@
+import logging
+
 from django import forms
 from django.contrib.auth import forms as auth_forms
 from django.core.exceptions import ValidationError
@@ -5,6 +7,10 @@ from django.template.loader import render_to_string
 
 from accounts.models import User
 from accounts.tasks import send_email
+
+
+mailings_logger = logging.getLogger('mailings')
+accounts_logger = logging.getLogger('accounts')
 
 
 class UserRegistrationForm(auth_forms.UserCreationForm):
@@ -24,6 +30,11 @@ class UserRegistrationForm(auth_forms.UserCreationForm):
         'class': 'form-control',
         'placeholder': 'Confirm Password',
     }))
+
+    def save(self, commit=True):
+        username = self.data.get('username')
+        accounts_logger.info(f'User {username} has registered.')
+        return super().save(commit=commit)
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -90,7 +101,7 @@ class UserProfileForm(auth_forms.UserChangeForm):
         if old_email.lower() != new_email.lower():
             self.instance.is_verified = False
             self.instance.save()
-        return super().save(commit=True)
+        return super().save(commit=commit)
 
     class Meta:
         model = User
@@ -143,6 +154,7 @@ class PasswordResetForm(auth_forms.PasswordResetForm):
             send_email.delay(subject=subject, message=message, emails_list=[to_email], html_message=html_message)
         else:
             send_email.delay(subject=subject, message=message, emails_list=[to_email])
+        mailings_logger.info(f'Request to send a password reset email to {to_email}')
 
     class Meta:
         model = User
