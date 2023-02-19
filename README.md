@@ -6,9 +6,9 @@ all available recipes.
 The site provides the ability to create / edit an account, change or reset the password if it has been lost, 
 as well as email verification.
 
-**Link to the website:** https://special-recipe.space/
-
 > ***The project was created for educational purposes.***
+
+**Link to the site:** https://special-recipe.space/
 
 # 🔥 Features
 
@@ -46,7 +46,7 @@ as well as email verification.
 
 1. Clone or download the repository.
 2. Create a virtual environment and install requirements from requirements/local.txt file.
-3. Create an .env file or rename .env.dist in .env and populate it with development variables from .env.dist file:
+3. Create an **.env** file or rename **.env.dist** in **.env** and populate it **only with development variables**:
    * DEBUG
    * SECRET_KEY
    * DOMAIN_NAME
@@ -69,52 +69,23 @@ as well as email verification.
 
 # 🐳 Docker: Production
 
-> *All actions are performed in the project directory.*
+> * **All actions with files are performed in the project directory.**
+> * **Don't forget to install docker and docker compose first.**
+ 
+### Project Deployment:
 
 1. Clone or download the repository and go to its directory.
-2. Install docker and docker-compose:
-   * `apt install -y docker`
-   * `apt install -y docker-compose`
-3. Create an .env file or rename .env.dist in .env and populate it with all variables from .env.dist file.
-4. Open **init-letsencrypt.sh** script and change `domains=(your-domain.com www.your-domain.com)` to your domains.
-5. Open data/nginx/**nginx.conf** file and change `server_name your-domain.com www.your-domain.com;` to your domains.
-6. Grant executable rights to the all scripts:
-   * `chmod +x ./init-letsencrypt.sh`
-   * `chmod +x ./entrypoint.sh`
-7. Execute **init-letsencrypt.sh**: `./init-letsencrypt.sh`
-   > If you get `No such file or directory` exception, run the `sed -i -e 's/\r$//' init-letsencrypt.sh` command, 
-   > and then run the script again `./init-letsencrypt`.
-8. Add the following lines to the data/nginx/**nginx.conf** file:
-   ```
-   server {
-       listen 443 ssl;
-       server_name your-domain.com www.your-domain.com;
-       server_tokens off;
+2. Create an **.env** file or rename **.env.dist** in **.env** and populate it with all variables from **.env.dist** file.
+3. Open data/nginx/**nginx.conf** file and change `server_name example.com www.example.com;` to your domains.
+4. Grant executable rights to the **entrypoint.sh** script: `chmod +x ./entrypoint.sh`
+5. Start the services: `docker-compose up --build -d`
 
-       ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
-       ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
-       include /etc/letsencrypt/options-ssl-nginx.conf;
-       ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+### Obtaining a ssl certificate:
 
-       location / {
-           proxy_pass http://core;
-               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-               proxy_set_header Host $host;
-               proxy_redirect off;
-       }
-
-       location /static/ {
-           alias /usr/src/SpecialRecipe/static/;
-       }
-
-       location /media/ {
-           alias /usr/src/SpecialRecipe/media/;
-       }
-   }
-   ```
-   > Don't forget to change `server_name your-domain.com www.your-domain.com;` to your domains.
-9. Start the services: `docker-compose up --build -d`
-10. Execute **init-letsencrypt.sh** again: `./init-letsencrypt.sh`
+1. Access nginx container: `docker exec -it <nginx-container-id> bin/sh`
+2. Get ssl certificate: `certbot --nginx`
+3. Done ! Now you can exit from nginx container: `exit`
+> **After all this, it is desirable to create a new user with the docker group.**
 
 # 🌄 Images
 * **Recipes page**
