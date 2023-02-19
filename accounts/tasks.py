@@ -2,6 +2,14 @@ from celery import shared_task
 from django.conf import settings
 from django.core.mail import send_mail
 
+from accounts.models import EmailVerification
+
+
+@shared_task
+def send_verification_email(object_id):
+    verification = EmailVerification.objects.get(id=object_id)
+    verification.send_verification_email(use_https=True)
+
 
 @shared_task
 def send_email(subject, message, emails_list, html_message=None):

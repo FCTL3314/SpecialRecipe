@@ -2,14 +2,12 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
-
-from accounts.tasks import send_email
-
 
 logger = logging.getLogger('mailings')
 
@@ -44,7 +42,7 @@ class EmailVerification(models.Model):
 
     def send_verification_email(self, subject_template_name='accounts/email/email_verification_subject.html',
                                 html_email_template_name='accounts/email/email_verification_email.html',
-                                use_https=False):
+                                html_message=None, use_https=False):
         link = reverse('accounts:email-verification', kwargs={'email': self.user.email, 'code': self.code})
 
         context = {
@@ -57,7 +55,14 @@ class EmailVerification(models.Model):
         subject = ''.join(raw_subject.splitlines())
         message = render_to_string(html_email_template_name, context)
         emails_list = [self.user.email]
-        send_email.delay(subject=subject, message=message, emails_list=emails_list)
+        send_mail(
+            subject=subject,
+            message=message,
+            html_message=html_message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=emails_list,
+            fail_silently=False,
+        )
         logger.info(f'Request to send a verification email to {self.user.email}')
 
     def is_expired(self):
