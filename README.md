@@ -85,37 +85,36 @@ as well as email verification.
 1. Access nginx container: `docker exec -it <nginx-container-id> bin/sh`
 2. Get ssl certificate: `certbot --nginx`
 3. Done ! Now you can exit from nginx container: `exit`
-> **After all this, it is desirable to create a new user with the docker group.**
 
 # 🌄 Images
 * **Recipes page**
 
-![firefox_EbTImtf91k](https://user-images.githubusercontent.com/97694131/218304714-ae387f54-f6e1-4a38-986b-229b880d458a.png)
-![firefox_ICwvrpabC1](https://user-images.githubusercontent.com/97694131/218304717-3e6eda9a-ec33-4248-8629-f37d46b2ea27.png)
+![firefox_aWCIlczEsK](https://user-images.githubusercontent.com/97694131/220066734-baa81672-6c34-4493-a734-25923d7e2dd5.jpg)
+![firefox_Kwiy02Peyv](https://user-images.githubusercontent.com/97694131/220066751-f4e56670-b28f-46b1-a2d4-2f8be6f56dff.png)
 <hr>
 
 * **Recipe description pages**
 
-![firefox_TcArWFj7V1](https://user-images.githubusercontent.com/97694131/218304936-0dd3ecc7-77c0-4b51-989b-189e22e14ee8.png)
-![firefox_QqiP4ViNXc](https://user-images.githubusercontent.com/97694131/218304938-12f614eb-eefc-45c2-9f08-b390f473c2ac.png)
+![firefox_BIptF7qvNF](https://user-images.githubusercontent.com/97694131/220067183-6f268b3f-4df7-40a8-9a0d-1e22fd434b10.png)
+![firefox_ClWNl4FRLr](https://user-images.githubusercontent.com/97694131/220067195-5c6fce3f-486e-41df-b269-514256f3d2b6.png)
 <hr>
 
-![firefox_Eeeu1dCB0l](https://user-images.githubusercontent.com/97694131/218304946-fdfdf99a-7a91-4c9f-a6b4-10dbf952c597.png)
-![firefox_UyFly3pelp](https://user-images.githubusercontent.com/97694131/218304952-a97b776b-4081-485c-9a22-034ebd15fb15.png)
+![firefox_MwRO5h1mmH](https://user-images.githubusercontent.com/97694131/220067240-2a42cc0a-e34e-4a6c-bf21-e44381d398d6.png)
+![firefox_O44yFDikVk](https://user-images.githubusercontent.com/97694131/220067264-7c6a5fcf-1216-44b6-906f-90e4cdfc3f6d.png)
 <hr>
 
 * **Bookmarks page**
 
-![firefox_40rdeV1FtQ](https://user-images.githubusercontent.com/97694131/218304895-655a1529-108d-4a5d-832d-6adbaa7bdaa3.png)
+![firefox_qehcuKFwYB](https://user-images.githubusercontent.com/97694131/220067419-97f634e7-4ab4-44c6-90be-bf859d5fa320.png)
 <hr>
 
 * **Profile pages**
 
-![firefox_8Ju1qXjySr](https://user-images.githubusercontent.com/97694131/218304973-4398f787-2241-4ec9-bfb8-85ecd3b0f8f3.png)
-![firefox_XdMnzOVPXR](https://user-images.githubusercontent.com/97694131/218304974-1d301bd9-2c2a-4a21-b199-4e8150084144.png)
+![firefox_fQs32ahCuf](https://user-images.githubusercontent.com/97694131/220067565-e827dbe7-6770-43f1-bf5f-dc2915d6ba79.png)
+![firefox_VGOM765r25](https://user-images.githubusercontent.com/97694131/220067583-e506937b-9ea7-45ba-8af7-d01021e7c244.png)
 <hr>
 
 * **Authentication pages**
 
-![firefox_TWTnPDoUww](https://user-images.githubusercontent.com/97694131/218304986-d633adce-fea7-42da-b7d9-2aa6dd0e149c.png)
-![firefox_6qLBkDuUnE](https://user-images.githubusercontent.com/97694131/218304988-07cc498c-ad37-451e-a439-378e480dbe0c.png)
+![firefox_z9ORAIUYAf](https://user-images.githubusercontent.com/97694131/220067677-08dd1c7c-29a9-45db-9bb5-24f453c1e017.png)
+![firefox_OHwLoPAKEr](https://user-images.githubusercontent.com/97694131/220067688-9b4f426a-edc5-4aba-baab-b6756febe96e.png)
