@@ -184,20 +184,20 @@ LOGGING = {
         'file_django': dict(
             FILE_HANDLER,
             formatter='detailed',
-            filename='logs/django.log',
+            filename=BASE_DIR.joinpath('logs/django.log'),
         ),
 
         'file_mailing': dict(
             FILE_HANDLER,
             formatter='brief',
-            filename='logs/mailing.log',
+            filename=BASE_DIR.joinpath('logs/mailing.log'),
             level='INFO',
         ),
 
         'file_accounts': dict(
             FILE_HANDLER,
             formatter='brief',
-            filename='logs/accounts.log',
+            filename=BASE_DIR.joinpath('logs/accounts.log'),
             level='INFO',
         ),
     },
