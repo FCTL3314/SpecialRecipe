@@ -184,20 +184,20 @@ LOGGING = {
         'file_django': dict(
             FILE_HANDLER,
             formatter='detailed',
-            filename=BASE_DIR.joinpath('logs/django.log'),
+            filename=(BASE_DIR / 'logs/django.log'),
         ),
 
         'file_mailing': dict(
             FILE_HANDLER,
             formatter='brief',
-            filename=BASE_DIR.joinpath('logs/mailing.log'),
+            filename=(BASE_DIR / 'logs/mailing.log'),
             level='INFO',
         ),
 
         'file_accounts': dict(
             FILE_HANDLER,
             formatter='brief',
-            filename=BASE_DIR.joinpath('logs/accounts.log'),
+            filename=(BASE_DIR / 'logs/accounts.log'),
             level='INFO',
         ),
     },
@@ -280,7 +280,6 @@ AUTH_USER_MODEL = 'accounts.User'
 
 LOGIN_URL = '/accounts/login/'
 
-LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # Email
@@ -303,3 +302,5 @@ RECIPES_PAGINATE_BY = env('RECIPES_PAGINATE_BY')
 
 CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
 CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+
+CELERY_TASK_TIME_LIMIT = 30 * 60
