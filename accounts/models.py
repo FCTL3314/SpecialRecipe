@@ -19,7 +19,8 @@ class User(AbstractUser):
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.username)
+        if not self.slug:
+            self.slug = slugify(self.username)
         return super().save()
 
     def clean(self):

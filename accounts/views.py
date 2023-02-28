@@ -4,7 +4,7 @@ from uuid import uuid4
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.timezone import now
@@ -90,7 +90,7 @@ class SendVerificationEmailView(TemplateView):
         email = kwargs.get('email')
         user = get_object_or_404(User, email=email)
         if user != request.user:
-            raise PermissionDenied
+            raise Http404
         valid_verifications = EmailVerification.objects.filter(user=user, expiration__gt=now()).order_by('-created')
         if user.is_verified:
             messages.warning(request, 'You have already verified your email.')
