@@ -117,11 +117,11 @@ class EmailVerificationView(TemplateView):
         email = kwargs.get('email')
         user = get_object_or_404(User, email=email)
         if user != request.user:
-            raise PermissionDenied
-        email_verification = get_object_or_404(EmailVerification, user=user, code=code)
+            raise Http404
+        verification = get_object_or_404(EmailVerification, user=user, code=code)
         if user.is_verified:
             messages.warning(request, 'Your email has already been verified.')
-        elif not email_verification.is_expired():
+        elif not verification.is_expired():
             user.is_verified = True
             user.save()
         else:

@@ -8,7 +8,6 @@ from django.template.loader import render_to_string
 from accounts.models import User
 from accounts.tasks import send_email
 
-
 mailings_logger = logging.getLogger('mailings')
 accounts_logger = logging.getLogger('accounts')
 
