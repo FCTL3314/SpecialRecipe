@@ -321,5 +321,4 @@ DJOSER = {
     },
 
     'PASSWORD_RESET_CONFIRM_URL': 'accounts/reset/{uid}/{token}',
-    'SERIALIZERS': {},
 }

@@ -1,13 +1,13 @@
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
-                                   RetrieveModelMixin, UpdateModelMixin)
+                                   UpdateModelMixin)
 from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from api.pagination import (CategoryPageNumberPagination,
                             RecipePageNumberPagination)
+from api.serializers.recipe import (CategorySerializer, IngredientSerializer,
+                                    RecipeSerializer)
 from recipe.models import Category, Ingredient, Recipe
-from recipe.serializers import (CategorySerializer, IngredientSerializer,
-                                RecipeSerializer)
 
 
 class CategoryModelViewSet(ModelViewSet):

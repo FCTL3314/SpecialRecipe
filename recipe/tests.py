@@ -12,7 +12,7 @@ from recipe.models import Category, Ingredient, Recipe, User
 class RecipesListViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.paginate_by = settings.RECIPES_PAGINATE_BY
         self.recipes = Recipe.objects.all()
         self.categories = Category.objects.all()
@@ -71,7 +71,7 @@ class RecipesListViewTestCase(TestCase):
 class DescriptionViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json', 'ingredient.json']
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.recipes = Recipe.objects.all()
 
     def test_view(self):
@@ -95,7 +95,7 @@ class DescriptionViewTestCase(TestCase):
 class AddToSavedViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = User.objects.create_user(
             username='TestUser',
             email='testuser@mail.com',
@@ -118,7 +118,7 @@ class AddToSavedViewTestCase(TestCase):
 class RemoveFromSavedViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = User.objects.create_user(
             username='TestUser',
             email='testuser@mail.com',

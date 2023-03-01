@@ -13,9 +13,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from accounts.models import EmailVerification, User
-from accounts.serializers import (ChangePasswordSerializer,
-                                  EmailVerificationSerializer,
-                                  UpdateUserSerializer)
+from api.serializers.accounts import (ChangePasswordSerializer,
+                                      EmailVerificationSerializer,
+                                      UpdateUserSerializer)
 
 
 class UserUpdateAPIView(UpdateAPIView):
