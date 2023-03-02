@@ -8,7 +8,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from recipe.forms import SearchForm
-from recipe.models import Category, Ingredient, Recipe
+from recipe.models import Category, Recipe
 
 
 class RecipesListView(ListView):
@@ -79,7 +79,7 @@ class DescriptionView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['ingredients'] = Ingredient.objects.filter(recipe=self.object)
+        context['ingredients'] = self.object.get_ingredients()
         context['title'] = f'Special Recipe | {self.object.name}'
         return context
 

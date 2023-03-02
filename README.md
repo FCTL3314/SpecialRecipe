@@ -7,22 +7,21 @@ The site provides the ability to create / edit an account, change or reset the p
 as well as email verification.
 
 > ***The project was created for educational purposes.***
-
-**Link to the site:** https://special-recipe.space/
-
+> 
 # 🔥 Features
 
-* Bookmarks / Saves
-* Keyword search
-* Search by category
-* Registration / Authorization
-* User profile
-* Profile editing
-* Password change / reset
-* Email verification
-* Postponed Tasks / Celery
-  * Delayed sending of emails
-* Recipe markdown editing
+* **Django Rest API**
+* **Bookmarks / Saves**
+* **Keyword search**
+* **Search by category**
+* **Registration / Authorization**
+* **User profile**
+* **Profile editing**
+* **Password change / reset**
+* **Email verification**
+* **Postponed Tasks / Celery**
+  * **Delayed sending of emails**
+* **Recipe markdown editing**
 
 # ❕ Peculiarities
 
@@ -31,16 +30,16 @@ as well as email verification.
 
 # 📜 Requirements
 
-* Python - 3.11
-* Django - 3.2.16
-* django-debug-toolbar - 3.8.1
-* django-environ - 0.9.0
-* django-summernote - 0.8.20.0
-* django-redis - 5.2.0
-* django-cleanup - 7.0.0
-* Pillow - 9.4.0
-* humanize - 4.6.0
-* celery - 5.2.7
+* **Python - 3.11**
+* **Django - 3.2.16**
+* **django-debug-toolbar - 3.8.1**
+* **django-environ - 0.9.0**
+* **django-summernote - 0.8.20.0**
+* **django-redis - 5.2.0**
+* **django-cleanup - 7.0.0**
+* **Pillow - 9.4.0**
+* **humanize - 4.6.0**
+* **celery - 5.2.7**
 
 # 💽 Local: Development
 
@@ -80,7 +79,7 @@ as well as email verification.
 4. Grant executable rights to the **entrypoint.sh** script: `chmod +x ./entrypoint.sh`
 5. Start the services: `docker-compose up --build -d`
 
-### Obtaining a ssl certificate:
+### Obtaining an ssl certificate:
 
 1. Access nginx container: `docker exec -it <nginx-container-id> bin/sh`
 2. Get ssl certificate: `certbot --nginx`

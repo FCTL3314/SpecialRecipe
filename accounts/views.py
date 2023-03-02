@@ -4,7 +4,7 @@ from uuid import uuid4
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.timezone import now
@@ -15,6 +15,7 @@ from humanize import naturaldelta
 from accounts import forms as account_forms
 from accounts.models import EmailVerification, User
 from accounts.tasks import send_verification_email
+from utils.uid import is_valid_uuid
 
 
 class UserRegistrationView(SuccessMessageMixin, CreateView):
@@ -90,7 +91,7 @@ class SendVerificationEmailView(TemplateView):
         email = kwargs.get('email')
         user = get_object_or_404(User, email=email)
         if user != request.user:
-            raise PermissionDenied
+            raise Http404
         valid_verifications = EmailVerification.objects.filter(user=user, expiration__gt=now()).order_by('-created')
         if user.is_verified:
             messages.warning(request, 'You have already verified your email.')
@@ -116,12 +117,12 @@ class EmailVerificationView(TemplateView):
         code = kwargs.get('code')
         email = kwargs.get('email')
         user = get_object_or_404(User, email=email)
-        if user != request.user:
-            raise PermissionDenied
-        email_verification = get_object_or_404(EmailVerification, user=user, code=code)
+        if user != request.user or not is_valid_uuid(str(code)):
+            raise Http404
+        verification = get_object_or_404(EmailVerification, user=user, code=code)
         if user.is_verified:
             messages.warning(request, 'Your email has already been verified.')
-        elif not email_verification.is_expired():
+        elif not verification.is_expired():
             user.is_verified = True
             user.save()
         else:

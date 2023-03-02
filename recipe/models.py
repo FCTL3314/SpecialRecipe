@@ -25,15 +25,18 @@ class Recipe(models.Model):
     saves = models.ManyToManyField(User, blank=True)
     views = models.PositiveBigIntegerField(default=0)
 
-    class Meta:
-        verbose_name = 'recipe'
-        verbose_name_plural = 'recipes'
+    def get_ingredients(self):
+        return Ingredient.objects.filter(recipe=self)
 
     def total_saves(self):
         return self.saves.count()
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'recipe'
+        verbose_name_plural = 'recipes'
 
 
 class Ingredient(models.Model):
