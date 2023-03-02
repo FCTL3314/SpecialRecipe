@@ -2,9 +2,8 @@ from django.urls import include, path
 from djoser.views import UserViewSet
 from rest_framework import routers
 
-from api.views.accounts import (PasswordChangeUpdateAPIView,
-                                SendVerificationEmailCreateAPIView,
-                                UserUpdateAPIView, VerifyUserUpdateAPIView)
+from api.views.accounts import (EmailVerificationUpdateAPIView,
+                                SendVerificationEmailCreateAPIView)
 from api.views.recipe import (CategoryModelViewSet, IngredientGenericViewSet,
                               RecipeModelViewSet)
 from utils.urls import is_url_allowed
@@ -21,6 +20,7 @@ djoser_user_router.register(r'users', UserViewSet, basename='users')
 allowed_djoser_user_urls = [
     'users/',
     'users/me/',
+    'users/set_password/',
     'users/reset_password/',
     'users/reset_password_confirm/',
 ]
@@ -33,9 +33,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('', include(filtered_djoser_user_router_urls)),
     path('auth/', include('djoser.urls.authtoken')),
-    path('user/update/', UserUpdateAPIView.as_view(), name='user-update'),
-    path('change_password/', PasswordChangeUpdateAPIView.as_view(), name='password-change'),
-    path('verification/send/<str:email>/', SendVerificationEmailCreateAPIView.as_view(),
-         name='send-verification-email'),
-    path('verify/<str:email>/<uuid:code>/', VerifyUserUpdateAPIView.as_view(), name='send-verification-email'),
+    path('verification/send/', SendVerificationEmailCreateAPIView.as_view(), name='send-verification-email'),
+    path('verify/', EmailVerificationUpdateAPIView.as_view(), name='email-verification'),
 ]

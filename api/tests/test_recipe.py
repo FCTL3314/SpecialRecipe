@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.staticfiles.finders import find
 from django.urls import reverse
 from rest_framework import status
@@ -7,22 +9,55 @@ from rest_framework.test import APITestCase
 from accounts.models import User
 from recipe.models import Category, Ingredient, Recipe
 
+user_data = {
+    'username': 'TestUser',
+    'first_name': 'Test',
+    'last_name': 'User',
+    'email': 'testuser@mail.com',
+    'password': 'qnjCmk27yzKTCWWiwdYH',
+    'slug': 'test',
+}
+
 
 class CategoryTestCase(APITestCase):
     fixtures = ['category.json']
 
-    def setUp(self) -> None:
-        self.object = Category.objects.first()
-        self.initial_count = Category.objects.count()
+    def _reduce_log_level(self):
+        """Reduce the log level to avoid messages like 'bad_request'."""
+        logger = logging.getLogger('django.request')
+        self.previous_level = logger.getEffectiveLevel()
+        logger.setLevel(logging.ERROR)
+
+    def _restore_log_level(self):
+        """Restore the normal log level."""
+        logger = logging.getLogger('django.request')
+        logger.setLevel(self.previous_level)
+
+    def _create_user_and_token(self, username=user_data['username'], first_name=user_data['first_name'],
+                               last_name=user_data['last_name'], email=user_data['email'],
+                               password=user_data['password']):
+        """Create a new user and auth token."""
         self.user = User.objects.create_user(
-            username='TestUser',
-            email='testuser@mail.com',
-            password='qnjCmk27yzKTCWWiwdYH',
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password,
         )
         self.token, self.created = Token.objects.get_or_create(user=self.user)
+
+    def setUp(self) -> None:
+        self._reduce_log_level()
+
+        self.object = Category.objects.first()
+        self.initial_count = Category.objects.count()
+        self._create_user_and_token()
         self.data = {'name': 'Test', 'slug': 'test'}
         self.list_path = reverse('api:categories-list')
         self.detail_path = reverse('api:categories-detail', kwargs={'pk': self.object.id})
+
+    def tearDown(self) -> None:
+        self._restore_log_level()
 
     def _make_user_staff(self):
         self.user.is_staff = True
@@ -78,15 +113,36 @@ class CategoryTestCase(APITestCase):
 class RecipeTestCase(APITestCase):
     fixtures = ['recipe.json', 'category.json', 'ingredient.json']
 
-    def setUp(self) -> None:
-        self.object = Recipe.objects.first()
-        self.initial_count = Recipe.objects.count()
+    def _reduce_log_level(self):
+        """Reduce the log level to avoid messages like 'bad_request'."""
+        logger = logging.getLogger('django.request')
+        self.previous_level = logger.getEffectiveLevel()
+        logger.setLevel(logging.ERROR)
+
+    def _restore_log_level(self):
+        """Restore the normal log level."""
+        logger = logging.getLogger('django.request')
+        logger.setLevel(self.previous_level)
+
+    def _create_user_and_token(self, username=user_data['username'], first_name=user_data['first_name'],
+                               last_name=user_data['last_name'], email=user_data['email'],
+                               password=user_data['password']):
+        """Create a new user and auth token."""
         self.user = User.objects.create_user(
-            username='TestUser',
-            email='testuser@mail.com',
-            password='qnjCmk27yzKTCWWiwdYH',
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password,
         )
         self.token, self.created = Token.objects.get_or_create(user=self.user)
+
+    def setUp(self) -> None:
+        self._reduce_log_level()
+
+        self.object = Recipe.objects.first()
+        self.initial_count = Recipe.objects.count()
+        self._create_user_and_token()
         self.data = {
             'name': 'Test',
             'description': 'Test',
@@ -96,6 +152,9 @@ class RecipeTestCase(APITestCase):
         }
         self.list_path = reverse('api:recipes-list')
         self.detail_path = reverse('api:recipes-detail', kwargs={'pk': self.object.id})
+
+    def tearDown(self) -> None:
+        self._restore_log_level()
 
     def _make_user_staff(self):
         self.user.is_staff = True
@@ -157,15 +216,36 @@ class RecipeTestCase(APITestCase):
 class IngredientTestCase(APITestCase):
     fixtures = ['category.json', 'recipe.json', 'ingredient.json']
 
-    def setUp(self) -> None:
-        self.object = Ingredient.objects.first()
-        self.initial_count = Ingredient.objects.count()
+    def _reduce_log_level(self):
+        """Reduce the log level to avoid messages like 'bad_request'."""
+        logger = logging.getLogger('django.request')
+        self.previous_level = logger.getEffectiveLevel()
+        logger.setLevel(logging.ERROR)
+
+    def _restore_log_level(self):
+        """Restore the normal log level."""
+        logger = logging.getLogger('django.request')
+        logger.setLevel(self.previous_level)
+
+    def _create_user_and_token(self, username=user_data['username'], first_name=user_data['first_name'],
+                               last_name=user_data['last_name'], email=user_data['email'],
+                               password=user_data['password']):
+        """Create a new user and auth token."""
         self.user = User.objects.create_user(
-            username='TestUser',
-            email='testuser@mail.com',
-            password='qnjCmk27yzKTCWWiwdYH',
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password,
         )
         self.token, self.created = Token.objects.get_or_create(user=self.user)
+
+    def setUp(self) -> None:
+        self._reduce_log_level()
+
+        self.object = Ingredient.objects.first()
+        self.initial_count = Ingredient.objects.count()
+        self._create_user_and_token()
         self.data = {
             'name': 'Test',
             'recipe_id': Recipe.objects.first().id,
@@ -173,6 +253,9 @@ class IngredientTestCase(APITestCase):
         }
         self.list_path = reverse('api:ingredients-list')
         self.detail_path = reverse('api:ingredients-detail', kwargs={'pk': self.object.id})
+
+    def tearDown(self) -> None:
+        self._restore_log_level()
 
     def _make_user_staff(self):
         self.user.is_staff = True

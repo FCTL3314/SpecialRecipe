@@ -1,4 +1,7 @@
-def is_url_allowed(url_pattern, allowed_urls):
+from typing import List
+
+
+def is_url_allowed(url_pattern, allowed_urls: List[str]) -> bool:
     """
     Allows to exclude unnecessary routes, checks whether the received
     route matches the allowed ones.

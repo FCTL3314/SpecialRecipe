@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.text import slugify
 
 from accounts.models import User
 
@@ -7,11 +6,6 @@ from accounts.models import User
 class Category(models.Model):
     name = models.CharField(max_length=32)
     slug = models.SlugField(unique=True)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        return super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'category'
@@ -30,11 +24,6 @@ class Recipe(models.Model):
     slug = models.SlugField(unique=True)
     saves = models.ManyToManyField(User, blank=True)
     views = models.PositiveBigIntegerField(default=0)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        return super().save(*args, **kwargs)
 
     def get_ingredients(self):
         return Ingredient.objects.filter(recipe=self)

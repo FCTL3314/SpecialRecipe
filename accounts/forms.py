@@ -4,6 +4,7 @@ from django import forms
 from django.contrib.auth import forms as auth_forms
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
+from django.utils.text import slugify
 
 from accounts.models import User
 from accounts.tasks import send_email
@@ -90,16 +91,20 @@ class UserProfileForm(auth_forms.UserChangeForm):
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        if username != self.instance.username and User.objects.filter(username__iexact=username).exists():
+        if username.lower() != self.instance.username.lower() and User.objects.filter(username__iexact=username
+                                                                                      ).exists():
             raise ValidationError('A user with that username already exists.')
         return username
 
     def save(self, commit=True):
+        username = self.cleaned_data.get('username')
         old_email = self.initial.get('email')
         new_email = self.cleaned_data.get('email')
         if old_email.lower() != new_email.lower():
             self.instance.is_verified = False
             self.instance.save()
+        if username:
+            self.instance.slug = slugify(username)
         return super().save(commit=commit)
 
     class Meta:
@@ -152,7 +157,7 @@ class PasswordResetForm(auth_forms.PasswordResetForm):
             html_message = render_to_string(html_email_template_name, context)
             send_email.delay(subject=subject, message=message, emails_list=[to_email], html_message=html_message)
         else:
-            send_email.delay(subject=subject, message=message, emails_list=[to_email])
+            send_email.delay(subject=subject, message=message, recipient_list=[to_email])
         mailings_logger.info(f'Request to send a password reset email to {to_email}')
 
     class Meta:

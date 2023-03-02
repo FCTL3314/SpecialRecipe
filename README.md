@@ -7,9 +7,7 @@ The site provides the ability to create / edit an account, change or reset the p
 as well as email verification.
 
 > ***The project was created for educational purposes.***
-
-**Link to the site:** https://special-recipe.space/
-
+> 
 # 🔥 Features
 
 * Bookmarks / Saves

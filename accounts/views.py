@@ -15,6 +15,7 @@ from humanize import naturaldelta
 from accounts import forms as account_forms
 from accounts.models import EmailVerification, User
 from accounts.tasks import send_verification_email
+from utils.uid import is_valid_uuid
 
 
 class UserRegistrationView(SuccessMessageMixin, CreateView):
@@ -116,7 +117,7 @@ class EmailVerificationView(TemplateView):
         code = kwargs.get('code')
         email = kwargs.get('email')
         user = get_object_or_404(User, email=email)
-        if user != request.user:
+        if user != request.user or not is_valid_uuid(str(code)):
             raise Http404
         verification = get_object_or_404(EmailVerification, user=user, code=code)
         if user.is_verified:

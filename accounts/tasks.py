@@ -12,12 +12,12 @@ def send_verification_email(object_id):
 
 
 @shared_task
-def send_email(subject, message, emails_list, html_message=None):
+def send_email(subject, message, recipient_list, html_message=None):
     send_mail(
         subject=subject,
         message=message,
         html_message=html_message,
         from_email=settings.EMAIL_HOST_USER,
-        recipient_list=emails_list,
+        recipient_list=recipient_list,
         fail_silently=False,
     )
