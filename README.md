@@ -104,7 +104,7 @@ as well as email verification.
 
 * **Bookmarks page**
 
-![firefox_qehcuKFwYB](https://user-images.githubusercontent.com/97694131/220067419-97f634e7-4ab4-44c6-90be-bf859d5fa320.png)
+![firefox_t9L3dG0iBa](https://user-images.githubusercontent.com/97694131/222557584-4e93b400-62d9-4954-8154-fd2b1eff4a92.png)
 <hr>
 
 * **Profile pages**
