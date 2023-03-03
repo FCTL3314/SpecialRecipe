@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView
@@ -27,9 +28,19 @@ class CategoryModelViewSet(ModelViewSet):
 
 
 class RecipeModelViewSet(ModelViewSet):
-    queryset = Recipe.objects.order_by('name')
     serializer_class = RecipeSerializer
     pagination_class = RecipePageNumberPagination
+
+    def get_queryset(self):
+        search = self.request.query_params.get('search')
+        category_slug = self.request.query_params.get('category_slug')
+        if search:
+            queryset = Recipe.objects.filter(Q(name__icontains=search) | Q(description__icontains=search))
+        elif category_slug:
+            queryset = Recipe.objects.filter(category__slug=category_slug)
+        else:
+            queryset = Recipe.objects.all()
+        return queryset.order_by('name')
 
     def get_permissions(self):
         if self.action in ('create', 'update', 'destroy'):
@@ -56,7 +67,8 @@ class AddToSavedCreateView(CreateAPIView):
             return Response({'recipe_id': 'This field if required.'}, status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=recipe_id)
         recipe.saves.add(request.user)
-        return Response(status=status.HTTP_201_CREATED)
+        data = {'recipe_id': recipe_id, 'user_id': request.user.id}
+        return Response(data, status=status.HTTP_201_CREATED)
 
 
 class RemoveFromSavedDestroyView(DestroyAPIView):

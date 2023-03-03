@@ -22,6 +22,8 @@ as well as email verification.
 * **Postponed Tasks / Celery**
   * **Delayed sending of emails**
 * **Recipe markdown editing**
+* **Tests**
+  * **94% coverage**
 
 # ❕ Peculiarities
 
