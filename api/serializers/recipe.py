@@ -26,12 +26,17 @@ class RecipeSerializer(serializers.ModelSerializer):
     )
     slug = serializers.SlugField(required=False)
     ingredients = serializers.SerializerMethodField(read_only=True)
+    total_saves = serializers.SerializerMethodField(read_only=True)
 
     @staticmethod
     def get_ingredients(obj):
         return IngredientSerializer(Ingredient.objects.filter(recipe=obj), many=True).data
 
+    @staticmethod
+    def get_total_saves(obj):
+        return obj.saves.count()
+
     class Meta:
         model = Recipe
         fields = ('id', 'image', 'name', 'description', 'cooking_description', 'category', 'category_id', 'ingredients',
-                  'slug', 'views',)
+                  'total_saves', 'slug', 'views')

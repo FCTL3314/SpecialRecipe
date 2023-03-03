@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
+from accounts.models import User
 from recipe.forms import SearchForm
 from recipe.models import Category, Recipe
 
@@ -113,9 +114,8 @@ def add_to_saved(request, recipe_id):
 @login_required()
 def remove_from_saved(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    save = recipe.saves.filter(id=request.user.id)
-    if save.exists():
-        recipe.saves.remove(save.first())
+    user = get_object_or_404(User, id=request.user.id, recipe=recipe)
+    recipe.saves.remove(user)
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return HttpResponseRedirect(referer)

@@ -4,8 +4,9 @@ from rest_framework import routers
 
 from api.views.accounts import (EmailVerificationUpdateAPIView,
                                 SendVerificationEmailCreateAPIView)
-from api.views.recipe import (CategoryModelViewSet, IngredientGenericViewSet,
-                              RecipeModelViewSet)
+from api.views.recipe import (AddToSavedCreateView, CategoryModelViewSet,
+                              IngredientGenericViewSet, RecipeModelViewSet,
+                              RemoveFromSavedDestroyView)
 from utils.urls import is_url_allowed
 
 app_name = 'api'
@@ -35,4 +36,6 @@ urlpatterns = [
     path('auth/', include('djoser.urls.authtoken')),
     path('verification/send/', SendVerificationEmailCreateAPIView.as_view(), name='send-verification-email'),
     path('verify/', EmailVerificationUpdateAPIView.as_view(), name='email-verification'),
+    path('saves/add/', AddToSavedCreateView.as_view(), name='add-to-saved'),
+    path('saves/remove/', RemoveFromSavedDestroyView.as_view(), name='remove-from-saved'),
 ]
