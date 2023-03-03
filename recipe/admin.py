@@ -12,13 +12,11 @@ class RecipeInlineAdmin(admin.TabularInline):
 
 class IngredientInlineAdmin(admin.TabularInline):
     model = Ingredient
-    fields = ('name',)
     ordering = ('name',)
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name',)
     search_fields = ('name',)
     ordering = ('name',)
     prepopulated_fields = {'slug': ('name',)}
@@ -27,8 +25,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(SummernoteModelAdmin):
+    readonly_fields = ('views',)
     summernote_fields = ('cooking_description',)
-    list_display = ('name', 'description')
     search_fields = ('name',)
     ordering = ('name',)
     prepopulated_fields = {'slug': ('name',)}

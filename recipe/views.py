@@ -21,16 +21,16 @@ class RecipesListView(ListView):
     paginate_by = settings.RECIPES_PAGINATE_BY
 
     def get_queryset(self):
-        recipes = super().get_queryset()
+        initial_queryset = super().get_queryset()
         category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
         if search:
-            return recipes.filter(
-                Q(name__icontains=search) | Q(description__icontains=search)).prefetch_related('saves')
+            queryset = initial_queryset.filter(Q(name__icontains=search) | Q(description__icontains=search))
         elif category_slug:
-            return recipes.filter(category__slug=category_slug).prefetch_related('saves')
+            queryset = initial_queryset.filter(category__slug=category_slug)
         else:
-            return recipes.prefetch_related('saves')
+            queryset = initial_queryset
+        return queryset.prefetch_related('saves')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()

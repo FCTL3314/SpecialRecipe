@@ -4,8 +4,6 @@ from recipe.models import Category, Ingredient, Recipe
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    slug = serializers.SlugField(required=False)
-
     class Meta:
         model = Category
         fields = ('id', 'name', 'slug')
@@ -24,7 +22,6 @@ class RecipeSerializer(serializers.ModelSerializer):
     category_id = serializers.PrimaryKeyRelatedField(
         write_only=True, queryset=Category.objects.all(), source='category'
     )
-    slug = serializers.SlugField(required=False)
     ingredients = serializers.SerializerMethodField(read_only=True)
     total_saves = serializers.SerializerMethodField(read_only=True)
 
@@ -39,4 +36,4 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'image', 'name', 'description', 'cooking_description', 'category', 'category_id', 'ingredients',
-                  'total_saves', 'slug', 'views')
+                  'total_saves', 'views')
