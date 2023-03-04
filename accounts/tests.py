@@ -372,7 +372,7 @@ class UserProfileViewTestCase(TestCase):
         self.assertEqual(self.user.email, user_data['email'])
         self.assertFalse(self.user.image)
 
-        with open(find('icon/default_user_image.png'), 'rb') as image:
+        with open(find('img/default_user_image.png'), 'rb') as image:
             self.data['image'] = image
             response = self.client.post(self.path, self.data, follow=True)
 

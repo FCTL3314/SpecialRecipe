@@ -3,6 +3,7 @@ from datetime import timedelta
 from uuid import uuid4
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.staticfiles.finders import find
 from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -91,10 +92,15 @@ class UserTestCase(APITestCase):
         self.assertTrue(User.objects.filter(username=user_create_data['username']).exists())
 
     def test_user_update(self):
-        response = self.client.patch(self.me_path, self.data, HTTP_AUTHORIZATION=f'Token {self.token}')
+        self.assertFalse(self.user.image)
+
+        with open(find('img/default_user_image.png'), 'rb') as image:
+            self.data['image'] = image
+            response = self.client.patch(self.me_path, self.data, HTTP_AUTHORIZATION=f'Token {self.token}')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.user.refresh_from_db()
+        self.assertTrue(self.user.image)
         self.assertEqual(self.data['username'], self.user.username)
         self.assertEqual(self.data['first_name'], self.user.first_name)
         self.assertEqual(self.data['last_name'], self.user.last_name)

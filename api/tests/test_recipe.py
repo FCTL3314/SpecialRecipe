@@ -179,7 +179,7 @@ class RecipeTestCase(APITestCase):
     def test_recipe_create_success(self):
         self._make_user_staff()
 
-        with open(find('icon/default_user_image.png'), 'rb') as image:
+        with open(find('img/default_recipe_image.jpg'), 'rb') as image:
             self.data['image'] = image
             response = self.client.post(self.list_path, self.data, HTTP_AUTHORIZATION=f'Token {self.token}')
 
