@@ -1,18 +1,18 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
-from django.db.models import Count, Q
+from django.db.models import Count, F, Q
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from accounts.models import User
+from common.views import CacheMixin
 from recipe.forms import SearchForm
 from recipe.models import Category, Recipe
 
 
-class RecipesListView(ListView):
+class RecipesListView(CacheMixin, ListView):
     model = Recipe
     context_object_name = 'recipes'
     template_name = 'recipe/index.html'
@@ -36,24 +36,16 @@ class RecipesListView(ListView):
         context = super().get_context_data()
         context['title'] = 'Special Recipe | Recipes'
 
-        categories_cache = cache.get('categories')
-        if categories_cache:
-            context['categories'] = categories_cache
-        else:
-            context['categories'] = Category.objects.all()
-            cache.set('categories', context['categories'], 60 * 60)
+        context['categories'] = self.get_cached_data_or_new('categories', lambda: Category.objects.all(), 60 * 60)
+        context['popular_recipes'] = self.get_cached_data_or_new(
+            'popular_recipes',
+            lambda: Recipe.objects.annotate(saves_count=Count('saves')).order_by('-saves_count')[:3],
+            3600 * 24,
+        )
 
-        popular_recipes_cache = cache.get('popular_recipes')
-        if popular_recipes_cache:
-            context['popular_recipes'] = popular_recipes_cache
-        else:
-            context['popular_recipes'] = Recipe.objects.annotate(
-                saves_count=Count('saves')
-            ).order_by('-saves_count')[:3]
-            cache.set('popular_recipes', context['popular_recipes'], 3600 * 24)
-
-        context['selected_category'] = self.kwargs.get('category_slug')
+        context['selected_category_slug'] = self.kwargs.get('category_slug')
         context['form'] = SearchForm(initial={'search': self.request.GET.get('search')})
+
         if self.request.user.is_authenticated:
             context['user_saves'] = self.object_list.filter(saves=self.request.user)
         return context
@@ -73,9 +65,8 @@ class DescriptionView(DetailView):
         has_viewed = cache.get(view)
         if not has_viewed:
             cache.set(view, True, 60)
-            recipe = self.object
-            recipe.views += 1
-            recipe.save()
+            self.object.views = F('views') + 1
+            self.object.save(update_fields=['views'])
         return response
 
     def get_context_data(self, **kwargs):
@@ -114,8 +105,7 @@ def add_to_saved(request, recipe_id):
 @login_required()
 def remove_from_saved(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    user = get_object_or_404(User, id=request.user.id, recipe=recipe)
-    recipe.saves.remove(user)
+    recipe.saves.remove(request.user)
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return HttpResponseRedirect(referer)

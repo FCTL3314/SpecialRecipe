@@ -62,7 +62,7 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
     template_name = 'accounts/profile/profile.html'
 
     def get_success_url(self):
-        return reverse_lazy('accounts:profile', args={self.object.slug})
+        return reverse_lazy('accounts:profile', args=(self.object.slug,))
 
     def form_invalid(self, form):
         self.object.refresh_from_db()

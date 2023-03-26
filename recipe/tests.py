@@ -90,7 +90,7 @@ class DescriptionViewTestCase(TestCase):
         self.remote_addr = '127.0.0.1'
 
     def test_view(self):
-        initial_view = self.object.views
+        initial_views = self.object.views
         ingredients = Ingredient.objects.filter(recipe=self.object)
 
         response = self.client.get(self.path, REMOTE_ADDR=self.remote_addr)
@@ -101,7 +101,7 @@ class DescriptionViewTestCase(TestCase):
         self.assertEqual(response.context_data['title'], f'Special Recipe | {self.object.name}')
         self.assertEqual(response.context_data['recipe'], self.object)
         self.assertEqual(list(response.context_data['ingredients']), list(ingredients))
-        self.assertGreater(self.object.views, initial_view)
+        self.assertGreater(self.object.views, initial_views)
         cache.delete((self.remote_addr, self.object.slug))
 
 
@@ -122,7 +122,7 @@ class AddToSavedViewTestCase(TestCase):
         self._create_user()
         self.client.login(**user_data)
         self.object = Recipe.objects.first()
-        self.path = reverse('recipe:add-to-saved', args={self.object.id})
+        self.path = reverse('recipe:add-to-saved', args=(self.object.id,))
 
     def test_view(self):
         self.assertFalse(self.object.saves.filter(id=self.user.id))
@@ -152,7 +152,7 @@ class RemoveFromSavedViewTestCase(TestCase):
         self.client.login(**user_data)
         self.object = Recipe.objects.first()
         self.object.saves.add(self.user)
-        self.path = reverse('recipe:remove-from-saved', args={self.object.id})
+        self.path = reverse('recipe:remove-from-saved', args=(self.object.id,))
 
     def test_view(self):
         self.assertTrue(self.object.saves.filter(id=self.user.id))
