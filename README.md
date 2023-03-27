@@ -19,12 +19,13 @@ as well as email verification.
 * **Password change / reset**
 * **Email verification**
 * **Recipe markdown editing**
-* **Bookmarks / Saves**
-  * **Without reloading the page.**
 * **Postponed Tasks / Celery**
   * **Delayed sending of emails**
 * **Tests**
   * **94% coverage**
+* **Bookmarks / Saves**
+  * **Without reloading the page**
+  * **With animation**
 
 # ❕ Peculiarities
 
@@ -88,7 +89,7 @@ as well as email verification.
 2. Get ssl certificate: `certbot --nginx`
 3. Done ! Now you can exit from nginx container: `exit`
 
-# 🌄 Images
+# 🌄 Demonstration
 * **Recipes page**
 
 ![firefox_aWCIlczEsK](https://user-images.githubusercontent.com/97694131/220066734-baa81672-6c34-4493-a734-25923d7e2dd5.jpg)
@@ -120,3 +121,7 @@ as well as email verification.
 
 ![firefox_z9ORAIUYAf](https://user-images.githubusercontent.com/97694131/220067677-08dd1c7c-29a9-45db-9bb5-24f453c1e017.png)
 ![firefox_OHwLoPAKEr](https://user-images.githubusercontent.com/97694131/220067688-9b4f426a-edc5-4aba-baab-b6756febe96e.png)
+
+* **Animation of adding/removing from bookmarks**
+
+![recipe-animation](https://user-images.githubusercontent.com/97694131/228067650-30dff9d6-9671-4081-bd70-18606594cc17.gif)
