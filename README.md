@@ -11,7 +11,6 @@ as well as email verification.
 # 🔥 Features
 
 * **Django Rest API**
-* **Bookmarks / Saves**
 * **Keyword search**
 * **Search by category**
 * **Registration / Authorization**
@@ -19,9 +18,11 @@ as well as email verification.
 * **Profile editing**
 * **Password change / reset**
 * **Email verification**
+* **Recipe markdown editing**
+* **Bookmarks / Saves**
+  * **Without reloading the page.**
 * **Postponed Tasks / Celery**
   * **Delayed sending of emails**
-* **Recipe markdown editing**
 * **Tests**
   * **94% coverage**
 
