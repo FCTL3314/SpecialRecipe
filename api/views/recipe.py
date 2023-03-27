@@ -7,6 +7,7 @@ from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.authentication import SessionAuthentication
 
 from accounts.models import User
 from api.pagination import (CategoryPageNumberPagination,
@@ -59,6 +60,7 @@ class IngredientGenericViewSet(CreateModelMixin, UpdateModelMixin, GenericViewSe
 
 
 class AddToSavedCreateView(CreateAPIView):
+    authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
@@ -72,6 +74,7 @@ class AddToSavedCreateView(CreateAPIView):
 
 
 class RemoveFromSavedDestroyView(DestroyAPIView):
+    authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def destroy(self, request, *args, **kwargs):
