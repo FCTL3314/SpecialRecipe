@@ -32,6 +32,12 @@ $('.bookmark').click(function () {
             bookmarkText.text(newBookmarkCount + " Saves");
             bookmarkLink.find('img').attr('src', `/static/icon/bookmark${isSaved ? '' : '-fill'}.svg`);
             bookmarkLink.attr('data-is-saved', !isSaved);
+            bookmarkLink.find('img')
+                .addClass('animate__animated animate__flip')
+                .one('animationend', function () {
+                    $(this).removeClass('animate__animated animate__flip');
+                });
+
         },
         error: function (xhr, status, error) {
             if (xhr.status === 403) {
