@@ -49,7 +49,7 @@ class RecipesListViewTestCase(TestCase):
             list(response.context_data['recipes']),
             list(self.queryset.order_by('name')[:self.paginate_by])
         )
-        self.assertEqual(response.context_data['selected_category'], None)
+        self.assertEqual(response.context_data['selected_category_slug'], None)
 
     def test_list_view_category(self):
         category = self.categories.first()
@@ -62,7 +62,7 @@ class RecipesListViewTestCase(TestCase):
             list(response.context_data['recipes']),
             list(self.queryset.filter(category__slug=category.slug).order_by('name'))[:self.paginate_by]
         )
-        self.assertEqual(response.context_data['selected_category'], category.slug)
+        self.assertEqual(response.context_data['selected_category_slug'], category.slug)
 
     def test_list_view_search(self):
         search = 'pizza'
@@ -77,7 +77,7 @@ class RecipesListViewTestCase(TestCase):
             list(
                 self.queryset.filter(Q(name__icontains=search) | Q(description__icontains=search)).order_by('name')
             )[:self.paginate_by])
-        self.assertEqual(response.context_data['selected_category'], None)
+        self.assertEqual(response.context_data['selected_category_slug'], None)
 
 
 class DescriptionViewTestCase(TestCase):
