@@ -3,7 +3,7 @@ from rest_framework.pagination import PageNumberPagination
 
 
 class CategoryPageNumberPagination(PageNumberPagination):
-    page_size = 12
+    page_size = settings.CATEGORIES_PAGINATE_BY
     page_size_query_param = 'page_size'
     max_page_size = 32
 

@@ -38,6 +38,7 @@ env = environ.Env(
     EMAIL_HOST_PASSWORD=str,
     EMAIL_USE_SSL=bool,
     RECIPES_PAGINATE_BY=int,
+    CATEGORIES_PAGINATE_BY=int,
 )
 
 # Take environment variables from .env file.
@@ -299,6 +300,7 @@ else:
 # Recipes
 
 RECIPES_PAGINATE_BY = env('RECIPES_PAGINATE_BY')
+CATEGORIES_PAGINATE_BY = env('CATEGORIES_PAGINATE_BY')
 
 # Celery
 

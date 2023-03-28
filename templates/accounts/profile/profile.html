@@ -95,7 +95,7 @@
           <h2 class="text-center text-truncate">{{ user.username }}</h2>
         </div>
         <div class="text-center">
-          <h4>You cannot view another user's profile.</h4>
+          <h4>Member since {{ user.date_joined|date:"F j, Y" }}</h4>
         </div>
       {% endif %}
     </div>

@@ -39,13 +39,45 @@ $('.bookmark').click(function () {
         },
         error: function (xhr, status, error) {
             if (xhr.status === 403) {
-                console.log(window.location.pathname)
                 const currentUrl = window.location.pathname;
                 const loginUrl = '/accounts/login/?next=' + currentUrl;
                 window.location.replace(loginUrl)
             } else {
                 console.error(error)
             }
+        }
+    });
+});
+
+$('#show-more-btn').click(function () {
+    const loadMoreButton = $(this);
+    const page = parseInt(loadMoreButton.attr('data-page'));
+    const categorySlug = loadMoreButton.attr('data-selected-category-slug');
+
+    $.ajax({
+        type: 'GET',
+        url: `/api/v1/categories/`,
+        data: {
+            page: page
+        },
+        success: function (response) {
+            console.log(categorySlug)
+            for (const category of response.results) {
+                const categoryItem = $(`<a class="list-group-item list-group-item-action" href="/recipes/category/${
+                    category.slug}/">${category.name}</a>`);
+                if (category.slug === categorySlug) {
+                    categoryItem.addClass("text-dark bg-body-secondary disabled");
+                }
+                categoryItem.insertBefore(loadMoreButton)
+            }
+            if (response.next === null) {
+                loadMoreButton.remove()
+            } else {
+                loadMoreButton.attr('data-page', page + 1)
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(error)
         }
     });
 });

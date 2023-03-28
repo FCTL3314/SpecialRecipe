@@ -33,10 +33,15 @@ class RecipesListView(CacheMixin, ListView):
         return queryset.prefetch_related('saves')
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        cache.delete('categories')
         context = super().get_context_data()
         context['title'] = 'Special Recipe | Recipes'
 
-        context['categories'] = self.get_cached_data_or_new('categories', lambda: Category.objects.all(), 60 * 60)
+        context['categories'] = self.get_cached_data_or_new(
+            'categories',
+            lambda: Category.objects.order_by('name')[:settings.CATEGORIES_PAGINATE_BY],
+            60 * 60,
+        )
         context['popular_recipes'] = self.get_cached_data_or_new(
             'popular_recipes',
             lambda: Recipe.objects.annotate(saves_count=Count('saves')).order_by('-saves_count')[:3],

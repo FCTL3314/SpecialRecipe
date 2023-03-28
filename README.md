@@ -7,12 +7,10 @@ The site provides the ability to create / edit an account, change or reset the p
 as well as email verification.
 
 > ***The project was created for educational purposes.***
-> 
+
 # 🔥 Features
 
 * **Django Rest API**
-* **Keyword search**
-* **Search by category**
 * **Registration / Authorization**
 * **User profile**
 * **Profile editing**
@@ -58,6 +56,7 @@ as well as email verification.
    * REDIS_PORT
    * EMAIL_HOST_USER
    * RECIPES_PAGINATE_BY
+   * CATEGORIES_PAGINATE_BY
 4. Make migrations:
    * `python manage.py makemigrations`
    * `python manage.py migrate`
