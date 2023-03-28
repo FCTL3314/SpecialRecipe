@@ -113,8 +113,9 @@ as well as email verification.
 
 * **Profile pages**
 
-![firefox_fQs32ahCuf](https://user-images.githubusercontent.com/97694131/220067565-e827dbe7-6770-43f1-bf5f-dc2915d6ba79.png)
-![firefox_VGOM765r25](https://user-images.githubusercontent.com/97694131/220067583-e506937b-9ea7-45ba-8af7-d01021e7c244.png)
+![firefox_Rjwr6yUSXn](https://user-images.githubusercontent.com/97694131/228260132-94c3b088-46b7-4188-8f1b-a2279133ea9b.png)
+![firefox_GVubZrCC1K](https://user-images.githubusercontent.com/97694131/228260184-ba6e80e7-1351-4273-9383-6293d5b673f1.png)
+![firefox_aLKDOhKHSg](https://user-images.githubusercontent.com/97694131/228260189-13084b42-4231-4a65-8e80-e00b01a76e3f.png)
 <hr>
 
 * **Authentication pages**
