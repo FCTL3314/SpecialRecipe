@@ -46,9 +46,12 @@
               here
             </a>
             to send a verification email)
+          {% else %}
+            <span class="text-success">&check; Verified</span>
           {% endif %}
         </label>
         {{ form.email }}
+        <p>If you want to change your email address, go to the Email tab.</p>
       </div>
       <div class="mb-4">
         <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>

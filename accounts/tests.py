@@ -12,6 +12,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.timezone import now
 from humanize import naturaldelta
 
+from accounts.forms import EmailChangeForm
 from accounts.models import EmailVerification, User
 
 user_data = {
@@ -28,10 +29,10 @@ class UserRegistrationViewTestCase(TestCase):
 
     def setUp(self) -> None:
         self.data = {
-            'username': 'TestUser',
-            'email': 'testuser@mail.com',
-            'password1': 'qnjCmk27yzKTCWWiwdYH',
-            'password2': 'qnjCmk27yzKTCWWiwdYH',
+            'username': user_data['username'],
+            'email': user_data['email'],
+            'password1': user_data['password'],
+            'password2': user_data['password'],
         }
         self.path = reverse('accounts:registration')
 
@@ -63,10 +64,10 @@ class UserRegistrationViewTestCase(TestCase):
     def test_user_registration_post_short_username(self):
         username = 'abc'
 
-        short_username_data = self.data.copy()
-        short_username_data['username'] = username
+        data = self.data.copy()
+        data['username'] = username
 
-        response = self.client.post(self.path, short_username_data)
+        response = self.client.post(self.path, data)
 
         self._common_tests(response)
         self.assertFormError(response, 'form', 'username', 'Ensure this value has at least 4 characters (it has 3).')
@@ -93,11 +94,11 @@ class UserRegistrationViewTestCase(TestCase):
     def test_user_registration_post_weak_password(self):
         password = '123456'
 
-        weak_password_data = self.data.copy()
-        weak_password_data['password1'] = password
-        weak_password_data['password2'] = password
+        data = self.data.copy()
+        data['password1'] = password
+        data['password2'] = password
 
-        response = self.client.post(self.path, weak_password_data)
+        response = self.client.post(self.path, data)
 
         self._common_tests(response)
         errors = [
@@ -122,8 +123,8 @@ class UserLoginViewTestCase(TestCase):
 
     def setUp(self) -> None:
         self.data = {
-            'username': 'TestUser',
-            'password': 'qnjCmk27yzKTCWWiwdYH',
+            'username': user_data['username'],
+            'password': user_data['password'],
         }
         self._create_user()
         self.path = reverse('accounts:login')
@@ -149,13 +150,13 @@ class UserLoginViewTestCase(TestCase):
         self.assertRedirects(response, reverse('accounts:profile', args=(self.user.slug,)))
 
     def test_user_login_post_via_email(self):
-        email = 'testuser@mail.com'
-        email_data = self.data.copy()
-        email_data['username'] = email
+        data = self.data.copy()
+        email = user_data['email']
+        data['username'] = email
 
         self.assertTrue(User.objects.filter(email=email).exists())
 
-        response = self.client.post(self.path, email_data)
+        response = self.client.post(self.path, data)
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertRedirects(response, reverse('accounts:profile', args=(self.user.slug,)))
@@ -188,12 +189,12 @@ class UserLoginViewTestCase(TestCase):
     def test_user_login_post_invalid_username(self):
         username = 'InvalidUsername'
 
-        invalid_username_data = self.data.copy()
-        invalid_username_data['username'] = username
+        data = self.data.copy()
+        data['username'] = username
 
         self.assertFalse(User.objects.filter(username=username).exists())
 
-        response = self.client.post(self.path, invalid_username_data)
+        response = self.client.post(self.path, data)
 
         self._common_tests(response)
         self.assertContains(response, 'Invalid username/email or password.')
@@ -201,12 +202,12 @@ class UserLoginViewTestCase(TestCase):
     def test_user_login_post_invalid_password(self):
         password = 'InvalidPassword'
 
-        invalid_password_data = self.data.copy()
-        invalid_password_data['password'] = password
+        data = self.data.copy()
+        data['password'] = password
 
-        self.assertTrue(User.objects.filter(username=invalid_password_data['username']).exists())
+        self.assertTrue(User.objects.filter(username=data['username']).exists())
 
-        response = self.client.post(self.path, invalid_password_data)
+        response = self.client.post(self.path, data)
 
         self._common_tests(response)
         self.assertContains(response, 'Invalid username/email or password.')
@@ -346,10 +347,10 @@ class UserProfileViewTestCase(TestCase):
 
     def setUp(self) -> None:
         self.data = {
-            'username': 'NewTestUser',
-            'first_name': 'NewTest',
-            'last_name': 'NewUser',
-            'email': 'newtestuser@mail.com',
+            'username': user_data['username'] + 'New',
+            'first_name': user_data['first_name'] + 'New',
+            'last_name': user_data['last_name'] + 'New',
+            'email': user_data['email'] + 'New',
         }
         self._create_user()
         self.client.force_login(user=self.user)
@@ -369,7 +370,6 @@ class UserProfileViewTestCase(TestCase):
         self.assertEqual(self.user.username, user_data['username'])
         self.assertEqual(self.user.first_name, user_data['first_name'])
         self.assertEqual(self.user.last_name, user_data['last_name'])
-        self.assertEqual(self.user.email, user_data['email'])
         self.assertFalse(self.user.image)
 
         with open(find('img/default_user_image.png'), 'rb') as image:
@@ -381,7 +381,6 @@ class UserProfileViewTestCase(TestCase):
         self.assertEqual(self.user.username, self.data['username'])
         self.assertEqual(self.user.first_name, self.data['first_name'])
         self.assertEqual(self.user.last_name, self.data['last_name'])
-        self.assertEqual(self.user.email, self.data['email'])
         self.assertTrue(self.user.image)
         self.assertContains(response, 'Profile updated successfully!')
 
@@ -416,8 +415,8 @@ class UserProfileViewTestCase(TestCase):
         email = 'user@mail.com'
 
         data = self.data.copy()
-        data['username'] = 'User'
-        data['email'] = 'user@mail.com'
+        data['username'] = username
+        data['email'] = email
 
         self.assertFalse(User.objects.filter(username=username, email=email))
 
@@ -534,3 +533,68 @@ class PwdResetConfirmViewTestCase(TestCase):
         self._common_tests(response)
         self.assertContains(response, 'The password reset link was invalid, possibly because it has already been used. '
                                       'Please request a new password reset.', html=True)
+
+
+class UserProfileEmailViewTest(TestCase):
+
+    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
+                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
+        self.user = User.objects.create_user(
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password,
+        )
+
+    def setUp(self):
+        self._create_user()
+        self.client.force_login(self.user)
+        self.url = reverse('accounts:profile-email', args=(self.user.id,))
+
+    def _common_tests(self, response):
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Special Recipe | Profile - Email')
+        self.assertTemplateUsed(response, 'accounts/profile/profile.html')
+
+    def test_profile_email_page_contains_form(self):
+        response = self.client.get(self.url)
+
+        self._common_tests(response)
+        form = response.context.get('form')
+        self.assertIsInstance(form, EmailChangeForm)
+
+    def test_profile_email_form_changes_email_address(self):
+        new_email = user_data['email'] + 'New'
+
+        response = self.client.post(
+            self.url,
+            {'new_email': new_email, 'old_password': user_data['password']},
+            follow=True,
+        )
+
+        self._common_tests(response)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, new_email)
+
+    def test_profile_email_form_returns_error_for_invalid_password(self):
+        response = self.client.post(self.url, {'new_email': user_data['email'], 'old_password': 123})
+
+        self._common_tests(response)
+        self.assertContains(response, 'Your old password was entered incorrectly. Please enter it again.')
+
+    def test_profile_email_form_returns_error_for_existing_email(self):
+        email = 'New' + user_data['email']
+
+        User.objects.create_user(
+            username=user_data['username'] + 'New',
+            email=email,
+            password=user_data['password'],
+        )
+        response = self.client.post(self.url, {
+            'new_email': email,
+            'old_password': user_data['password'],
+        })
+
+        self._common_tests(response)
+        self.assertContains(response, 'This email address is already in use.')

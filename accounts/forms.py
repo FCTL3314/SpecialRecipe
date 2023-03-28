@@ -80,14 +80,26 @@ class UserProfileForm(auth_forms.UserChangeForm):
         'type': 'text',
         'placeholder': 'Miller',
     }))
-    email = forms.CharField(widget=forms.EmailInput(attrs={
+    email = forms.EmailField(widget=forms.TextInput(attrs={
         'class': 'form-control',
+        'readonly': True,
     }))
     image = forms.ImageField(required=False, widget=forms.FileInput(attrs={
         'class': 'form-control',
         'type': 'file',
         'aria-label': 'Upload',
     }))
+
+    def __init__(self, *args, **kwargs):
+        """
+        The initial for the form field occurs here, since
+        this field is not included in the tuple of fields,
+        so that the server does not accept information from
+        this field, but for the user to see it filled out.
+        """
+        instance = kwargs.get('instance')
+        kwargs['initial'] = {'email': instance.email}
+        super().__init__(*args, **kwargs)
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -98,18 +110,13 @@ class UserProfileForm(auth_forms.UserChangeForm):
 
     def save(self, commit=True):
         username = self.cleaned_data.get('username')
-        old_email = self.initial.get('email')
-        new_email = self.cleaned_data.get('email')
-        if old_email.lower() != new_email.lower():
-            self.instance.is_verified = False
-            self.instance.save()
         if username:
             self.instance.slug = slugify(username)
         return super().save(commit=commit)
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'image')
+        fields = ('username', 'first_name', 'last_name', 'image')
 
 
 class PasswordChangeForm(auth_forms.PasswordChangeForm):
@@ -188,3 +195,35 @@ class SetPasswordForm(auth_forms.SetPasswordForm):
     class Meta:
         model = User
         fields = ('new_password1', 'new_password2')
+
+
+class EmailChangeForm(auth_forms.PasswordChangeForm):
+    new_email = forms.CharField(widget=forms.EmailInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter Email',
+    }))
+    old_password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter your password',
+    }))
+    new_password1 = None
+    new_password2 = None
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(user, *args, **kwargs)
+
+    def clean_new_email(self):
+        new_email = self.cleaned_data.get('new_email')
+        if self.user.email == new_email:
+            raise forms.ValidationError("You're already using this email address.")
+        if User.objects.filter(email=new_email).exists():
+            raise forms.ValidationError("This email address is already in use. Please use a different email address.")
+        return new_email
+
+    def save(self, commit=True):
+        self.user.email = self.cleaned_data['new_email']
+        self.user.is_verified = False
+        if commit:
+            self.user.save()
+        return self.user

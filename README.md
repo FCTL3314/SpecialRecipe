@@ -122,6 +122,6 @@ as well as email verification.
 ![firefox_z9ORAIUYAf](https://user-images.githubusercontent.com/97694131/220067677-08dd1c7c-29a9-45db-9bb5-24f453c1e017.png)
 ![firefox_OHwLoPAKEr](https://user-images.githubusercontent.com/97694131/220067688-9b4f426a-edc5-4aba-baab-b6756febe96e.png)
 
-* **Animation of adding/removing from bookmarks**
+* **Animation of adding / removing from bookmarks**
 
 ![recipe-animation](https://user-images.githubusercontent.com/97694131/228067650-30dff9d6-9671-4081-bd70-18606594cc17.gif)

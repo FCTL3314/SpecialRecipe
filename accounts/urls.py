@@ -13,7 +13,8 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
 
     path('user/<slug:slug>/', account_view.UserProfileView.as_view(), name='profile'),
-    path('user/password/<slug:slug>/', account_view.UserProfilePasswordView.as_view(), name='profile-password'),
+    path('user/<slug:slug>/email/', account_view.UserProfileEmailView.as_view(), name='profile-email'),
+    path('user/<slug:slug>/password/', account_view.UserProfilePasswordView.as_view(), name='profile-password'),
 
     path('verification/send/<str:email>/', login_required(account_view.SendVerificationEmailView.as_view()),
          name='send-verification-email'),

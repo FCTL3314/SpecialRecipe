@@ -87,6 +87,16 @@ class UserProfilePasswordView(SuccessMessageMixin, auth_views.PasswordChangeView
         return reverse_lazy('accounts:profile-password', args={self.request.user.slug})
 
 
+class UserProfileEmailView(SuccessMessageMixin, auth_views.PasswordChangeView):
+    template_name = 'accounts/profile/profile.html'
+    title = 'Special Recipe | Profile - Email'
+    form_class = account_forms.EmailChangeForm
+    success_message = 'Your email has been successfully changed!'
+
+    def get_success_url(self):
+        return reverse_lazy('accounts:profile-email', args={self.request.user.slug})
+
+
 class SendVerificationEmailView(TemplateView):
     template_name = 'accounts/email/email_verification_done.html'
 
