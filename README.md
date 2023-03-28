@@ -91,7 +91,7 @@ as well as email verification.
 # 🌄 Demonstration
 * **Recipes page**
 
-![firefox_aWCIlczEsK](https://user-images.githubusercontent.com/97694131/220066734-baa81672-6c34-4493-a734-25923d7e2dd5.jpg)
+![firefox_0OEyClRk8G](https://user-images.githubusercontent.com/97694131/228347099-21f929f8-cf29-4604-a96b-a9b6018a1a56.jpg)
 ![firefox_Kwiy02Peyv](https://user-images.githubusercontent.com/97694131/220066751-f4e56670-b28f-46b1-a2d4-2f8be6f56dff.png)
 <hr>
 
