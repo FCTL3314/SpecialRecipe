@@ -29,19 +29,11 @@
           <a class="nav-link" aria-current="page" href="{% url 'index' %}">Recipes</a>
         </li>
         <li class="nav-item">
-          {% if not request.user.is_authenticated %}
-            <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="You must be logged in">
-              <a class="nav-link disabled" href="{% url 'recipe:saves' %}">
-                My bookmarks
-              </a>
-            </div>
-          {% else %}
-            <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip">
-              <a class="nav-link" href="{% url 'recipe:saves' %}">
-                My bookmarks
-              </a>
-            </div>
-          {% endif %}
+          <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip">
+            <a class="nav-link" href="{% url 'recipe:saves' %}">
+              My bookmarks
+            </a>
+          </div>
         </li>
         <li class="nav-item">
           <a class="nav-link" aria-current="page" href="#footer">About</a>

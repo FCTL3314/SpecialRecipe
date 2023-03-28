@@ -16,7 +16,8 @@ function getCookie(name) {
 
 $('.bookmark').click(function () {
     const recipeId = $(this).data('recipe-id');
-    const bookmarkLink = $(`a[data-recipe-id="${recipeId}"]`);
+    const bookmarkLink = $(this);
+    const bookmarkImg = bookmarkLink.find('img');
     const isSaved = bookmarkLink.attr('data-is-saved') === 'true';
 
     $.ajax({
@@ -30,18 +31,18 @@ $('.bookmark').click(function () {
             const newBookmarkCount = isSaved ? bookmarkCount - 1 : bookmarkCount + 1;
 
             bookmarkText.text(newBookmarkCount + " Saves");
-            bookmarkLink.find('img').attr('src', `/static/icon/bookmark${isSaved ? '' : '-fill'}.svg`);
+            bookmarkImg.attr('src', `/static/icon/bookmark${isSaved ? '' : '-fill'}.svg`);
+            bookmarkImg.addClass('animate__animated animate__flip').one('animationend', function () {
+                $(this).removeClass('animate__animated animate__flip');
+            });
             bookmarkLink.attr('data-is-saved', !isSaved);
-            bookmarkLink.find('img')
-                .addClass('animate__animated animate__flip')
-                .one('animationend', function () {
-                    $(this).removeClass('animate__animated animate__flip');
-                });
-
         },
         error: function (xhr, status, error) {
             if (xhr.status === 403) {
-                window.location.replace('/accounts/login/')
+                console.log(window.location.pathname)
+                const currentUrl = window.location.pathname;
+                const loginUrl = '/accounts/login/?next=' + currentUrl;
+                window.location.replace(loginUrl)
             } else {
                 console.error(error)
             }

@@ -36,6 +36,9 @@ class UserLoginView(auth_views.LoginView):
     template_name = 'accounts/login.html'
 
     def get_success_url(self):
+        next_query = self.request.GET.get('next')
+        if next_query:
+            return next_query
         return reverse_lazy('accounts:profile', args={self.request.user.slug})
 
     def form_valid(self, form):
