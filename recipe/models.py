@@ -22,14 +22,14 @@ class Recipe(models.Model):
     cooking_description = models.TextField()
     category = models.ForeignKey(to=Category, on_delete=models.PROTECT)
     slug = models.SlugField(unique=True)
-    saves = models.ManyToManyField(User, blank=True)
+    bookmarks = models.ManyToManyField(User, blank=True, through='RecipeBookmark')
     views = models.PositiveBigIntegerField(default=0)
 
     def get_ingredients(self):
         return Ingredient.objects.filter(recipe=self)
 
-    def total_saves(self):
-        return self.saves.count()
+    def bookmarks_count(self):
+        return self.bookmarks.count()
 
     def __str__(self):
         return self.name
@@ -45,3 +45,8 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RecipeBookmark(models.Model):
+    recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)

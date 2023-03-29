@@ -61,7 +61,6 @@ $('#show-more-btn').click(function () {
             page: page
         },
         success: function (response) {
-            console.log(categorySlug)
             for (const category of response.results) {
                 const categoryItem = $(`<a class="list-group-item list-group-item-action" href="/recipes/category/${
                     category.slug}/">${category.name}</a>`);

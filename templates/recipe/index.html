@@ -71,7 +71,7 @@
           <div class="row mt-4">
             {% for recipe in recipes %}
               <div class="col-lg-4 col-md-6 mb-3">
-                {% if recipe in user_saves %}
+                {% if recipe in user_bookmarks %}
                   {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_active.html' %}
                 {% else %}
                   {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_inactive.html' %}

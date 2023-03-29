@@ -23,17 +23,17 @@ class RecipeSerializer(serializers.ModelSerializer):
         write_only=True, queryset=Category.objects.all(), source='category'
     )
     ingredients = serializers.SerializerMethodField(read_only=True)
-    total_saves = serializers.SerializerMethodField(read_only=True)
+    bookmarks_count = serializers.SerializerMethodField(read_only=True)
 
     @staticmethod
     def get_ingredients(obj):
         return IngredientSerializer(Ingredient.objects.filter(recipe=obj), many=True).data
 
     @staticmethod
-    def get_total_saves(obj):
-        return obj.saves.count()
+    def get_bookmarks_count(obj):
+        return obj.bookmarks.count()
 
     class Meta:
         model = Recipe
         fields = ('id', 'image', 'name', 'description', 'cooking_description', 'category', 'category_id', 'ingredients',
-                  'total_saves', 'views')
+                  'bookmarks_count', 'views')

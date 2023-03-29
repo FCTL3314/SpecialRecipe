@@ -30,10 +30,9 @@ class RecipesListView(CacheMixin, ListView):
             queryset = initial_queryset.filter(category__slug=category_slug)
         else:
             queryset = initial_queryset
-        return queryset.prefetch_related('saves')
+        return queryset.prefetch_related('bookmarks')
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        cache.delete('categories')
         context = super().get_context_data()
         context['title'] = 'Special Recipe | Recipes'
 
@@ -44,7 +43,7 @@ class RecipesListView(CacheMixin, ListView):
         )
         context['popular_recipes'] = self.get_cached_data_or_new(
             'popular_recipes',
-            lambda: Recipe.objects.annotate(saves_count=Count('saves')).order_by('-saves_count')[:3],
+            lambda: Recipe.objects.annotate(bookmarks_count=Count('bookmarks')).order_by('-bookmarks_count')[:3],
             3600 * 24,
         )
 
@@ -52,7 +51,7 @@ class RecipesListView(CacheMixin, ListView):
         context['form'] = SearchForm(initial={'search': self.request.GET.get('search')})
 
         if self.request.user.is_authenticated:
-            context['user_saves'] = self.object_list.filter(saves=self.request.user)
+            context['user_bookmarks'] = self.object_list.filter(bookmarks=self.request.user)
         return context
 
 
@@ -81,7 +80,7 @@ class DescriptionView(DetailView):
         return context
 
 
-class SavesListView(ListView):
+class BookmarksListView(ListView):
     model = Recipe
     context_object_name = 'saved_recipes'
     template_name = 'accounts/saved_recipes.html'
@@ -89,18 +88,18 @@ class SavesListView(ListView):
 
     def get_queryset(self):
         recipes = super().get_queryset()
-        return recipes.filter(saves=self.request.user).prefetch_related('saves')
+        return recipes.filter(bookmarks=self.request.user).prefetch_related('bookmarks')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
-        context['title'] = f'Special Recipe | {self.request.user.username}\'s saves'
+        context['title'] = f'Special Recipe | {self.request.user.username}\'s bookmarks'
         return context
 
 
 @login_required()
-def add_to_saved(request, recipe_id):
+def add_to_bookmarks(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    recipe.saves.add(request.user)
+    recipe.bookmarks.add(request.user, through_defaults=None)
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return HttpResponseRedirect(referer)
@@ -108,9 +107,9 @@ def add_to_saved(request, recipe_id):
 
 
 @login_required()
-def remove_from_saved(request, recipe_id):
+def remove_from_bookmarks(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    recipe.saves.remove(request.user)
+    recipe.bookmarks.remove(request.user)
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return HttpResponseRedirect(referer)

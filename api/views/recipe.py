@@ -59,7 +59,7 @@ class IngredientGenericViewSet(CreateModelMixin, UpdateModelMixin, GenericViewSe
         return super().get_permissions()
 
 
-class AddToSavedCreateView(CreateAPIView):
+class AddToBookmarksCreateView(CreateAPIView):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -68,12 +68,12 @@ class AddToSavedCreateView(CreateAPIView):
         if not recipe_id:
             return Response({'recipe_id': 'This field if required.'}, status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        recipe.saves.add(request.user)
+        recipe.bookmarks.add(request.user, through_defaults=None)
         data = {'recipe_id': recipe_id, 'user_id': request.user.id}
         return Response(data, status=status.HTTP_201_CREATED)
 
 
-class RemoveFromSavedDestroyView(DestroyAPIView):
+class RemoveFromBookmarksDestroyView(DestroyAPIView):
     authentication_classes = (SessionAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -83,5 +83,5 @@ class RemoveFromSavedDestroyView(DestroyAPIView):
             return Response({'recipe_id': 'This field if required.'}, status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=recipe_id)
         user = get_object_or_404(User, id=request.user.id, recipe=recipe)
-        recipe.saves.remove(user)
+        recipe.bookmarks.remove(user)
         return Response(status=status.HTTP_204_NO_CONTENT)

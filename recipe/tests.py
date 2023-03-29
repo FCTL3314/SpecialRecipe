@@ -23,8 +23,8 @@ class RecipesListViewTestCase(TestCase):
 
     def setUp(self) -> None:
         self.paginate_by = settings.RECIPES_PAGINATE_BY
-        self.queryset = Recipe.objects.all()
-        self.categories = Category.objects.all()
+        self.queryset = Recipe.objects.order_by('name')
+        self.categories = Category.objects.order_by('name')[:settings.CATEGORIES_PAGINATE_BY]
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -37,7 +37,7 @@ class RecipesListViewTestCase(TestCase):
         else:
             self.assertEqual(
                 list(response.context_data['popular_recipes']),
-                list(self.queryset.annotate(saves_count=Count('saves')).order_by('-saves_count')[:3])
+                list(self.queryset.annotate(bookmarks_count=Count('bookmarks')).order_by('-bookmarks_count')[:3])
             )
 
     def test_list_view(self):
@@ -47,7 +47,7 @@ class RecipesListViewTestCase(TestCase):
         self._common_tests(response)
         self.assertEqual(
             list(response.context_data['recipes']),
-            list(self.queryset.order_by('name')[:self.paginate_by])
+            list(self.queryset[:self.paginate_by])
         )
         self.assertEqual(response.context_data['selected_category_slug'], None)
 
@@ -105,7 +105,7 @@ class DescriptionViewTestCase(TestCase):
         cache.delete((self.remote_addr, self.object.slug))
 
 
-class AddToSavedViewTestCase(TestCase):
+class AddToBookmarksViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
     def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
@@ -122,19 +122,19 @@ class AddToSavedViewTestCase(TestCase):
         self._create_user()
         self.client.login(**user_data)
         self.object = Recipe.objects.first()
-        self.path = reverse('recipe:add-to-saved', args=(self.object.id,))
+        self.path = reverse('recipe:add-to-bookmarks', args=(self.object.id,))
 
     def test_view(self):
-        self.assertFalse(self.object.saves.filter(id=self.user.id))
+        self.assertFalse(self.object.bookmarks.filter(id=self.user.id))
 
         response = self.client.get(self.path, HTTP_REFERER=reverse('index'))
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertRedirects(response, reverse('index'))
-        self.assertTrue(self.object.saves.filter(id=self.user.id))
+        self.assertTrue(self.object.bookmarks.filter(id=self.user.id))
 
 
-class RemoveFromSavedViewTestCase(TestCase):
+class RemoveFromBookmarksViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
     def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
@@ -151,14 +151,14 @@ class RemoveFromSavedViewTestCase(TestCase):
         self._create_user()
         self.client.login(**user_data)
         self.object = Recipe.objects.first()
-        self.object.saves.add(self.user)
-        self.path = reverse('recipe:remove-from-saved', args=(self.object.id,))
+        self.object.bookmarks.add(self.user, through_defaults=None)
+        self.path = reverse('recipe:remove-from-bookmarks', args=(self.object.id,))
 
     def test_view(self):
-        self.assertTrue(self.object.saves.filter(id=self.user.id))
+        self.assertTrue(self.object.bookmarks.filter(id=self.user.id))
 
         response = self.client.get(self.path, HTTP_REFERER=reverse('index'))
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertRedirects(response, reverse('index'))
-        self.assertFalse(self.object.saves.filter(id=self.user.id))
+        self.assertFalse(self.object.bookmarks.filter(id=self.user.id))
