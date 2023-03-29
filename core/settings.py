@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_cleanup',
     'django_summernote',
+    'widget_tweaks',
 
     'recipe',
     'accounts',

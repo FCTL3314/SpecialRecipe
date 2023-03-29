@@ -9,3 +9,12 @@ class SearchForm(forms.Form):
         'aria-label': 'Search',
         'autocomplete': 'off',
     }))
+
+
+class CommentForm(forms.Form):
+    comment = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Add a comment...',
+        'type': 'text',
+        'maxlength': '516',
+    }))

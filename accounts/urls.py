@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from accounts import views as account_view
@@ -10,7 +9,7 @@ app_name = 'accounts'
 urlpatterns = [
     path('registration/', logout_required(account_view.UserRegistrationView.as_view()), name='registration'),
     path('login/', logout_required(account_view.UserLoginView.as_view()), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path('logout/', account_view.LogoutView.as_view(), name='logout'),
 
     path('user/<slug:slug>/', account_view.UserProfileView.as_view(), name='profile'),
     path('user/<slug:slug>/email/', account_view.UserProfileEmailView.as_view(), name='profile-email'),

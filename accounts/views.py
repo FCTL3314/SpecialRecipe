@@ -35,8 +35,12 @@ class UserLoginView(auth_views.LoginView):
     form_class = account_forms.UserLoginForm
     template_name = 'accounts/login.html'
 
+    def get(self, request, *args, **kwargs):
+        request.session['before_login_url'] = request.META.get('HTTP_REFERER')
+        return super().get(request, *args, **kwargs)
+
     def get_success_url(self):
-        next_query = self.request.GET.get('next')
+        next_query = self.request.session.get('before_login_url')
         if next_query:
             return next_query
         return reverse_lazy('accounts:profile', args={self.request.user.slug})
@@ -56,6 +60,15 @@ class UserLoginView(auth_views.LoginView):
         context = super().get_context_data()
         context['title'] = 'Special Recipe | Login'
         return context
+
+
+class LogoutView(auth_views.LogoutView):
+
+    def get_next_page(self):
+        referer = self.request.META.get('HTTP_REFERER')
+        if referer:
+            return referer
+        return super().get_next_page()
 
 
 class UserProfileView(SuccessMessageMixin, UpdateView):

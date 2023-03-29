@@ -28,6 +28,9 @@ class Recipe(models.Model):
     def get_ingredients(self):
         return Ingredient.objects.filter(recipe=self)
 
+    def get_comments(self):
+        return Comment.objects.filter(recipe=self).order_by('-created_date')
+
     def bookmarks_count(self):
         return self.bookmarks.count()
 
@@ -50,3 +53,13 @@ class Ingredient(models.Model):
 class RecipeBookmark(models.Model):
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+
+
+class Comment(models.Model):
+    recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
+    author = models.ForeignKey(to=User, null=True, on_delete=models.SET_NULL)
+    text = models.CharField(max_length=516)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text

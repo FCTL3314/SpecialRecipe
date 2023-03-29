@@ -1,5 +1,6 @@
 {% extends 'recipe/base.html' %}
 {% load static %}
+{% load widget_tweaks %}
 
 
 {% block content %}
@@ -31,6 +32,63 @@
             {% endfor %}
           </ul>
         </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8">
+        <hr>
+        <div class="mb-3">
+          <h3>{{ comments.count }} Comments</h3>
+        </div>
+        <div class="d-flex mb-3">
+          <img class="me-3 rounded-circle"
+               src="{% if user.is_authenticated %} {{ user.image.url }} {% else %} {% static 'img/default_user_image.png' %} {% endif %}"
+               alt="user-image" width="40" height="40">
+          <form method="POST" action="{% url 'recipe:comment-add' recipe.id %}" class="w-100">
+
+            {% csrf_token %}
+
+            {% if user.is_authenticated %}
+              <div class="input-group mb-3">
+                {{ form.comment }}
+                <button class="btn btn-outline-success" type="submit" id="comment-submit">Comment</button>
+              </div>
+            {% else %}
+              <div class="input-group">
+                {{ form.comment|attr:'disabled' }}
+                <button class="btn btn-outline-success" type="submit" id="comment-submit" disabled>Comment</button>
+              </div>
+              <p>
+                <a href="{% url 'accounts:login' %}">Sign In</a> or
+                <a href="{% url 'accounts:registration' %}">Sign Up</a> to leave comments.
+              </p>
+            {% endif %}
+          </form>
+        </div>
+        {% if comments %}
+          {% for comment in comments %}
+            <div class="d-flex align-items-start mb-3">
+              <a href="{% url 'accounts:profile' comment.author.slug %}">
+                <img class="me-3 rounded-circle" src="{% if comment.author.image %}
+                                                      {{ comment.author.image.url }}
+                                                    {% else %}
+                                                      {% static 'img/default_user_image.png' %}
+                                                    {% endif %}" alt="user-image" width="40" height="40">
+              </a>
+              <div>
+                <a class="fs-5 me-1 link link-dark text-decoration-none"
+                   href="{% url 'accounts:profile' comment.author.slug %}">{{ comment.author.username }}</a>
+                <span class="text-body-secondary">{{ comment.created_date|timesince }} ago</span>
+                <p class="text-break">{{ comment.text }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center mb-5">
+            <img class="mb-4" src="{% static 'icon/comment.svg' %}" alt="comment" width="125" height="125">
+            <h4>Looks like no one has left a comment yet, be the first!</h4>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>

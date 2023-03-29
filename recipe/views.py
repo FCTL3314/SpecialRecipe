@@ -2,14 +2,16 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.db.models import Count, F, Q
+from django.http import HttpResponseBadRequest
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
 
 from common.views import CacheMixin
-from recipe.forms import SearchForm
-from recipe.models import Category, Recipe
+from recipe.forms import CommentForm, SearchForm
+from recipe.models import Category, Comment, Recipe
 
 
 class RecipesListView(CacheMixin, ListView):
@@ -55,11 +57,12 @@ class RecipesListView(CacheMixin, ListView):
         return context
 
 
-class DescriptionView(DetailView):
+class RecipeDetailView(FormMixin, DetailView):
     model = Recipe
     context_object_name = 'recipe'
     slug_url_kwarg = 'recipe_slug'
     template_name = 'recipe/recipe_description.html'
+    form_class = CommentForm
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
@@ -76,6 +79,7 @@ class DescriptionView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['ingredients'] = self.object.get_ingredients()
+        context['comments'] = self.object.get_comments()
         context['title'] = f'Special Recipe | {self.object.name}'
         return context
 
@@ -110,6 +114,19 @@ def add_to_bookmarks(request, recipe_id):
 def remove_from_bookmarks(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     recipe.bookmarks.remove(request.user)
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return HttpResponseRedirect(referer)
+    return HttpResponseRedirect(reverse('index'))
+
+
+@login_required()
+def add_comment(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    text = request.POST.get('comment')
+    if not text:
+        return HttpResponseBadRequest('Comment text is missing.')
+    Comment.objects.create(text=text, author=request.user, recipe=recipe)
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return HttpResponseRedirect(referer)
