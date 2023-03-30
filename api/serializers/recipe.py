@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from recipe.models import Category, Ingredient, Recipe
+from api.serializers.accounts import UserSerializer
+from recipe.models import Category, Comment, Ingredient, Recipe, RecipeBookmark
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -37,3 +38,19 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'image', 'name', 'description', 'cooking_description', 'category', 'category_id', 'ingredients',
                   'bookmarks_count', 'views')
+
+
+class RecipeBookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecipeBookmark
+        fields = ('id', 'recipe', 'user')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+    recipe = RecipeSerializer(read_only=True)
+    recipe_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'author', 'recipe', 'recipe_id', 'created_date')

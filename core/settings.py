@@ -39,6 +39,7 @@ env = environ.Env(
     EMAIL_USE_SSL=bool,
     RECIPES_PAGINATE_BY=int,
     CATEGORIES_PAGINATE_BY=int,
+    COMMENTS_PAGINATE_BY=int,
 )
 
 # Take environment variables from .env file.
@@ -70,6 +71,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     'rest_framework',
     'rest_framework.authtoken',
@@ -302,6 +304,7 @@ else:
 
 RECIPES_PAGINATE_BY = env('RECIPES_PAGINATE_BY')
 CATEGORIES_PAGINATE_BY = env('CATEGORIES_PAGINATE_BY')
+COMMENTS_PAGINATE_BY = env('COMMENTS_PAGINATE_BY')
 
 # Celery
 

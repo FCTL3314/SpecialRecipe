@@ -11,19 +11,19 @@ as well as email verification.
 # 🔥 Features
 
 * **Django Rest API**
+* **Update page information without page reload.**
+* **Postponed Tasks / Celery**
+  * **Email sanding**
+* **Bookmarks / Saves**
+  * **Animation**
+* **Recipe Comments**
+* **Recipe markdown editing**
 * **Registration / Authorization**
 * **User profile**
 * **Profile editing**
 * **Password change / reset**
 * **Email verification**
-* **Recipe markdown editing**
-* **Postponed Tasks / Celery**
-  * **Delayed sending of emails**
 * **Tests**
-  * **94% coverage**
-* **Bookmarks / Saves**
-  * **Without reloading the page**
-  * **With animation**
 
 # ❕ Peculiarities
 
@@ -57,6 +57,7 @@ as well as email verification.
    * EMAIL_HOST_USER
    * RECIPES_PAGINATE_BY
    * CATEGORIES_PAGINATE_BY
+   * COMMENTS_PAGINATE_BY
 4. Make migrations:
    * `python manage.py makemigrations`
    * `python manage.py migrate`

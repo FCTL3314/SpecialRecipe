@@ -27,9 +27,12 @@
               {{ category.name }}
             </a>
           {% endfor %}
-          <button id="show-more-btn" class="list-group-item list-group-item-action" data-page="2" data-selected-category-slug="{{ selected_category_slug }}">
-            Show more&hellip;
-          </button>
+          {% if has_more_categories %}
+            <button id="show-more-categories-btn" class="list-group-item list-group-item-action text-primary" data-page="2"
+                    data-selected-category-slug="{{ selected_category_slug }}">
+              Show more&hellip;
+            </button>
+          {% endif %}
         </div>
       </div>
       <div class="col-lg-9 my-2">

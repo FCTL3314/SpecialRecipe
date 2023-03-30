@@ -43,6 +43,7 @@ class RecipesListView(CacheMixin, ListView):
             lambda: Category.objects.order_by('name')[:settings.CATEGORIES_PAGINATE_BY],
             60 * 60,
         )
+        context['has_more_categories'] = Category.objects.count() > settings.CATEGORIES_PAGINATE_BY
         context['popular_recipes'] = self.get_cached_data_or_new(
             'popular_recipes',
             lambda: Recipe.objects.annotate(bookmarks_count=Count('bookmarks')).order_by('-bookmarks_count')[:3],
@@ -79,7 +80,10 @@ class RecipeDetailView(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['ingredients'] = self.object.get_ingredients()
-        context['comments'] = self.object.get_comments()
+        comments = self.object.get_comments()
+        context['comments'] = comments[:settings.COMMENTS_PAGINATE_BY]
+        context['comments_count'] = comments.count()
+        context['has_more_comments'] = comments.count() > settings.COMMENTS_PAGINATE_BY
         context['title'] = f'Special Recipe | {self.object.name}'
         return context
 

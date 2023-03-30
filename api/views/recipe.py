@@ -4,17 +4,19 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
-                                   UpdateModelMixin)
+                                   ListModelMixin, UpdateModelMixin)
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from accounts.models import User
 from api.pagination import (CategoryPageNumberPagination,
+                            CommentPageNumberPagination,
                             RecipePageNumberPagination)
-from api.serializers.recipe import (CategorySerializer, IngredientSerializer,
-                                    RecipeSerializer)
-from recipe.models import Category, Ingredient, Recipe
+from api.serializers.recipe import (CategorySerializer, CommentSerializer,
+                                    IngredientSerializer,
+                                    RecipeBookmarkSerializer, RecipeSerializer)
+from recipe.models import Category, Comment, Ingredient, Recipe, RecipeBookmark
 
 
 class CategoryModelViewSet(ModelViewSet):
@@ -59,18 +61,46 @@ class IngredientGenericViewSet(CreateModelMixin, UpdateModelMixin, GenericViewSe
         return super().get_permissions()
 
 
+class CommentGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMixin):
+    authentication_classes = (SessionAuthentication,)
+    serializer_class = CommentSerializer
+    pagination_class = CommentPageNumberPagination
+
+    def list(self, request, *args, **kwargs):
+        recipe_id = request.GET.get('recipe_id')
+        if not recipe_id:
+            return Response({'recipe_id': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        comments = Comment.objects.filter(recipe_id=recipe_id).order_by('-created_date')
+        paginated_comments = self.paginate_queryset(comments)
+        serializer = self.serializer_class(paginated_comments, many=True)
+        return self.get_paginated_response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(author=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get_permissions(self):
+        if self.action in ('create', 'update', 'destroy'):
+            self.permission_classes = (IsAuthenticated,)
+        return super().get_permissions()
+
+
 class AddToBookmarksCreateView(CreateAPIView):
     authentication_classes = (SessionAuthentication,)
+    serializer_class = RecipeBookmarkSerializer
     permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         recipe_id = request.data.get('recipe_id')
         if not recipe_id:
-            return Response({'recipe_id': 'This field if required.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'recipe_id': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=recipe_id)
         recipe.bookmarks.add(request.user, through_defaults=None)
-        data = {'recipe_id': recipe_id, 'user_id': request.user.id}
-        return Response(data, status=status.HTTP_201_CREATED)
+        bookmark = RecipeBookmark.objects.get(recipe=recipe, user=request.user)
+        serializer = self.serializer_class(bookmark)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class RemoveFromBookmarksDestroyView(DestroyAPIView):
@@ -80,7 +110,7 @@ class RemoveFromBookmarksDestroyView(DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         recipe_id = request.data.get('recipe_id')
         if not recipe_id:
-            return Response({'recipe_id': 'This field if required.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'recipe_id': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=recipe_id)
         user = get_object_or_404(User, id=request.user.id, recipe=recipe)
         recipe.bookmarks.remove(user)

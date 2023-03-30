@@ -1,6 +1,7 @@
 {% extends 'recipe/base.html' %}
 {% load static %}
 {% load widget_tweaks %}
+{% load humanize %}
 
 
 {% block content %}
@@ -38,13 +39,16 @@
       <div class="col-lg-8">
         <hr>
         <div class="mb-3">
-          <h3>{{ comments.count }} Comments</h3>
+          <h3>{{ comments_count }} Comments</h3>
         </div>
         <div class="d-flex mb-3">
           <img class="me-3 rounded-circle"
-               src="{% if user.is_authenticated %} {{ user.image.url }} {% else %} {% static 'img/default_user_image.png' %} {% endif %}"
-               alt="user-image" width="40" height="40">
-          <form method="POST" action="{% url 'recipe:comment-add' recipe.id %}" class="w-100">
+               src="{% if user.is_authenticated and user.image %}
+                        {{ user.image.url }}
+                    {% else %}
+                      {% static 'img/default_user_image.png' %}
+                    {% endif %}" alt="user-image" width="40" height="40">
+          <form id="add-comment-form" method="POST" class="w-100" data-recipe-id="{{ recipe.id }}">
 
             {% csrf_token %}
 
@@ -65,31 +69,50 @@
             {% endif %}
           </form>
         </div>
-        {% if comments %}
-          {% for comment in comments %}
-            <div class="d-flex align-items-start mb-3">
-              <a href="{% url 'accounts:profile' comment.author.slug %}">
-                <img class="me-3 rounded-circle" src="{% if comment.author.image %}
+        <div id="comments-container">
+          {% if comments %}
+            {% for comment in comments %}
+              <div class="d-flex align-items-start mb-4">
+                <a href="{% url 'accounts:profile' comment.author.slug %}">
+                  <img class="me-3 rounded-circle" src="{% if comment.author.image %}
                                                       {{ comment.author.image.url }}
                                                     {% else %}
                                                       {% static 'img/default_user_image.png' %}
                                                     {% endif %}" alt="user-image" width="40" height="40">
-              </a>
-              <div>
-                <a class="fs-5 me-1 link link-dark text-decoration-none"
-                   href="{% url 'accounts:profile' comment.author.slug %}">{{ comment.author.username }}</a>
-                <span class="text-body-secondary">{{ comment.created_date|timesince }} ago</span>
-                <p class="text-break">{{ comment.text }}</p>
+                </a>
+                <div>
+                  <a class="fs-5 me-1 link link-dark text-decoration-none"
+                     href="{% url 'accounts:profile' comment.author.slug %}">{{ comment.author.username }}</a>
+                  <span class="text-body-secondary">{{ comment.created_date|naturaltime }}</span>
+                  <p class="text-break">{{ comment.text }}</p>
+                </div>
               </div>
+            {% endfor %}
+          {% else %}
+            <div id="no-comments" class="text-center mb-5">
+              <img class="mb-4" src="{% static 'icon/comment.svg' %}" alt="comment" width="125" height="125">
+              <h4>Looks like no one has left a comment yet, be the first!</h4>
             </div>
-          {% endfor %}
-        {% else %}
-          <div class="text-center mb-5">
-            <img class="mb-4" src="{% static 'icon/comment.svg' %}" alt="comment" width="125" height="125">
-            <h4>Looks like no one has left a comment yet, be the first!</h4>
+          {% endif %}
+        </div>
+        {% if has_more_comments %}
+          <div class="mb-4 text-center list-group">
+            <button id="show-more-comments-btn" type="button"
+                    class="list-group-item list-group-item-action text-primary"
+                    data-page="2" data-recipe-id="{{ recipe.id }}">
+              Show more
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                   class="bi bi-caret-down" viewBox="0 0 16 16">
+                <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"></path>
+              </svg>
+            </button>
           </div>
         {% endif %}
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block script %}
+  <script src="{% static 'js/script.js' %}"></script>
 {% endblock %}
