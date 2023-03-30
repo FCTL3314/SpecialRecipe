@@ -92,18 +92,18 @@ as well as email verification.
 # 🌄 Demonstration
 * **Recipes page**
 
-![firefox_0OEyClRk8G](https://user-images.githubusercontent.com/97694131/228347099-21f929f8-cf29-4604-a96b-a9b6018a1a56.jpg)
+![firefox_yTZ8EJt8q8](https://user-images.githubusercontent.com/97694131/228911580-e0814d70-2006-420e-955d-25ee7ea6ee0a.jpg)
 ![firefox_Kwiy02Peyv](https://user-images.githubusercontent.com/97694131/220066751-f4e56670-b28f-46b1-a2d4-2f8be6f56dff.png)
 <hr>
 
 * **Recipe description pages**
 
 ![firefox_BIptF7qvNF](https://user-images.githubusercontent.com/97694131/220067183-6f268b3f-4df7-40a8-9a0d-1e22fd434b10.png)
-![firefox_ClWNl4FRLr](https://user-images.githubusercontent.com/97694131/220067195-5c6fce3f-486e-41df-b269-514256f3d2b6.png)
+![firefox_IBkV7J7xM8](https://user-images.githubusercontent.com/97694131/228911705-615c7bfd-c28a-461a-9b9f-afc550ffb01d.png)
 <hr>
 
 ![firefox_MwRO5h1mmH](https://user-images.githubusercontent.com/97694131/220067240-2a42cc0a-e34e-4a6c-bf21-e44381d398d6.png)
-![firefox_O44yFDikVk](https://user-images.githubusercontent.com/97694131/220067264-7c6a5fcf-1216-44b6-906f-90e4cdfc3f6d.png)
+![firefox_RIhl4T5iWE](https://user-images.githubusercontent.com/97694131/228911721-158156d1-83d6-4d3a-9569-b9bbda2c095e.png)
 <hr>
 
 * **Bookmarks page**
