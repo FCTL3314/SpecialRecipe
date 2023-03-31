@@ -45,7 +45,7 @@ class RecipesListViewTestCase(TestCase):
 
         self._common_tests(response)
         self.assertEqual(
-            list(response.context_data['recipes']),
+            list(response.context_data['object_list']),
             list(self.queryset[:settings.RECIPES_PAGINATE_BY])
         )
         self.assertEqual(response.context_data['selected_category_slug'], None)
@@ -58,7 +58,7 @@ class RecipesListViewTestCase(TestCase):
 
         self._common_tests(response)
         self.assertEqual(
-            list(response.context_data['recipes']),
+            list(response.context_data['object_list']),
             list(self.queryset.filter(category__slug=category.slug).order_by('name'))[:settings.RECIPES_PAGINATE_BY]
         )
         self.assertEqual(response.context_data['selected_category_slug'], category.slug)
@@ -72,7 +72,7 @@ class RecipesListViewTestCase(TestCase):
 
         self._common_tests(response)
         self.assertEqual(
-            list(response.context_data['recipes']),
+            list(response.context_data['object_list']),
             list(
                 self.queryset.filter(Q(name__icontains=search) | Q(description__icontains=search)).order_by('name')
             )[:settings.RECIPES_PAGINATE_BY])
