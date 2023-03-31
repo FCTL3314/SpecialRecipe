@@ -73,12 +73,12 @@ class UserProfileForm(auth_forms.UserChangeForm):
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'type': 'text',
-        'placeholder': 'Alex',
+        'placeholder': 'Enter your first name',
     }))
     last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'type': 'text',
-        'placeholder': 'Miller',
+        'placeholder': 'Enter your last name',
     }))
     email = forms.EmailField(widget=forms.TextInput(attrs={
         'class': 'form-control',

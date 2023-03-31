@@ -22,7 +22,6 @@ class RecipesListViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
     def setUp(self) -> None:
-        self.paginate_by = settings.RECIPES_PAGINATE_BY
         self.queryset = Recipe.objects.order_by('name')
         self.categories = Category.objects.order_by('name')[:settings.CATEGORIES_PAGINATE_BY]
 
@@ -31,7 +30,7 @@ class RecipesListViewTestCase(TestCase):
         self.assertTemplateUsed(response, 'recipe/index.html')
         self.assertEqual(response.context_data['title'], 'Special Recipe | Recipes')
         self.assertEqual(list(response.context_data['categories']), list(self.categories))
-        popular_recipes_cached = cache.get('popular_recipes')
+        popular_recipes_cached = cache.get('popular_recipes')[:settings.COMMENTS_PAGINATE_BY]
         if popular_recipes_cached:
             self.assertEqual(list(response.context_data['popular_recipes']), list(popular_recipes_cached))
         else:
@@ -47,7 +46,7 @@ class RecipesListViewTestCase(TestCase):
         self._common_tests(response)
         self.assertEqual(
             list(response.context_data['recipes']),
-            list(self.queryset[:self.paginate_by])
+            list(self.queryset[:settings.RECIPES_PAGINATE_BY])
         )
         self.assertEqual(response.context_data['selected_category_slug'], None)
 
@@ -60,7 +59,7 @@ class RecipesListViewTestCase(TestCase):
         self._common_tests(response)
         self.assertEqual(
             list(response.context_data['recipes']),
-            list(self.queryset.filter(category__slug=category.slug).order_by('name'))[:self.paginate_by]
+            list(self.queryset.filter(category__slug=category.slug).order_by('name'))[:settings.RECIPES_PAGINATE_BY]
         )
         self.assertEqual(response.context_data['selected_category_slug'], category.slug)
 
@@ -76,7 +75,7 @@ class RecipesListViewTestCase(TestCase):
             list(response.context_data['recipes']),
             list(
                 self.queryset.filter(Q(name__icontains=search) | Q(description__icontains=search)).order_by('name')
-            )[:self.paginate_by])
+            )[:settings.RECIPES_PAGINATE_BY])
         self.assertEqual(response.context_data['selected_category_slug'], None)
 
 

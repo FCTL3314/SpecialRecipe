@@ -28,8 +28,8 @@
             </a>
           {% endfor %}
           {% if has_more_categories %}
-            <button id="show-more-categories-btn" class="list-group-item list-group-item-action text-primary" data-page="2"
-                    data-selected-category-slug="{{ selected_category_slug }}">
+            <button id="show-more-categories-btn" class="list-group-item list-group-item-action text-primary"
+                    data-page="2" data-selected-category-slug="{{ selected_category_slug }}">
               Show more&hellip;
             </button>
           {% endif %}
@@ -82,20 +82,17 @@
               </div>
             {% endfor %}
           </div>
-          {% if selected_category %}
-            {% include 'recipe/inclusion/category_pagination.html' %}
-          {% elif request.GET.search %}
-            {% include 'recipe/inclusion/search_pagination.html' %}
-          {% else %}
-            {% include 'recipe/inclusion/pagination.html' %}
-          {% endif %}
+          {% include 'recipe/inclusion/pagination.html' %}
         {% else %}
           <div class="text-center my-2">
-            <h1>Nothing was found.</h1>
+            <h1>Nothing was found</h1>
             <hr>
-            <h4>
-              Looks like we couldn't find what you're looking for.
-            </h4>
+            <div>
+              <img class="mb-4 mt-2" src="{% static 'icon/magnifying-glass.svg' %}" alt="magnifying-glass" width="100" height="100">
+              <h4>
+                Looks like we couldn't find what you're looking for.
+              </h4>
+            </div>
           </div>
         {% endif %}
       </div>

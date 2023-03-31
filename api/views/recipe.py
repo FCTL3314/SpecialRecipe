@@ -16,13 +16,17 @@ from api.pagination import (CategoryPageNumberPagination,
 from api.serializers.recipe import (CategorySerializer, CommentSerializer,
                                     IngredientSerializer,
                                     RecipeBookmarkSerializer, RecipeSerializer)
+from common.views import CacheMixin
 from recipe.models import Category, Comment, Ingredient, Recipe, RecipeBookmark
 
 
-class CategoryModelViewSet(ModelViewSet):
-    queryset = Category.objects.order_by('name')
+class CategoryModelViewSet(CacheMixin, ModelViewSet):
     serializer_class = CategorySerializer
     pagination_class = CategoryPageNumberPagination
+
+    def get_queryset(self):
+        queryset = self.get_cached_data_or_new('categories', lambda: Category.objects.all(), 60 * 60)
+        return queryset.order_by('name')
 
     def get_permissions(self):
         if self.action in ('create', 'update', 'destroy'):
@@ -30,20 +34,23 @@ class CategoryModelViewSet(ModelViewSet):
         return super().get_permissions()
 
 
-class RecipeModelViewSet(ModelViewSet):
+class RecipeModelViewSet(CacheMixin, ModelViewSet):
     serializer_class = RecipeSerializer
     pagination_class = RecipePageNumberPagination
+    queryset = Recipe.objects.all()
+    ordering = ('name',)
 
     def get_queryset(self):
+        initial_queryset = self.get_cached_data_or_new('recipes', lambda: self.queryset, 60 * 60)
         search = self.request.query_params.get('search')
         category_slug = self.request.query_params.get('category_slug')
         if search:
-            queryset = Recipe.objects.filter(Q(name__icontains=search) | Q(description__icontains=search))
+            queryset = initial_queryset.filter(Q(name__icontains=search) | Q(description__icontains=search))
         elif category_slug:
-            queryset = Recipe.objects.filter(category__slug=category_slug)
+            queryset = initial_queryset.filter(category__slug=category_slug)
         else:
-            queryset = Recipe.objects.all()
-        return queryset.order_by('name')
+            queryset = initial_queryset
+        return queryset.order_by(*self.ordering)
 
     def get_permissions(self):
         if self.action in ('create', 'update', 'destroy'):

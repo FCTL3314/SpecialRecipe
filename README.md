@@ -1,22 +1,20 @@
+# <center> Special Recipe
+
 # 📃 About
 
-**Special Recipe** is a website where you can find the recipes you need and save them if necessary.
-Recipe search is presented by categories and keyword search, but users can also simply browse through 
-all available recipes.
-The site provides the ability to create / edit an account, change or reset the password if it has been lost, 
-as well as email verification.
+**Special Recipe** is a website where you can search for recipes, bookmark them, and access them as needed. Each recipe
+can be viewed in detail along with its comments, and users can optionally leave a comment. The search functionality
+allows for both category and keyword searches, while users also have the option to browse all available recipes.
+Additionally, the website enables users to create or edit an account, reset lost passwords, and verify email addresses.
 
 > ***The project was created for educational purposes.***
 
 # 🔥 Features
 
 * **Django Rest API**
-* **Update page information without page reload.**
 * **Postponed Tasks / Celery**
-  * **Email sanding**
-* **Bookmarks / Saves**
-  * **Animation**
-* **Recipe Comments**
+* **Recipe bookmarks**
+* **Recipe comments**
 * **Recipe markdown editing**
 * **Registration / Authorization**
 * **User profile**
@@ -28,7 +26,8 @@ as well as email verification.
 # ❕ Peculiarities
 
 * For correct display, **at least 3 recipes must be created** regardless of the category.
-* For correct display of images, their **aspect ratio must be 16:10**. Example: **1440×900, 1536×960, 1680:1050, 1920x1200...**
+* For correct display of images, their **aspect ratio must be 16:10**. Example: **1440×900, 1536×960, 1680:1050,
+  1920x1200...**
 
 # 📜 Requirements
 
@@ -39,6 +38,7 @@ as well as email verification.
 * **django-summernote - 0.8.20.0**
 * **django-redis - 5.2.0**
 * **django-cleanup - 7.0.0**
+* **django-widget-tweaks - 1.4.12**
 * **Pillow - 9.4.0**
 * **humanize - 4.6.0**
 * **celery - 5.2.7**
@@ -48,37 +48,38 @@ as well as email verification.
 1. Clone or download the repository.
 2. Create a virtual environment and install requirements from requirements/local.txt file.
 3. Create an **.env** file or rename **.env.dist** in **.env** and populate it **only with development variables**:
-   * DEBUG
-   * SECRET_KEY
-   * DOMAIN_NAME
-   * ALLOWED_HOSTS
-   * REDIS_HOST
-   * REDIS_PORT
-   * EMAIL_HOST_USER
-   * RECIPES_PAGINATE_BY
-   * CATEGORIES_PAGINATE_BY
-   * COMMENTS_PAGINATE_BY
+    * DEBUG
+    * SECRET_KEY
+    * DOMAIN_NAME
+    * ALLOWED_HOSTS
+    * REDIS_HOST
+    * REDIS_PORT
+    * EMAIL_HOST_USER
+    * RECIPES_PAGINATE_BY
+    * CATEGORIES_PAGINATE_BY
+    * COMMENTS_PAGINATE_BY
 4. Make migrations:
-   * `python manage.py makemigrations`
-   * `python manage.py migrate`
+    * `python manage.py makemigrations`
+    * `python manage.py migrate`
 5. Run redis:
-   * [**Windows**](https://github.com/microsoftarchive/redis/releases)
-   * [**Linux**](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-22-04)
+    * [**Windows**](https://github.com/microsoftarchive/redis/releases)
+    * [**Linux**](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-22-04)
 6. Run celery:
-   * **Windows:** `celery -A core worker -l INFO -P solo`
-   * **Linux:** `celery -A core worker -l INFO`
+    * **Windows:** `celery -A core worker -l INFO -P solo`
+    * **Linux:** `celery -A core worker -l INFO`
 7. Run development server:
-   * `python manage.py runserver`
+    * `python manage.py runserver`
 
 # 🐳 Docker: Production
 
 > * **All actions with files are performed in the project directory.**
 > * **Don't forget to install docker and docker compose first.**
- 
+
 ### Project Deployment:
 
 1. Clone or download the repository and go to its directory.
-2. Create an **.env** file or rename **.env.dist** in **.env** and populate it with all variables from **.env.dist** file.
+2. Create an **.env** file or rename **.env.dist** in **.env** and populate it with all variables from **.env.dist**
+   file.
 3. Open data/nginx/**nginx.conf** file and change `server_name example.com www.example.com;` to your domains.
 4. Grant executable rights to the **entrypoint.sh** script: `chmod +x ./entrypoint.sh`
 5. Start the services: `docker-compose up --build -d`
@@ -90,6 +91,7 @@ as well as email verification.
 3. Done ! Now you can exit from nginx container: `exit`
 
 # 🌄 Demonstration
+
 * **Recipes page**
 
 ![firefox_yTZ8EJt8q8](https://user-images.githubusercontent.com/97694131/228911580-e0814d70-2006-420e-955d-25ee7ea6ee0a.jpg)

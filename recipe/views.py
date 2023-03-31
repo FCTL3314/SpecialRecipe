@@ -15,7 +15,7 @@ from recipe.models import Category, Comment, Recipe
 
 
 class RecipesListView(CacheMixin, ListView):
-    model = Recipe
+    queryset = Recipe.objects.all()
     context_object_name = 'recipes'
     template_name = 'recipe/index.html'
     ordering = ('name',)
@@ -23,32 +23,42 @@ class RecipesListView(CacheMixin, ListView):
     paginate_by = settings.RECIPES_PAGINATE_BY
 
     def get_queryset(self):
-        initial_queryset = super().get_queryset()
-        category_slug = self.kwargs.get('category_slug')
+        initial_queryset = self.get_cached_data_or_new('recipes', lambda: self.queryset, 60 * 60)
+        selected_category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
         if search:
             queryset = initial_queryset.filter(Q(name__icontains=search) | Q(description__icontains=search))
-        elif category_slug:
-            queryset = initial_queryset.filter(category__slug=category_slug)
+        elif selected_category_slug:
+            queryset = initial_queryset.filter(category__slug=selected_category_slug)
         else:
             queryset = initial_queryset
-        return queryset.prefetch_related('bookmarks')
+        return queryset.prefetch_related('bookmarks').order_by(*self.ordering)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
         context['title'] = 'Special Recipe | Recipes'
 
+        selected_category_slug = self.kwargs.get('category_slug')
+        search = self.request.GET.get('search')
+
+        if selected_category_slug:
+            context['paginator_url'] = reverse('recipe:category', args=(selected_category_slug,)) + '?page='
+        elif search:
+            context['paginator_url'] = f'?search={search}&page='
+        else:
+            context['paginator_url'] = reverse('index') + '?page='
+
         context['categories'] = self.get_cached_data_or_new(
             'categories',
-            lambda: Category.objects.order_by('name')[:settings.CATEGORIES_PAGINATE_BY],
+            lambda: Category.objects.all(),
             60 * 60,
-        )
+        ).order_by('name')[:settings.CATEGORIES_PAGINATE_BY]
         context['has_more_categories'] = Category.objects.count() > settings.CATEGORIES_PAGINATE_BY
         context['popular_recipes'] = self.get_cached_data_or_new(
             'popular_recipes',
-            lambda: Recipe.objects.annotate(bookmarks_count=Count('bookmarks')).order_by('-bookmarks_count')[:3],
+            lambda: Recipe.objects.annotate(bookmarks_count=Count('bookmarks')).order_by('-bookmarks_count'),
             3600 * 24,
-        )
+        )[:3]
 
         context['selected_category_slug'] = self.kwargs.get('category_slug')
         context['form'] = SearchForm(initial={'search': self.request.GET.get('search')})
@@ -91,7 +101,7 @@ class RecipeDetailView(FormMixin, DetailView):
 class BookmarksListView(ListView):
     model = Recipe
     context_object_name = 'saved_recipes'
-    template_name = 'accounts/saved_recipes.html'
+    template_name = 'recipe/recipe_bookmarks.html'
     ordering = ('name',)
 
     def get_queryset(self):

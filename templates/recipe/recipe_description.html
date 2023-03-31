@@ -39,7 +39,7 @@
       <div class="col-lg-8">
         <hr>
         <div class="mb-3">
-          <h3>{{ comments_count }} Comments</h3>
+          <h3>{{ comments_count }} {% if comments_count == 1 %} Comment {% else %} Comments {% endif %}</h3>
         </div>
         <div class="d-flex mb-3">
           <img class="me-3 rounded-circle"
