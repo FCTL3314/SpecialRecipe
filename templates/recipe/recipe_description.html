@@ -9,29 +9,31 @@
     <div class="row">
       <div class="col-lg-8 my-2">
         <div>
-          <img class="img-fluid rounded-3" src="{{ recipe.image.url }}" alt="recipe_image">
+          <img class="img-fluid rounded-3" src="{{ object.image.url }}" alt="recipe_image">
         </div>
-        <div>
-          <h1 class="text-truncate">{{ recipe.name }}</h1>
-        </div>
-        <div>
-          {{ recipe.cooking_description|safe }}
+        <div class="container overflow-x-auto">
+          <h1 class="text-break">{{ object.name }}</h1>
+          {{ object.cooking_description|safe }}
         </div>
       </div>
       <div class="col-lg-4 my-2">
-        <div class="mb-3">
-          <h3>Ingredients</h3>
-        </div>
-        <hr>
-        <div class="mb-3 d-flex">
-          <ul>
-            {% for ingredient in ingredients %}
-              <li>
-                <p>{{ ingredient.name }}</p>
-                <hr>
-              </li>
-            {% endfor %}
-          </ul>
+        <div class="container mb-3">
+          <h2 class="text-center">Ingredients</h2>
+          <hr>
+          <div class="container d-flex mb-3 justify-content-center">
+            <ul class="list-group list-group-flush">
+              {% for ingredient in ingredients %}
+                <li class="list-group-item list-group-item-action d-flex bg-light">
+                  <input class="form-check-input me-2" type="checkbox" id="IngredientCheckbox{{ forloop.counter0 }}">
+                  <div>
+                    <label class="form-check-label" for="IngredientCheckbox{{ forloop.counter0 }}">
+                      {{ ingredient.name }}
+                    </label>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -48,7 +50,7 @@
                     {% else %}
                       {% static 'img/default_user_image.png' %}
                     {% endif %}" alt="user-image" width="40" height="40">
-          <form id="add-comment-form" method="POST" class="w-100" data-recipe-id="{{ recipe.id }}">
+          <form id="add-comment-form" method="POST" class="w-100" data-recipe-id="{{ object.id }}">
 
             {% csrf_token %}
 
@@ -69,16 +71,16 @@
             {% endif %}
           </form>
         </div>
-        <div id="comments-container">
+        <div id="comments-container" class="container">
           {% if comments %}
             {% for comment in comments %}
               <div class="d-flex align-items-start mb-4">
                 <a href="{% url 'accounts:profile' comment.author.slug %}">
                   <img class="me-3 rounded-circle" src="{% if comment.author.image %}
-                                                      {{ comment.author.image.url }}
-                                                    {% else %}
-                                                      {% static 'img/default_user_image.png' %}
-                                                    {% endif %}" alt="user-image" width="40" height="40">
+                                                          {{ comment.author.image.url }}
+                                                        {% else %}
+                                                          {% static 'img/default_user_image.png' %}
+                                                        {% endif %}" alt="user-image" width="40" height="40">
                 </a>
                 <div>
                   <a class="fs-5 me-1 link link-dark text-decoration-none"
@@ -89,7 +91,7 @@
               </div>
             {% endfor %}
           {% else %}
-            <div id="no-comments" class="text-center mb-5">
+            <div id="no-comments" class="container text-center mb-5">
               <img class="mb-4" src="{% static 'icon/comment.svg' %}" alt="comment" width="125" height="125">
               <h4>Looks like no one has left a comment yet, be the first!</h4>
             </div>
@@ -98,8 +100,8 @@
         {% if has_more_comments %}
           <div class="mb-4 text-center list-group">
             <button id="show-more-comments-btn" type="button"
-                    class="list-group-item list-group-item-action text-primary"
-                    data-page="2" data-recipe-id="{{ recipe.id }}">
+                    class="list-group-item list-group-item-action text-primary" data-page="2"
+                    data-recipe-id="{{ object.id }}">
               Show more
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                    class="bi bi-caret-down" viewBox="0 0 16 16">

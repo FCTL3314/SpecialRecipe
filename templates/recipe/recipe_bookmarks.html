@@ -9,8 +9,8 @@
     </div>
     <hr>
     <div class="row">
-      {% if saved_recipes %}
-        {% for recipe in saved_recipes %}
+      {% if object_list %}
+        {% for recipe in object_list %}
           <div class="col-lg-3 mb-3">
             {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_active.html' %}
           </div>

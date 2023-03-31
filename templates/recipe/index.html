@@ -70,9 +70,9 @@
             <span class="visually-hidden">Next</span>
           </button>
         </div>
-        {% if recipes %}
+        {% if object_list %}
           <div class="row mt-4">
-            {% for recipe in recipes %}
+            {% for recipe in object_list %}
               <div class="col-lg-4 col-md-6 mb-3">
                 {% if recipe in user_bookmarks %}
                   {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_active.html' %}
@@ -88,7 +88,8 @@
             <h1>Nothing was found</h1>
             <hr>
             <div>
-              <img class="mb-4 mt-2" src="{% static 'icon/magnifying-glass.svg' %}" alt="magnifying-glass" width="100" height="100">
+              <img class="mb-4 mt-2" src="{% static 'icon/magnifying-glass.svg' %}" alt="magnifying-glass" width="100"
+                   height="100">
               <h4>
                 Looks like we couldn't find what you're looking for.
               </h4>

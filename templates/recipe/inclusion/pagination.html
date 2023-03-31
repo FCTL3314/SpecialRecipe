@@ -15,7 +15,7 @@
     {% endif %}
     {% if page_obj.number|add:'-4' > 1 %}
       <li class="page-item">
-          <a class="page-link" href="{{ paginator_url }}{{ page_obj.number|add:'-5' }}">
+          <a class="page-link" href="{{ paginator_url }}{{ 1 }}">
             <span aria-hidden="true">&hellip;</span>
           </a>
         </li>
@@ -35,7 +35,7 @@
     {% endfor %}
     {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
       <li class="page-item">
-          <a class="page-link" href="{{ paginator_url }}{{ page_obj.number|add:'5' }}">
+          <a class="page-link" href="{{ paginator_url }}{{ page_obj.paginator.num_pages }}">
             <span aria-hidden="true">&hellip;</span>
           </a>
         </li>

@@ -1,3 +1,6 @@
+const static_url = '/static/'
+
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -31,7 +34,7 @@ $('.bookmark').click(function () {
             const newBookmarkCount = isSaved ? bookmarkCount - 1 : bookmarkCount + 1;
 
             bookmarkText.text(newBookmarkCount + ' Saves');
-            bookmarkImg.attr('src', `/static/icon/bookmark${isSaved ? '' : '-fill'}.svg`);
+            bookmarkImg.attr('src', `${static_url}icon/bookmark${isSaved ? '' : '-fill'}.svg`);
             bookmarkImg.addClass('animate__animated animate__flip').one('animationend', function () {
                 $(this).removeClass('animate__animated animate__flip');
             });
@@ -103,7 +106,9 @@ $('#show-more-comments-btn').click(function () {
         success: function (response) {
             for (const comment of response.results) {
 
-                const authorImage = comment.author.image ? comment.author.image : '/static/img/default_user_image.png';
+                const authorImage = comment.author.image
+                    ? comment.author.image
+                    : `${static_url}/img/default_user_image.png`;
                 const authorUsername = comment.author.username;
                 const authorSlug = comment.author.slug;
                 const commentCreatedDate = moment(comment.created_date).fromNow();
@@ -159,7 +164,9 @@ $(`#add-comment-form`).on('submit', function (event) {
         success: function (response) {
             form.reset();
 
-            const authorImage = response.author.image ? response.author.image : '/static/img/default_user_image.png';
+            const authorImage = response.author.image
+                ? response.author.image
+                : `${static_url}/img/default_user_image.png`;
             const authorUsername = response.author.username;
             const authorSlug = response.author.slug;
             const commentCreatedDate = moment(response.created_date).fromNow();

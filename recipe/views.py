@@ -16,7 +16,6 @@ from recipe.models import Category, Comment, Recipe
 
 class RecipesListView(CacheMixin, ListView):
     queryset = Recipe.objects.all()
-    context_object_name = 'recipes'
     template_name = 'recipe/index.html'
     ordering = ('name',)
 
@@ -70,7 +69,6 @@ class RecipesListView(CacheMixin, ListView):
 
 class RecipeDetailView(FormMixin, DetailView):
     model = Recipe
-    context_object_name = 'recipe'
     slug_url_kwarg = 'recipe_slug'
     template_name = 'recipe/recipe_description.html'
     form_class = CommentForm
@@ -100,13 +98,12 @@ class RecipeDetailView(FormMixin, DetailView):
 
 class BookmarksListView(ListView):
     model = Recipe
-    context_object_name = 'saved_recipes'
     template_name = 'recipe/recipe_bookmarks.html'
     ordering = ('name',)
 
     def get_queryset(self):
-        recipes = super().get_queryset()
-        return recipes.filter(bookmarks=self.request.user).prefetch_related('bookmarks')
+        queryset = self.model.objects.filter(bookmarks=self.request.user).prefetch_related('bookmarks')
+        return queryset.order_by(*self.ordering)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
