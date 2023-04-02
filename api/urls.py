@@ -4,10 +4,9 @@ from rest_framework import routers
 
 from api.views.accounts import (EmailVerificationUpdateAPIView,
                                 SendVerificationEmailCreateAPIView)
-from api.views.recipe import (AddToBookmarksCreateView, CategoryModelViewSet,
-                              CommentGenericViewSet, IngredientGenericViewSet,
-                              RecipeModelViewSet,
-                              RemoveFromBookmarksDestroyView)
+from api.views.recipe import (CategoryModelViewSet, CommentGenericViewSet,
+                              IngredientGenericViewSet,
+                              RecipeBookmarkGenericViewSet, RecipeModelViewSet)
 from utils.urls import is_url_allowed
 
 app_name = 'api'
@@ -17,9 +16,10 @@ router.register(r'recipes', RecipeModelViewSet, basename='recipes')
 router.register(r'categories', CategoryModelViewSet, basename='categories')
 router.register(r'ingredients', IngredientGenericViewSet, basename='ingredients')
 router.register(r'comments', CommentGenericViewSet, basename='comments')
+router.register(r'bookmarks', RecipeBookmarkGenericViewSet, basename='bookmarks')
+
 djoser_user_router = routers.DefaultRouter()
 djoser_user_router.register(r'users', UserViewSet, basename='users')
-
 allowed_djoser_user_urls = [
     'users/',
     'users/me/',
@@ -38,6 +38,4 @@ urlpatterns = [
     path('auth/', include('djoser.urls.authtoken')),
     path('verification/send/', SendVerificationEmailCreateAPIView.as_view(), name='send-verification-email'),
     path('verify/', EmailVerificationUpdateAPIView.as_view(), name='email-verification'),
-    path('bookmarks/add/', AddToBookmarksCreateView.as_view(), name='add-to-bookmarks'),
-    path('bookmarks/remove/', RemoveFromBookmarksDestroyView.as_view(), name='remove-from-bookmarks'),
 ]

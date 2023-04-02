@@ -29,16 +29,22 @@ if (bookmarkLinks) {
             const bookmarkCount = parseInt(bookmarkText.textContent);
             const newBookmarkCount = isSaved ? bookmarkCount - 1 : bookmarkCount + 1;
 
-            const url = isSaved ? '/api/v1/bookmarks/remove/' : '/api/v1/bookmarks/add/';
-            const method = isSaved ? 'DELETE' : 'POST';
+            const url = isSaved ? `/api/v1/bookmarks/${recipeId}/` : '/api/v1/bookmarks/';
             const csrfToken = getCookie('csrftoken');
-            const headers = {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken,
-            };
-            const body = JSON.stringify({'recipe_id': recipeId});
 
-            fetch(url, {method, headers, body})
+            const requestOptions = {
+                'method': isSaved ? 'DELETE' : 'POST',
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+            }
+
+            if (!isSaved) {
+                requestOptions.body = JSON.stringify({'recipe_id': recipeId});
+            }
+
+            fetch(url, requestOptions)
                 .then(response => {
                     if (response.status === 204) {
                         return response
@@ -75,6 +81,7 @@ if (bookmarkLinks) {
         });
     });
 }
+
 
 const showMoreCategoriesButton = document.querySelector('#show-more-categories-btn')
 
@@ -123,6 +130,7 @@ if (showMoreCategoriesButton) {
             });
     });
 }
+
 
 const showMoreCommentsButton = document.querySelector('#show-more-comments-btn')
 
@@ -184,6 +192,7 @@ if (showMoreCommentsButton) {
             });
     });
 }
+
 
 const addCommentForm = document.querySelector('#add-comment-form')
 

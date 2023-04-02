@@ -53,6 +53,10 @@ class Ingredient(models.Model):
 class RecipeBookmark(models.Model):
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username} | {self.recipe.name}'
 
 
 class Comment(models.Model):

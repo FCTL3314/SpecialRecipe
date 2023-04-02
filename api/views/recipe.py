@@ -2,7 +2,6 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin, UpdateModelMixin)
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -94,10 +93,18 @@ class CommentGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMixin):
         return super().get_permissions()
 
 
-class AddToBookmarksCreateView(CreateAPIView):
+class RecipeBookmarkGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, DestroyModelMixin):
     authentication_classes = (SessionAuthentication,)
     serializer_class = RecipeBookmarkSerializer
     permission_classes = (IsAuthenticated,)
+    pagination_class = RecipePageNumberPagination
+    ordering = ('-created_date',)
+
+    def list(self, request, *args, **kwargs):
+        bookmarks = RecipeBookmark.objects.filter(user=request.user).prefetch_related('recipe').order_by(*self.ordering)
+        paginated_bookmarks = self.paginate_queryset(bookmarks)
+        serializer = self.serializer_class(paginated_bookmarks, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         recipe_id = request.data.get('recipe_id')
@@ -109,15 +116,8 @@ class AddToBookmarksCreateView(CreateAPIView):
         serializer = self.serializer_class(bookmark)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
-class RemoveFromBookmarksDestroyView(DestroyAPIView):
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
     def destroy(self, request, *args, **kwargs):
-        recipe_id = request.data.get('recipe_id')
-        if not recipe_id:
-            return Response({'recipe_id': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        recipe_id = kwargs.get('pk')
         recipe = get_object_or_404(Recipe, id=recipe_id)
         user = get_object_or_404(User, id=request.user.id, recipe=recipe)
         recipe.bookmarks.remove(user)

@@ -8,12 +8,14 @@
       <h1 class="text-center pt-2">{{ user.username }} bookmarks</h1>
     </div>
     <hr>
-    <div class="row">
+    <div id="bookmarks-container" class="row">
       {% if object_list %}
-        {% for recipe in object_list %}
-          <div class="col-lg-3 mb-3">
-            {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_active.html' %}
-          </div>
+        {% for bookmark in object_list %}
+          {% with bookmark.recipe as recipe %}
+            <div class="col-lg-3 mb-3">
+              {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_active.html' %}
+            </div>
+          {% endwith %}
         {% endfor %}
       {% else %}
         <div class="text-center">

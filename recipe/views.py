@@ -11,7 +11,7 @@ from django.views.generic.list import ListView
 
 from common.views import CacheMixin
 from recipe.forms import CommentForm, SearchForm
-from recipe.models import Category, Comment, Recipe
+from recipe.models import Category, Comment, Recipe, RecipeBookmark
 
 
 class RecipesListView(CacheMixin, ListView):
@@ -97,13 +97,13 @@ class RecipeDetailView(FormMixin, DetailView):
 
 
 class BookmarksListView(ListView):
-    model = Recipe
+    model = RecipeBookmark
     template_name = 'recipe/recipe_bookmarks.html'
-    ordering = ('name',)
+    ordering = ('-created_date',)
 
     def get_queryset(self):
-        queryset = self.model.objects.filter(bookmarks=self.request.user).prefetch_related('bookmarks')
-        return queryset.order_by(*self.ordering)
+        queryset = self.model.objects.filter(user=self.request.user).prefetch_related('recipe')
+        return queryset.order_by(*self.ordering)[:settings.RECIPES_PAGINATE_BY]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
