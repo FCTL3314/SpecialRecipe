@@ -24,12 +24,12 @@
             <ul class="list-group list-group-flush">
               {% for ingredient in ingredients %}
                 <li class="list-group-item list-group-item-action d-flex bg-light">
-                  <input class="form-check-input me-2" type="checkbox" id="IngredientCheckbox{{ forloop.counter0 }}">
                   <div>
-                    <label class="form-check-label" for="IngredientCheckbox{{ forloop.counter0 }}">
-                      {{ ingredient.name }}
-                    </label>
+                    <input class="form-check-input me-2" type="checkbox" id="IngredientCheckbox{{ forloop.counter0 }}">
                   </div>
+                  <label class="form-check-label text-break" for="IngredientCheckbox{{ forloop.counter0 }}">
+                    {{ ingredient.name }}
+                  </label>
                 </li>
               {% endfor %}
             </ul>

@@ -43,7 +43,7 @@ class Recipe(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=48)
+    name = models.CharField(max_length=256)
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
 
     def __str__(self):
