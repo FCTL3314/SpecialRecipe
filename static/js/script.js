@@ -1,20 +1,7 @@
-const static_url = '/static/'
+import getCookie from './utils.js';
 
 
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
+const static_url = '/static/';
 
 
 const bookmarkLinks = document.querySelectorAll('.bookmark')
@@ -230,7 +217,7 @@ if (addCommentForm) {
 
                 const authorImage = response.author.image
                     ? response.author.image
-                    : `${static_url}/img/default_user_image.png`;
+                    : `${static_url}img/default_user_image.png`;
                 const authorUsername = response.author.username;
                 const authorSlug = response.author.slug;
                 const commentCreatedDate = moment(response.created_date).fromNow();
