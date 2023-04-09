@@ -13,7 +13,7 @@
         {% for bookmark in object_list %}
           {% with bookmark.recipe as recipe %}
             <div class="col-lg-3 mb-3">
-              {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_active.html' %}
+              {% include 'recipe/inclusion/recipe_card.html' %}
             </div>
           {% endwith %}
         {% endfor %}

@@ -1,3 +1,29 @@
 .dropdown-menu-dark {
     --bs-dropdown-link-active-bg: #C8C8C88C;
 }
+
+.card-img-scale-wrp {
+    border-top-left-radius: var(--bs-card-inner-border-radius);
+    border-top-right-radius: var(--bs-card-inner-border-radius);
+    overflow: hidden;
+}
+
+.card-img-top {
+    transition: 0.4s;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.carousel-item {
+    overflow: hidden;
+}
+
+.carousel-img {
+    transition: 0.5s;
+}
+
+.carousel-item:hover .carousel-img {
+    transform: scale(1.05);
+}

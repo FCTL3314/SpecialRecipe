@@ -49,8 +49,7 @@
             {% for recipe in popular_recipes %}
               <a href="{% url 'recipe:description' recipe.slug %}">
                 <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
-                  <img src="{{ recipe.image.url }}" class="d-block w-100"
-                       alt="carousel_first_image">
+                  <img src="{{ recipe.image.url }}" class="carousel-img d-block w-100" alt="carousel_first_image">
                   <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-25 rounded-2 p-0 pb-2">
                     <h1 class="text-light">{{ recipe.name }}</h1>
                     <h4 class="text-light">{{ recipe.description }}</h4>
@@ -74,11 +73,7 @@
           <div class="row mt-4">
             {% for recipe in object_list %}
               <div class="col-lg-4 col-md-6 mb-3">
-                {% if recipe in user_bookmarks %}
-                  {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_active.html' %}
-                {% else %}
-                  {% include 'recipe/inclusion/recipe_card/recipe_card_bookmark_inactive.html' %}
-                {% endif %}
+                {% include 'recipe/inclusion/recipe_card.html' %}
               </div>
             {% endfor %}
           </div>
