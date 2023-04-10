@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.db.models import Count, F, Q
 from django.http import HttpResponseBadRequest
@@ -9,20 +10,21 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
 
-from common.views import CacheMixin
+from common.views import CacheMixin, TitleMixin
 from recipe.forms import CommentForm, SearchForm
 from recipe.models import Category, Comment, Recipe, RecipeBookmark
 
 
-class RecipesListView(CacheMixin, ListView):
+class RecipesListView(CacheMixin, TitleMixin, ListView):
     queryset = Recipe.objects.all()
     template_name = 'recipe/index.html'
     ordering = ('name',)
+    title = 'Special Recipe | Recipes'
 
     paginate_by = settings.RECIPES_PAGINATE_BY
 
     def get_queryset(self):
-        initial_queryset = self.get_cached_data_or_new('recipes', lambda: self.queryset, 60 * 60)
+        initial_queryset = self.get_cached_data_or_set_new('recipes', lambda: self.queryset, 60 * 60)
         selected_category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
         if search:
@@ -35,7 +37,6 @@ class RecipesListView(CacheMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
-        context['title'] = 'Special Recipe | Recipes'
 
         selected_category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
@@ -45,15 +46,15 @@ class RecipesListView(CacheMixin, ListView):
         elif search:
             context['paginator_url'] = f'?search={search}&page='
         else:
-            context['paginator_url'] = reverse('index') + '?page='
+            context['paginator_url'] = reverse('recipe:index') + '?page='
 
-        context['categories'] = self.get_cached_data_or_new(
+        context['categories'] = self.get_cached_data_or_set_new(
             'categories',
             lambda: Category.objects.all(),
             60 * 60,
         ).order_by('name')[:settings.CATEGORIES_PAGINATE_BY]
         context['has_more_categories'] = Category.objects.count() > settings.CATEGORIES_PAGINATE_BY
-        context['popular_recipes'] = self.get_cached_data_or_new(
+        context['popular_recipes'] = self.get_cached_data_or_set_new(
             'popular_recipes',
             lambda: Recipe.objects.annotate(bookmarks_count=Count('bookmarks')).order_by('-bookmarks_count'),
             3600 * 24,
@@ -87,28 +88,24 @@ class RecipeDetailView(FormMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
+        context['title'] = f'Special Recipe | {self.object.name}'
         context['ingredients'] = self.object.get_ingredients()
         comments = self.object.get_comments()
         context['comments'] = comments[:settings.COMMENTS_PAGINATE_BY]
         context['comments_count'] = comments.count()
         context['has_more_comments'] = comments.count() > settings.COMMENTS_PAGINATE_BY
-        context['title'] = f'Special Recipe | {self.object.name}'
         return context
 
 
-class BookmarksListView(ListView):
+class BookmarksListView(LoginRequiredMixin, TitleMixin, ListView):
     model = RecipeBookmark
     template_name = 'recipe/recipe_bookmarks.html'
     ordering = ('-created_date',)
+    title = 'Special Recipe | Bookmarks'
 
     def get_queryset(self):
         queryset = self.model.objects.filter(user=self.request.user).prefetch_related('recipe')
         return queryset.order_by(*self.ordering)[:settings.RECIPES_PAGINATE_BY]
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context['title'] = f'Special Recipe | {self.request.user.username}\'s bookmarks'
-        return context
 
 
 @login_required()
@@ -118,7 +115,7 @@ def add_to_bookmarks(request, recipe_id):
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return HttpResponseRedirect(referer)
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('recipe:index'))
 
 
 @login_required()
@@ -128,7 +125,7 @@ def remove_from_bookmarks(request, recipe_id):
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return HttpResponseRedirect(referer)
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('recipe:index'))
 
 
 @login_required()
@@ -141,4 +138,4 @@ def add_comment(request, recipe_id):
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return HttpResponseRedirect(referer)
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('recipe:index'))

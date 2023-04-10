@@ -1,13 +1,15 @@
 import logging
+from datetime import timedelta
+from uuid import uuid4
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core.mail import send_mail
 from django.db import models
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
+
+from common.mail import convert_html_to_email_message
 
 logger = logging.getLogger('mailings')
 
@@ -18,6 +20,9 @@ class User(AbstractUser):
     is_verified = models.BooleanField(default=False)
     slug = models.SlugField(unique=True)
 
+    def __str__(self):
+        return self.username
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.username)
@@ -27,12 +32,22 @@ class User(AbstractUser):
         self.email = self.email.lower()
         return super().clean()
 
-    def __str__(self):
-        return self.username
+    def seconds_since_last_email_verification(self):
+        valid_verifications = EmailVerification.objects.filter(user=self, expiration__gt=now()).order_by('-created')
+        if valid_verifications.exists():
+            return (now() - valid_verifications.first().created).seconds
+        return (timedelta(seconds=settings.EMAIL_SEND_INTERVAL_SECONDS)).seconds
 
-    class Meta:
-        verbose_name = 'user'
-        verbose_name_plural = 'users'
+    def create_email_verification(self):
+        expiration = now() + timedelta(hours=settings.EMAIL_EXPIRATION_HOURS)
+        return EmailVerification.objects.create(code=uuid4(), user=self, expiration=expiration)
+
+    def is_request_user_matching(self, request):
+        return self == request.user
+
+    def verify(self):
+        self.is_verified = True
+        self.save()
 
 
 class EmailVerification(models.Model):
@@ -41,33 +56,23 @@ class EmailVerification(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     expiration = models.DateTimeField()
 
+    def __str__(self):
+        return f'Email verification for {self.user.email}'
+
     def send_verification_email(self, subject_template_name='accounts/email/email_verification_subject.html',
                                 html_email_template_name='accounts/email/email_verification_email.html',
-                                html_message=None, use_https=False):
+                                protocol='http'):
         link = reverse('accounts:email-verification', kwargs={'email': self.user.email, 'code': self.code})
 
         context = {
             'user': self.user,
-            'protocol': 'https' if use_https else 'http',
+            'protocol': protocol,
             'verification_link': settings.DOMAIN_NAME + link,
         }
+        msg = convert_html_to_email_message(subject_template_name, html_email_template_name, [self.user.email], context)
+        msg.send()
 
-        raw_subject = render_to_string(subject_template_name)
-        subject = ''.join(raw_subject.splitlines())
-        message = render_to_string(html_email_template_name, context)
-        emails_list = [self.user.email]
-        send_mail(
-            subject=subject,
-            message=message,
-            html_message=html_message,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=emails_list,
-            fail_silently=False,
-        )
         logger.info(f'Request to send a verification email to {self.user.email}')
 
     def is_expired(self):
-        return True if self.expiration < now() else False
-
-    def __str__(self):
-        return f'Email verification for {self.user.email}'
+        return self.expiration < now()

@@ -8,7 +8,6 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
 
     class Meta:
-        verbose_name = 'category'
         verbose_name_plural = 'categories'
 
     def __str__(self):
@@ -25,6 +24,9 @@ class Recipe(models.Model):
     bookmarks = models.ManyToManyField(User, blank=True, through='RecipeBookmark')
     views = models.PositiveBigIntegerField(default=0)
 
+    def __str__(self):
+        return self.name
+
     def get_ingredients(self):
         return Ingredient.objects.filter(recipe=self)
 
@@ -33,13 +35,6 @@ class Recipe(models.Model):
 
     def bookmarks_count(self):
         return self.bookmarks.count()
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'recipe'
-        verbose_name_plural = 'recipes'
 
 
 class Ingredient(models.Model):

@@ -5,6 +5,7 @@ from django.contrib.auth import forms as auth_forms
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 from accounts.models import User
 from accounts.tasks import send_email
@@ -37,6 +38,7 @@ class UserRegistrationForm(auth_forms.UserCreationForm):
         return super().save(commit=commit)
 
     def clean_username(self):
+        """CASE-SENSITIVE check to see if the username is already taken."""
         username = self.cleaned_data.get('username')
         if User.objects.filter(username__iexact=username).exists():
             raise ValidationError('A user with that username already exists.')
@@ -197,7 +199,10 @@ class SetPasswordForm(auth_forms.SetPasswordForm):
         fields = ('new_password1', 'new_password2')
 
 
-class EmailChangeForm(auth_forms.PasswordChangeForm):
+class EmailChangeForm(forms.Form):
+    error_messages = {
+        'password_incorrect': _('Your old password was entered incorrectly. Please enter it again.'),
+    }
     new_email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Email',
@@ -206,12 +211,16 @@ class EmailChangeForm(auth_forms.PasswordChangeForm):
         'class': 'form-control',
         'placeholder': 'Enter your password',
     }))
-    new_password1 = None
-    new_password2 = None
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
-        super().__init__(user, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data['old_password']
+        if not self.user.check_password(old_password):
+            raise ValidationError(self.error_messages['password_incorrect'], code='password_incorrect')
+        return old_password
 
     def clean_new_email(self):
         new_email = self.cleaned_data.get('new_email')

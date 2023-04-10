@@ -98,7 +98,7 @@ if (showMoreCategoriesButton) {
                     const categorySlug = category.slug;
 
                     const categoryItem = $(
-                        `<a class="list-group-item list-group-item-action" href="/recipes/category/${categorySlug}/">
+                        `<a class="list-group-item list-group-item-action" href="/category/${categorySlug}/">
                            ${categoryName}
                          </a>`
                     );

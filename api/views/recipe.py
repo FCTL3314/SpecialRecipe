@@ -24,7 +24,7 @@ class CategoryModelViewSet(CacheMixin, ModelViewSet):
     pagination_class = CategoryPageNumberPagination
 
     def get_queryset(self):
-        queryset = self.get_cached_data_or_new('categories', lambda: Category.objects.all(), 60 * 60)
+        queryset = self.get_cached_data_or_set_new('categories', lambda: Category.objects.all(), 60 * 60)
         return queryset.order_by('name')
 
     def get_permissions(self):
@@ -40,7 +40,7 @@ class RecipeModelViewSet(CacheMixin, ModelViewSet):
     ordering = ('name',)
 
     def get_queryset(self):
-        initial_queryset = self.get_cached_data_or_new('recipes', lambda: self.queryset, 60 * 60)
+        initial_queryset = self.get_cached_data_or_set_new('recipes', lambda: self.queryset, 60 * 60)
         search = self.request.query_params.get('search')
         category_slug = self.request.query_params.get('category_slug')
         if search:

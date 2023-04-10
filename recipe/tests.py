@@ -40,7 +40,7 @@ class RecipesListViewTestCase(TestCase):
             )
 
     def test_list_view(self):
-        path = reverse('index')
+        path = reverse('recipe:index')
         response = self.client.get(path)
 
         self._common_tests(response)
@@ -67,7 +67,7 @@ class RecipesListViewTestCase(TestCase):
         search = 'pizza'
         data = {'search': search}
 
-        path = reverse('index')
+        path = reverse('recipe:index')
         response = self.client.get(path, data)
 
         self._common_tests(response)
@@ -126,10 +126,10 @@ class AddToBookmarksViewTestCase(TestCase):
     def test_view(self):
         self.assertFalse(self.object.bookmarks.filter(id=self.user.id))
 
-        response = self.client.get(self.path, HTTP_REFERER=reverse('index'))
+        response = self.client.get(self.path, HTTP_REFERER=reverse('recipe:index'))
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('index'))
+        self.assertRedirects(response, reverse('recipe:index'))
         self.assertTrue(self.object.bookmarks.filter(id=self.user.id))
 
 
@@ -156,8 +156,8 @@ class RemoveFromBookmarksViewTestCase(TestCase):
     def test_view(self):
         self.assertTrue(self.object.bookmarks.filter(id=self.user.id))
 
-        response = self.client.get(self.path, HTTP_REFERER=reverse('index'))
+        response = self.client.get(self.path, HTTP_REFERER=reverse('recipe:index'))
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('index'))
+        self.assertRedirects(response, reverse('recipe:index'))
         self.assertFalse(self.object.bookmarks.filter(id=self.user.id))

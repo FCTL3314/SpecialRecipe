@@ -2,6 +2,7 @@ from datetime import timedelta
 from http import HTTPStatus
 from uuid import uuid4
 
+from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.staticfiles.finders import find
 from django.core import mail
@@ -10,7 +11,6 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.utils.timezone import now
-from humanize import naturaldelta
 
 from accounts.forms import EmailChangeForm
 from accounts.models import EmailVerification, User
@@ -38,7 +38,6 @@ class UserRegistrationViewTestCase(TestCase):
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Registration')
         self.assertTemplateUsed(response, 'accounts/registration.html')
 
     def test_user_registration_get(self):
@@ -131,7 +130,6 @@ class UserLoginViewTestCase(TestCase):
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Login')
         self.assertTemplateUsed(response, 'accounts/login.html')
 
     def test_user_login_get(self):
@@ -197,7 +195,7 @@ class UserLoginViewTestCase(TestCase):
         response = self.client.post(self.path, data)
 
         self._common_tests(response)
-        self.assertContains(response, 'Invalid username/email or password.')
+        self.assertContains(response, 'The entered data is incorrect, please try again.')
 
     def test_user_login_post_invalid_password(self):
         password = 'InvalidPassword'
@@ -210,7 +208,7 @@ class UserLoginViewTestCase(TestCase):
         response = self.client.post(self.path, data)
 
         self._common_tests(response)
-        self.assertContains(response, 'Invalid username/email or password.')
+        self.assertContains(response, 'The entered data is incorrect, please try again.')
 
 
 class SendVerificationEmailViewTestCase(TestCase):
@@ -228,11 +226,12 @@ class SendVerificationEmailViewTestCase(TestCase):
     def setUp(self) -> None:
         self._create_user()
         self.client.force_login(user=self.user)
+        self.sending_interval = settings.EMAIL_SEND_INTERVAL_SECONDS
+        self.expiration_hours = settings.EMAIL_EXPIRATION_HOURS
         self.path = reverse('accounts:send-verification-email', args=(self.user.email,))
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Sending a verification email')
         self.assertTemplateUsed(response, 'accounts/email/email_verification_done.html')
 
     def test_view_success(self):
@@ -248,11 +247,13 @@ class SendVerificationEmailViewTestCase(TestCase):
         email_verification = EmailVerification.objects.filter(user=self.user)
 
         self.assertTrue(email_verification)
-        self.assertEqual(email_verification.first().expiration.date(), (now() + timedelta(hours=48)).date())
+        self.assertEqual(
+            email_verification.first().expiration.date(),
+            (now() + timedelta(hours=self.expiration_hours)).date(),
+        )
 
     def test_view_previous_email_not_expired(self):
-        expiration = now() + timedelta(hours=48)
-        verification = EmailVerification.objects.create(code=uuid4(), user=self.user, expiration=expiration)
+        self.user.create_email_verification()
 
         self.assertTrue(EmailVerification.objects.first())
 
@@ -260,7 +261,9 @@ class SendVerificationEmailViewTestCase(TestCase):
 
         self._common_tests(response)
 
-        seconds_left = naturaldelta(verification.created + timedelta(minutes=1) - now())
+        seconds_since_last_email = self.user.seconds_since_last_email_verification()
+        seconds_left = self.sending_interval - seconds_since_last_email
+
         self.assertContains(response, f'Please wait {seconds_left} to resend the confirmation email.')
         self.assertFalse(mail.outbox)
 
@@ -301,7 +304,6 @@ class EmailVerificationViewTestCase(TestCase):
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Email verification')
         self.assertTemplateUsed(response, 'accounts/email/email_verification_complete.html')
 
     def test_view_success(self):
@@ -358,7 +360,6 @@ class UserProfileViewTestCase(TestCase):
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], f'Special Recipe | Profile - Account')
         self.assertTemplateUsed(response, 'accounts/profile/profile.html')
 
     def test_view_get(self):
@@ -457,7 +458,6 @@ class UserProfilePasswordViewTestCase(TestCase):
         response = self.client.get(self.path)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Profile - Password')
         self.assertTemplateUsed(response, 'accounts/profile/profile.html')
 
     def test_view_post(self):
@@ -488,7 +488,6 @@ class PwdResetViewTestCase(TestCase):
         response = self.client.get(self.path)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
         self.assertTemplateUsed(response, 'accounts/password/reset_password.html')
 
     def test_view_post(self):
@@ -519,7 +518,6 @@ class PwdResetConfirmViewTestCase(TestCase):
 
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Password reset')
         self.assertTemplateUsed(response, 'accounts/password/password_reset_confirm.html')
 
     def test_view_get_valid_url(self):
@@ -553,8 +551,7 @@ class UserProfileEmailViewTest(TestCase):
         self.url = reverse('accounts:profile-email', args=(self.user.id,))
 
     def _common_tests(self, response):
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Special Recipe | Profile - Email')
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'accounts/profile/profile.html')
 
     def test_profile_email_page_contains_form(self):

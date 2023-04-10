@@ -1,39 +1,34 @@
-from datetime import timedelta
-from uuid import uuid4
-
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.utils.timezone import now
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
-from humanize import naturaldelta
 
 from accounts import forms as account_forms
 from accounts.models import EmailVerification, User
 from accounts.tasks import send_verification_email
+from common.views import LogoutRequiredMixin, TitleMixin
 from utils.uid import is_valid_uuid
 
 
-class UserRegistrationView(SuccessMessageMixin, CreateView):
+class UserRegistrationView(LogoutRequiredMixin, SuccessMessageMixin, TitleMixin, CreateView):
     model = User
     form_class = account_forms.UserRegistrationForm
     template_name = 'accounts/registration.html'
     success_message = 'You have successfully registered!'
     success_url = reverse_lazy('accounts:login')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context['title'] = 'Special Recipe | Registration'
-        return context
+    title = 'Special Recipe | Registration'
 
 
-class UserLoginView(auth_views.LoginView):
+class UserLoginView(LogoutRequiredMixin, TitleMixin, auth_views.LoginView):
     form_class = account_forms.UserLoginForm
     template_name = 'accounts/login.html'
+    title = 'Special Recipe | Registration'
 
     def get(self, request, *args, **kwargs):
         request.session['before_login_url'] = request.META.get('HTTP_REFERER')
@@ -53,13 +48,8 @@ class UserLoginView(auth_views.LoginView):
 
     def form_invalid(self, form):
         if form.errors:
-            messages.warning(self.request, 'Invalid username/email or password.')
+            messages.warning(self.request, 'The entered data is incorrect, please try again.')
         return super().form_invalid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context['title'] = 'Special Recipe | Login'
-        return context
 
 
 class LogoutView(auth_views.LogoutView):
@@ -71,11 +61,12 @@ class LogoutView(auth_views.LogoutView):
         return super().get_next_page()
 
 
-class UserProfileView(SuccessMessageMixin, UpdateView):
+class UserProfileView(SuccessMessageMixin, TitleMixin, UpdateView):
     model = User
     form_class = account_forms.UserProfileForm
     success_message = 'Profile updated successfully!'
     template_name = 'accounts/profile/profile.html'
+    title = 'Special Recipe | Account'
 
     def get_success_url(self):
         return reverse_lazy('accounts:profile', args=(self.object.slug,))
@@ -84,15 +75,10 @@ class UserProfileView(SuccessMessageMixin, UpdateView):
         self.object.refresh_from_db()
         return super().form_invalid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context['title'] = f'Special Recipe | Profile - Account'
-        return context
-
 
 class UserProfilePasswordView(SuccessMessageMixin, auth_views.PasswordChangeView):
     template_name = 'accounts/profile/profile.html'
-    title = 'Special Recipe | Profile - Password'
+    title = 'Special Recipe | Password'
     form_class = account_forms.PasswordChangeForm
     success_message = 'Your password has been successfully updated!'
 
@@ -102,7 +88,7 @@ class UserProfilePasswordView(SuccessMessageMixin, auth_views.PasswordChangeView
 
 class UserProfileEmailView(SuccessMessageMixin, auth_views.PasswordChangeView):
     template_name = 'accounts/profile/profile.html'
-    title = 'Special Recipe | Profile - Email'
+    title = 'Special Recipe | Email'
     form_class = account_forms.EmailChangeForm
     success_message = 'Your email has been successfully changed!'
 
@@ -110,30 +96,29 @@ class UserProfileEmailView(SuccessMessageMixin, auth_views.PasswordChangeView):
         return reverse_lazy('accounts:profile-email', args={self.request.user.slug})
 
 
-class SendVerificationEmailView(TemplateView):
+class SendVerificationEmailView(LoginRequiredMixin, TitleMixin, TemplateView):
     template_name = 'accounts/email/email_verification_done.html'
+    title = 'Special Recipe | Send Verification'
+    sending_interval = settings.EMAIL_SEND_INTERVAL_SECONDS
 
     def get(self, request, *args, **kwargs):
         email = kwargs.get('email')
         user = get_object_or_404(User, email=email)
-        if user != request.user:
+
+        if not user.is_request_user_matching(request):
             raise Http404
-        valid_verifications = EmailVerification.objects.filter(user=user, expiration__gt=now()).order_by('-created')
+
+        seconds_since_last_email = user.seconds_since_last_email_verification()
+
         if user.is_verified:
             messages.warning(request, 'You have already verified your email.')
-        elif valid_verifications.exists() and valid_verifications.first().created + timedelta(minutes=1) > now():
-            seconds_left = naturaldelta(valid_verifications.first().created + timedelta(minutes=1) - now())
+        elif seconds_since_last_email < self.sending_interval:
+            seconds_left = self.sending_interval - seconds_since_last_email
             messages.warning(request, f'Please wait {seconds_left} to resend the confirmation email.')
         else:
-            expiration = now() + timedelta(hours=48)
-            verification = EmailVerification.objects.create(code=uuid4(), user=user, expiration=expiration)
+            verification = user.create_email_verification()
             send_verification_email.delay(object_id=verification.id)
         return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Sending a verification email'
-        return context
 
 
 class EmailVerificationView(TemplateView):
@@ -143,26 +128,23 @@ class EmailVerificationView(TemplateView):
         code = kwargs.get('code')
         email = kwargs.get('email')
         user = get_object_or_404(User, email=email)
-        if user != request.user or not is_valid_uuid(str(code)):
+
+        if not user.is_request_user_matching(request) or not is_valid_uuid(str(code)):
             raise Http404
+
         verification = get_object_or_404(EmailVerification, user=user, code=code)
+
         if user.is_verified:
             messages.warning(request, 'Your email has already been verified.')
         elif not verification.is_expired():
-            user.is_verified = True
-            user.save()
+            user.verify()
         else:
             messages.warning(request, 'The verification link has expired.')
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Email verification'
-        return context
 
-
-class PasswordResetView(SuccessMessageMixin, auth_views.PasswordResetView):
-    title = 'Special Recipe | Password reset'
+class PasswordResetView(LogoutRequiredMixin, SuccessMessageMixin, auth_views.PasswordResetView):
+    title = 'Special Recipe | Password Reset'
     template_name = 'accounts/password/reset_password.html'
     subject_template_name = 'accounts/password/password_reset_subject.html'
     email_template_name = 'accounts/password/password_reset_email.html'
@@ -173,13 +155,10 @@ class PasswordResetView(SuccessMessageMixin, auth_views.PasswordResetView):
                       'you’ve entered the address you registered with, and check your spam folder.'
 
 
-class PasswordResetConfirmView(SuccessMessageMixin, auth_views.PasswordResetConfirmView):
+class PasswordResetConfirmView(LogoutRequiredMixin, SuccessMessageMixin, TitleMixin,
+                               auth_views.PasswordResetConfirmView):
+    title = 'Special Recipe | Password Reset'
     template_name = 'accounts/password/password_reset_confirm.html'
     form_class = account_forms.SetPasswordForm
     success_url = reverse_lazy('accounts:login')
     success_message = 'Your password has been set. You can now sign into your account with the new password.'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Special Recipe | Password reset'
-        return context

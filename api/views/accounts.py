@@ -20,11 +20,10 @@ from utils.uid import is_valid_uuid
 class PasswordResetEmail(email_views.PasswordResetEmail):
     template_name = 'accounts/password/password_reset_email.html'
     subject_template_name = 'accounts/password/password_reset_subject.html'
-    use_https = False if settings.DEBUG else True
 
     def send(self, to, *args, **kwargs):
         context = self.get_context_data()
-        context['protocol'] = 'https' if self.use_https else 'http'
+        context['protocol'] = settings.PROTOCOL
 
         raw_subject = render_to_string(self.subject_template_name)
         subject = ''.join(raw_subject.splitlines())
@@ -64,8 +63,7 @@ class SendVerificationEmailCreateAPIView(CreateAPIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             send_verification_email.delay(object_id=serializer.instance.id)
-            response = serializer.data
-            del response['code']
+            response = {'expiration': serializer.data.get('expiration')}
             return Response(response, status=status.HTTP_201_CREATED)
 
 

@@ -5,10 +5,7 @@ from django.db.models import Q
 UserModel = get_user_model()
 
 
-class EmailOrUsernameAuth(ModelBackend):
-    """
-    User authentication by email or username.
-    """
+class UserEmailOrUsernameAuth(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         if username is None:
             username = kwargs.get(UserModel.USERNAME_FIELD)
