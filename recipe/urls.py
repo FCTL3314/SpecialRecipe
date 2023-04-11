@@ -1,7 +1,8 @@
 from django.urls import path
 
-from recipe.views import (BookmarksListView, RecipeDetailView, RecipesListView,
-                          add_comment, add_to_bookmarks, remove_from_bookmarks)
+from recipe.views import (AddCommentCreateView, BookmarksListView,
+                          RecipeDetailView, RecipesListView, add_to_bookmarks,
+                          remove_from_bookmarks)
 
 app_name = 'recipe'
 
@@ -12,5 +13,5 @@ urlpatterns = [
     path('bookmarks/add/<int:recipe_id>/', add_to_bookmarks, name='add-to-bookmarks'),
     path('bookmarks/remove/<int:recipe_id>/', remove_from_bookmarks, name='remove-from-bookmarks'),
     path('bookmarks/', BookmarksListView.as_view(), name='bookmarks'),
-    path('comment/add/<int:recipe_id>/', add_comment, name='comment-add'),
+    path('comment/add/<int:recipe_id>/', AddCommentCreateView.as_view(), name='comment-add'),
 ]

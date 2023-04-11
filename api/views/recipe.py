@@ -8,23 +8,22 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from accounts.models import User
 from api.pagination import (CategoryPageNumberPagination,
                             CommentPageNumberPagination,
                             RecipePageNumberPagination)
 from api.serializers.recipe import (CategorySerializer, CommentSerializer,
                                     IngredientSerializer,
                                     RecipeBookmarkSerializer, RecipeSerializer)
-from common.views import CacheMixin
 from recipe.models import Category, Comment, Ingredient, Recipe, RecipeBookmark
 
 
-class CategoryModelViewSet(CacheMixin, ModelViewSet):
+class CategoryModelViewSet(ModelViewSet):
+    model = Category
     serializer_class = CategorySerializer
     pagination_class = CategoryPageNumberPagination
 
     def get_queryset(self):
-        queryset = self.get_cached_data_or_set_new('categories', lambda: Category.objects.all(), 60 * 60)
+        queryset = self.model.objects.get_cached_queryset()
         return queryset.order_by('name')
 
     def get_permissions(self):
@@ -33,22 +32,23 @@ class CategoryModelViewSet(CacheMixin, ModelViewSet):
         return super().get_permissions()
 
 
-class RecipeModelViewSet(CacheMixin, ModelViewSet):
+class RecipeModelViewSet(ModelViewSet):
+    model = Recipe
     serializer_class = RecipeSerializer
     pagination_class = RecipePageNumberPagination
-    queryset = Recipe.objects.all()
     ordering = ('name',)
 
     def get_queryset(self):
-        initial_queryset = self.get_cached_data_or_set_new('recipes', lambda: self.queryset, 60 * 60)
+        queryset = self.model.objects.get_cached_queryset()
+
+        selected_category_slug = self.request.query_params.get('category_slug')
         search = self.request.query_params.get('search')
-        category_slug = self.request.query_params.get('category_slug')
+
         if search:
-            queryset = initial_queryset.filter(Q(name__icontains=search) | Q(description__icontains=search))
-        elif category_slug:
-            queryset = initial_queryset.filter(category__slug=category_slug)
-        else:
-            queryset = initial_queryset
+            queryset = queryset.filter(Q(name__icontains=search) | Q(description__icontains=search))
+        elif selected_category_slug:
+            queryset = queryset.filter(category__slug=selected_category_slug)
+
         return queryset.order_by(*self.ordering)
 
     def get_permissions(self):
@@ -94,6 +94,7 @@ class CommentGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMixin):
 
 
 class RecipeBookmarkGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMixin, DestroyModelMixin):
+    model = RecipeBookmark
     authentication_classes = (SessionAuthentication,)
     serializer_class = RecipeBookmarkSerializer
     permission_classes = (IsAuthenticated,)
@@ -101,7 +102,7 @@ class RecipeBookmarkGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMi
     ordering = ('-created_date',)
 
     def list(self, request, *args, **kwargs):
-        bookmarks = RecipeBookmark.objects.filter(user=request.user).prefetch_related('recipe').order_by(*self.ordering)
+        bookmarks = self.model.objects.get_user_bookmarks(request.user).order_by(*self.ordering)
         paginated_bookmarks = self.paginate_queryset(bookmarks)
         serializer = self.serializer_class(paginated_bookmarks, many=True)
         return self.get_paginated_response(serializer.data)
@@ -112,13 +113,12 @@ class RecipeBookmarkGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMi
             return Response({'recipe_id': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=recipe_id)
         recipe.bookmarks.add(request.user, through_defaults=None)
-        bookmark = RecipeBookmark.objects.get(recipe=recipe, user=request.user)
+        bookmark = self.model.objects.get(recipe=recipe, user=request.user)
         serializer = self.serializer_class(bookmark)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         recipe_id = kwargs.get('pk')
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        user = get_object_or_404(User, id=request.user.id, recipe=recipe)
-        recipe.bookmarks.remove(user)
+        recipe.bookmarks.remove(request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)

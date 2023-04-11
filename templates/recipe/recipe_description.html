@@ -56,12 +56,12 @@
 
             {% if user.is_authenticated %}
               <div class="input-group mb-3">
-                {{ form.comment }}
+                {{ form.text }}
                 <button class="btn btn-outline-success" type="submit" id="comment-submit">Comment</button>
               </div>
             {% else %}
               <div class="input-group">
-                {{ form.comment|attr:'disabled' }}
+                {{ form.text|attr:'disabled' }}
                 <button class="btn btn-outline-success" type="submit" id="comment-submit" disabled>Comment</button>
               </div>
               <p>

@@ -192,7 +192,7 @@ if (addCommentForm) {
         const form = event.target;
         const formData = new FormData(form);
         const recipeId = addCommentForm.dataset.recipeId;
-        const comment = formData.get('comment');
+        const comment = formData.get('text');
 
         const url = '/api/v1/comments/';
         const method = 'POST';

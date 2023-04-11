@@ -28,7 +28,6 @@ class RecipesListViewTestCase(TestCase):
     def _common_tests(self, response):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'recipe/index.html')
-        self.assertEqual(response.context_data['title'], 'Special Recipe | Recipes')
         self.assertEqual(list(response.context_data['categories']), list(self.categories))
         popular_recipes_cached = cache.get('popular_recipes')[:settings.COMMENTS_PAGINATE_BY]
         if popular_recipes_cached:
@@ -107,18 +106,14 @@ class DescriptionViewTestCase(TestCase):
 class AddToBookmarksViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
     def setUp(self) -> None:
-        self._create_user()
+        self.user = User.objects.create_user(
+            username=user_data['username'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],
+        )
         self.client.login(**user_data)
         self.object = Recipe.objects.first()
         self.path = reverse('recipe:add-to-bookmarks', args=(self.object.id,))

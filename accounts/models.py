@@ -35,8 +35,10 @@ class User(AbstractUser):
     def seconds_since_last_email_verification(self):
         valid_verifications = EmailVerification.objects.filter(user=self, expiration__gt=now()).order_by('-created')
         if valid_verifications.exists():
-            return (now() - valid_verifications.first().created).seconds
-        return (timedelta(seconds=settings.EMAIL_SEND_INTERVAL_SECONDS)).seconds
+            elapsed_time = (now() - valid_verifications.first().created)
+        else:
+            elapsed_time = (timedelta(seconds=settings.EMAIL_SEND_INTERVAL_SECONDS))
+        return elapsed_time.seconds
 
     def create_email_verification(self):
         expiration = now() + timedelta(hours=settings.EMAIL_EXPIRATION_HOURS)

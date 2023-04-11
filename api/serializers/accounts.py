@@ -22,4 +22,4 @@ class UserSerializer(serializers.ModelSerializer):
 class EmailVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailVerification
-        fields = ('id', 'code', 'created', 'expiration', 'user')
+        fields = ('id', 'created', 'expiration', 'user')

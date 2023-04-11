@@ -1,4 +1,3 @@
-from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic.base import ContextMixin, View
@@ -11,16 +10,6 @@ class TitleMixin(ContextMixin):
         context = super().get_context_data(**kwargs)
         context['title'] = self.title
         return context
-
-
-class CacheMixin:
-    @staticmethod
-    def get_cached_data_or_set_new(key, default, timeout):
-        data = cache.get(key)
-        if not data:
-            data = default()
-            cache.set(key, data, timeout)
-        return data
 
 
 class LogoutRequiredMixin(View):

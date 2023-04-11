@@ -110,22 +110,18 @@ class UserRegistrationViewTestCase(TestCase):
 
 class UserLoginViewTestCase(TestCase):
 
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
     def setUp(self) -> None:
         self.data = {
             'username': user_data['username'],
             'password': user_data['password'],
         }
-        self._create_user()
+        self.user = User.objects.create_user(
+            username=user_data['username'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],
+        )
         self.path = reverse('accounts:login')
 
     def _common_tests(self, response):
@@ -213,18 +209,14 @@ class UserLoginViewTestCase(TestCase):
 
 class SendVerificationEmailViewTestCase(TestCase):
 
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
     def setUp(self) -> None:
-        self._create_user()
+        self.user = User.objects.create_user(
+            username=user_data['username'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],
+        )
         self.client.force_login(user=self.user)
         self.sending_interval = settings.EMAIL_SEND_INTERVAL_SECONDS
         self.expiration_hours = settings.EMAIL_EXPIRATION_HOURS
@@ -280,18 +272,14 @@ class SendVerificationEmailViewTestCase(TestCase):
 
 class EmailVerificationViewTestCase(TestCase):
 
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
     def setUp(self) -> None:
-        self._create_user()
+        self.user = User.objects.create_user(
+            username=user_data['username'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],
+        )
         self.client.force_login(user=self.user)
 
         expiration = now() + timedelta(hours=48)
@@ -337,16 +325,6 @@ class EmailVerificationViewTestCase(TestCase):
 
 class UserProfileViewTestCase(TestCase):
 
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
     def setUp(self) -> None:
         self.data = {
             'username': user_data['username'] + 'New',
@@ -354,7 +332,13 @@ class UserProfileViewTestCase(TestCase):
             'last_name': user_data['last_name'] + 'New',
             'email': user_data['email'] + 'New',
         }
-        self._create_user()
+        self.user = User.objects.create_user(
+            username=user_data['username'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],
+        )
         self.client.force_login(user=self.user)
         self.path = reverse('accounts:profile', args=(self.user.slug,))
 
@@ -433,16 +417,6 @@ class UserProfileViewTestCase(TestCase):
 
 class UserProfilePasswordViewTestCase(TestCase):
 
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
     def setUp(self) -> None:
         new_password = 'I2l^91VxMD!y'
         self.data = {
@@ -450,7 +424,13 @@ class UserProfilePasswordViewTestCase(TestCase):
             'new_password1': new_password,
             'new_password2': new_password,
         }
-        self._create_user()
+        self.user = User.objects.create_user(
+            username=user_data['username'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],
+        )
         self.client.force_login(user=self.user)
         self.path = reverse('accounts:profile-password', args=(self.user.slug,))
 
@@ -469,19 +449,15 @@ class UserProfilePasswordViewTestCase(TestCase):
 
 class PwdResetViewTestCase(TestCase):
 
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
     def setUp(self) -> None:
         self.data = {'email': user_data['email']}
-        self._create_user()
+        self.user = User.objects.create_user(
+            username=user_data['username'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],
+        )
         self.path = reverse('accounts:reset_password')
 
     def test_view_get(self):
@@ -499,18 +475,14 @@ class PwdResetViewTestCase(TestCase):
 
 class PwdResetConfirmViewTestCase(TestCase):
 
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
     def setUp(self) -> None:
-        self._create_user()
+        self.user = User.objects.create_user(
+            username=user_data['username'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],
+        )
         uid = urlsafe_base64_encode(force_bytes(self.user.id))
         token = PasswordResetTokenGenerator().make_token(self.user)
         self.valid_path = reverse('accounts:password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
@@ -535,18 +507,14 @@ class PwdResetConfirmViewTestCase(TestCase):
 
 class UserProfileEmailViewTest(TestCase):
 
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
     def setUp(self):
-        self._create_user()
+        self.user = User.objects.create_user(
+            username=user_data['username'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password'],
+        )
         self.client.force_login(self.user)
         self.url = reverse('accounts:profile-email', args=(self.user.id,))
 

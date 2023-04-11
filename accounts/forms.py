@@ -3,7 +3,6 @@ import logging
 from django import forms
 from django.contrib.auth import forms as auth_forms
 from django.core.exceptions import ValidationError
-from django.template.loader import render_to_string
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
@@ -104,6 +103,7 @@ class UserProfileForm(auth_forms.UserChangeForm):
         super().__init__(*args, **kwargs)
 
     def clean_username(self):
+        """CASE-SENSITIVE check to see if the username is already taken."""
         username = self.cleaned_data.get('username')
         if username.lower() != self.instance.username.lower() and User.objects.filter(username__iexact=username
                                                                                       ).exists():
@@ -157,16 +157,10 @@ class PasswordResetForm(auth_forms.PasswordResetForm):
         'placeholder': 'Enter Email',
     }))
 
-    def send_mail(self, subject_template_name, email_template_name,
-                  context, from_email, to_email, html_email_template_name=None):
-        raw_subject = render_to_string(subject_template_name)
-        subject = ''.join(raw_subject.splitlines())
-        message = render_to_string(email_template_name, context)
-        if html_email_template_name is not None:
-            html_message = render_to_string(html_email_template_name, context)
-            send_email.delay(subject=subject, message=message, emails_list=[to_email], html_message=html_message)
-        else:
-            send_email.delay(subject=subject, message=message, recipient_list=[to_email])
+    def send_mail(self, subject_template_name, email_template_name, context, from_email, to_email,
+                  html_email_template_name=None):
+        context['user'] = context['user'].id
+        send_email.delay(subject_template_name, email_template_name, to_email, context)
         mailings_logger.info(f'Request to send a password reset email to {to_email}')
 
     class Meta:

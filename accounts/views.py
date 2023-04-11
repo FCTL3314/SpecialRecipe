@@ -36,9 +36,7 @@ class UserLoginView(LogoutRequiredMixin, TitleMixin, auth_views.LoginView):
 
     def get_success_url(self):
         next_query = self.request.session.get('before_login_url')
-        if next_query:
-            return next_query
-        return reverse_lazy('accounts:profile', args={self.request.user.slug})
+        return next_query if next_query else reverse_lazy('accounts:profile', args={self.request.user.slug})
 
     def form_valid(self, form):
         remember_me = form.cleaned_data.get('remember_me')

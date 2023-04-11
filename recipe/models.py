@@ -1,17 +1,46 @@
 from django.db import models
+from django.db.models import Count
 
 from accounts.models import User
+from utils.cache import get_cached_data_or_set_new
+
+
+class CategoryManager(models.Manager):
+    categories_cache_time = 60 * 60
+
+    def get_cached_queryset(self):
+        return get_cached_data_or_set_new('categories', self.all, self.categories_cache_time)
 
 
 class Category(models.Model):
     name = models.CharField(max_length=32)
     slug = models.SlugField(unique=True)
 
+    objects = CategoryManager()
+
     class Meta:
         verbose_name_plural = 'categories'
 
     def __str__(self):
         return self.name
+
+
+class RecipeManager(models.Manager):
+    recipes_cache_time = 60 * 60
+    popular_recipes_cache_time = 3600 * 24
+
+    def get_cached_queryset(self):
+        return get_cached_data_or_set_new('recipes', self.all, self.recipes_cache_time)
+
+    def get_cached_popular_recipes(self):
+        return get_cached_data_or_set_new(
+            'popular_recipes',
+            lambda: self.annotate(bookmarks_count=Count('bookmarks')).order_by('-bookmarks_count'),
+            self.popular_recipes_cache_time,
+        )
+
+    def get_user_bookmarked_recipes(self, user):
+        return self.filter(bookmarks=user) if user.is_authenticated else None
 
 
 class Recipe(models.Model):
@@ -24,6 +53,8 @@ class Recipe(models.Model):
     bookmarks = models.ManyToManyField(User, blank=True, through='RecipeBookmark')
     views = models.PositiveBigIntegerField(default=0)
 
+    objects = RecipeManager()
+
     def __str__(self):
         return self.name
 
@@ -31,7 +62,7 @@ class Recipe(models.Model):
         return Ingredient.objects.filter(recipe=self)
 
     def get_comments(self):
-        return Comment.objects.filter(recipe=self).order_by('-created_date')
+        return Comment.objects.filter(recipe=self).prefetch_related('author')
 
     def bookmarks_count(self):
         return self.bookmarks.count()
@@ -45,10 +76,18 @@ class Ingredient(models.Model):
         return self.name
 
 
+class RecipeBookmarkManager(models.Manager):
+
+    def get_user_bookmarks(self, user):
+        return self.filter(user=user).prefetch_related('recipe__bookmarks', 'recipe')
+
+
 class RecipeBookmark(models.Model):
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
+
+    objects = RecipeBookmarkManager()
 
     def __str__(self):
         return f'{self.user.username} | {self.recipe.name}'

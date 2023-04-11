@@ -15,10 +15,8 @@ urlpatterns = [
 
     path('verification/send/<str:email>/', account_view.SendVerificationEmailView.as_view(),
          name='send-verification-email'),
-    path('verify/<str:email>/<uuid:code>/', account_view.EmailVerificationView.as_view(),
-         name='email-verification'),
+    path('verify/<str:email>/<uuid:code>/', account_view.EmailVerificationView.as_view(), name='email-verification'),
 
     path('password_reset/', account_view.PasswordResetView.as_view(), name='reset_password'),
-    path('reset/<uidb64>/<token>/', account_view.PasswordResetConfirmView.as_view(),
-         name='password_reset_confirm'),
+    path('reset/<uidb64>/<token>/', account_view.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 ]
