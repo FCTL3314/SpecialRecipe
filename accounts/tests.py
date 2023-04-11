@@ -1,6 +1,5 @@
 from datetime import timedelta
 from http import HTTPStatus
-from uuid import uuid4
 
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -236,7 +235,7 @@ class SendVerificationEmailViewTestCase(TestCase):
                                       f'Just click on the link in that email to complete your verification if you '
                                       f'don\'t see it, you may need to check your spam folder.', html=True)
 
-        email_verification = EmailVerification.objects.filter(user=self.user)
+        email_verification = EmailVerification.objects.get_valid_user_verifications(self.user).order_by('-created')
 
         self.assertTrue(email_verification)
         self.assertEqual(
@@ -260,8 +259,7 @@ class SendVerificationEmailViewTestCase(TestCase):
         self.assertFalse(mail.outbox)
 
     def test_view_user_already_verified(self):
-        self.user.is_verified = True
-        self.user.save()
+        self.user.verify()
 
         response = self.client.get(self.path)
 
@@ -281,10 +279,7 @@ class EmailVerificationViewTestCase(TestCase):
             password=user_data['password'],
         )
         self.client.force_login(user=self.user)
-
-        expiration = now() + timedelta(hours=48)
-        self.email_verification = EmailVerification.objects.create(code=uuid4(), user=self.user, expiration=expiration)
-
+        self.email_verification = self.user.create_email_verification()
         self.path = reverse(
             'accounts:email-verification',
             kwargs={'email': self.user.email, 'code': self.email_verification.code}
@@ -305,8 +300,7 @@ class EmailVerificationViewTestCase(TestCase):
         self.assertTrue(self.user.is_verified)
 
     def test_view_user_already_verified(self):
-        self.user.is_verified = True
-        self.user.save()
+        self.user.verify()
 
         response = self.client.get(self.path)
 
@@ -314,7 +308,7 @@ class EmailVerificationViewTestCase(TestCase):
         self.assertContains(response, f'Your email has already been verified.')
 
     def test_view_link_has_expired(self):
-        self.email_verification.expiration -= timedelta(hours=72)
+        self.email_verification.expiration -= timedelta(hours=settings.EMAIL_EXPIRATION_HOURS * 2)
         self.email_verification.save()
 
         response = self.client.get(self.path)

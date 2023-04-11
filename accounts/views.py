@@ -45,8 +45,7 @@ class UserLoginView(LogoutRequiredMixin, TitleMixin, auth_views.LoginView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        if form.errors:
-            messages.warning(self.request, 'The entered data is incorrect, please try again.')
+        messages.warning(self.request, 'The entered data is incorrect, please try again.')
         return super().form_invalid(form)
 
 

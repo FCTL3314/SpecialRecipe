@@ -33,11 +33,11 @@ class User(AbstractUser):
         return super().clean()
 
     def seconds_since_last_email_verification(self):
-        valid_verifications = EmailVerification.objects.filter(user=self, expiration__gt=now()).order_by('-created')
+        valid_verifications = EmailVerification.objects.get_valid_user_verifications(user=self).order_by('-created')
         if valid_verifications.exists():
-            elapsed_time = (now() - valid_verifications.first().created)
+            elapsed_time = now() - valid_verifications.first().created
         else:
-            elapsed_time = (timedelta(seconds=settings.EMAIL_SEND_INTERVAL_SECONDS))
+            elapsed_time = timedelta(seconds=settings.EMAIL_SEND_INTERVAL_SECONDS)
         return elapsed_time.seconds
 
     def create_email_verification(self):
@@ -52,11 +52,19 @@ class User(AbstractUser):
         self.save()
 
 
+class EmailVerificationManager(models.Manager):
+
+    def get_valid_user_verifications(self, user):
+        return self.filter(user=user, expiration__gt=now())
+
+
 class EmailVerification(models.Model):
     code = models.UUIDField(unique=True)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     expiration = models.DateTimeField()
+
+    objects = EmailVerificationManager()
 
     def __str__(self):
         return f'Email verification for {self.user.email}'
