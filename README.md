@@ -62,6 +62,8 @@ Additionally, the website enables users to create or edit an account, reset lost
     * SECRET_KEY
     * DOMAIN_NAME
     * ALLOWED_HOSTS
+    * INTERNAL_IPS
+    * PROTOCOL
     * REDIS_HOST
     * REDIS_PORT
     * EMAIL_HOST_USER
