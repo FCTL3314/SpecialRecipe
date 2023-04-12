@@ -18,8 +18,7 @@
         <button type="button" class="bookmark btn text-warning p-0 border-0" data-recipe-id="{{ recipe.id }}"
                 data-is-saved="true">
           <img id="bookmark-icon-{{ recipe.id }}" src="{% static 'icon/bookmark-fill.svg' %}" alt="bookmark-fill"
-               width="24"
-               height="24">
+               width="24" height="24">
           <span>{{ recipe.bookmarks_count }} Saves</span>
         </button>
       {% else %}

@@ -41,12 +41,11 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeBookmarkSerializer(serializers.ModelSerializer):
-    recipe = RecipeSerializer(read_only=True)
-    recipe_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Recipe.objects.all(), source='recipe')
+    recipe_id = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all(), source='recipe')
 
     class Meta:
         model = RecipeBookmark
-        fields = ('id', 'recipe', 'recipe_id', 'user')
+        fields = ('id', 'recipe_id', 'user')
 
 
 class CommentSerializer(serializers.ModelSerializer):
