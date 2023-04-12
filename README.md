@@ -138,4 +138,4 @@ Additionally, the website enables users to create or edit an account, reset lost
 
 * **Animation of adding / removing from bookmarks**
 
-![recipe-bookmark](https://user-images.githubusercontent.com/97694131/230775473-fe5bfe8b-1d1a-4128-bb50-ea247fadea74.gif)
+![recipe-bookmark](https://user-images.githubusercontent.com/97694131/231538126-7de16b2c-2025-469b-be27-608033dda41e.gif)
