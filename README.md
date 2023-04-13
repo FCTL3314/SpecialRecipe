@@ -108,9 +108,10 @@ Additionally, the website enables users to create or edit an account, reset lost
 
 * **Recipes page**
 
-![firefox_yTZ8EJt8q8](https://user-images.githubusercontent.com/97694131/228911580-e0814d70-2006-420e-955d-25ee7ea6ee0a.jpg)
+![firefox_y1tY0Rbhep](https://user-images.githubusercontent.com/97694131/231889038-becbcc41-f3aa-4cca-9eb1-8ff913d00f89.jpg)
 ![firefox_4isgaYhoh9](https://user-images.githubusercontent.com/97694131/229195293-cb6d7a62-00a6-4b3c-a5b1-4df77e45527f.png)
 <hr>
+
 
 * **Recipe description pages**
 
