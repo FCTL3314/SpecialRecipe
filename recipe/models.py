@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Count
 
 from accounts.models import User
-from utils.cache import get_cached_data_or_set_new
+from common.cache import get_cached_data_or_set_new
 
 
 class CategoryManager(models.Manager):

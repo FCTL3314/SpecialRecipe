@@ -1,4 +1,4 @@
-{% extends 'recipe/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 
@@ -8,7 +8,7 @@
       <h1 class="text-center pt-2">{{ user.username }} bookmarks</h1>
     </div>
     <hr>
-    <div id="bookmarks-container" class="row">
+    <div id="bookmarks-wrp" class="row">
       {% if object_list %}
         {% for bookmark in object_list %}
           {% with bookmark.recipe as recipe %}
