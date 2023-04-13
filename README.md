@@ -62,9 +62,13 @@ Additionally, the website enables users to create or edit an account, reset lost
     * SECRET_KEY
     * DOMAIN_NAME
     * ALLOWED_HOSTS
+    * INTERNAL_IPS
+    * PROTOCOL
     * REDIS_HOST
     * REDIS_PORT
     * EMAIL_HOST_USER
+    * EMAIL_SEND_INTERVAL_SECONDS
+    * EMAIL_EXPIRATION_HOURS
     * RECIPES_PAGINATE_BY
     * CATEGORIES_PAGINATE_BY
     * COMMENTS_PAGINATE_BY
@@ -136,6 +140,6 @@ Additionally, the website enables users to create or edit an account, reset lost
 ![firefox_z9ORAIUYAf](https://user-images.githubusercontent.com/97694131/220067677-08dd1c7c-29a9-45db-9bb5-24f453c1e017.png)
 ![firefox_OHwLoPAKEr](https://user-images.githubusercontent.com/97694131/220067688-9b4f426a-edc5-4aba-baab-b6756febe96e.png)
 
-* **Animation of adding / removing from bookmarks**
+* **Adding / removing from bookmarks**
 
 ![recipe-bookmark](https://user-images.githubusercontent.com/97694131/231538126-7de16b2c-2025-469b-be27-608033dda41e.gif)
