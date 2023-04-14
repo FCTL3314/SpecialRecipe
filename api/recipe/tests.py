@@ -53,8 +53,8 @@ class CategoryTestCase(APITestCase):
         self.initial_count = Category.objects.count()
         self._create_user_and_token()
         self.data = {'name': 'Test', 'slug': 'test'}
-        self.list_path = reverse('api:categories-list')
-        self.detail_path = reverse('api:categories-detail', kwargs={'pk': self.object.id})
+        self.list_path = reverse('api:recipe:categories-list')
+        self.detail_path = reverse('api:recipe:categories-detail', kwargs={'pk': self.object.id})
 
     def tearDown(self) -> None:
         self._restore_log_level()
@@ -150,8 +150,8 @@ class RecipeTestCase(APITestCase):
             'category_id': Category.objects.first().id,
             'slug': 'test'
         }
-        self.list_path = reverse('api:recipes-list')
-        self.detail_path = reverse('api:recipes-detail', kwargs={'pk': self.object.id})
+        self.list_path = reverse('api:recipe:recipes-list')
+        self.detail_path = reverse('api:recipe:recipes-detail', kwargs={'pk': self.object.id})
 
     def tearDown(self) -> None:
         self._restore_log_level()
@@ -251,8 +251,8 @@ class IngredientTestCase(APITestCase):
             'recipe_id': Recipe.objects.first().id,
             'slug': 'test'
         }
-        self.list_path = reverse('api:ingredients-list')
-        self.detail_path = reverse('api:ingredients-detail', kwargs={'pk': self.object.id})
+        self.list_path = reverse('api:recipe:ingredients-list')
+        self.detail_path = reverse('api:recipe:ingredients-detail', kwargs={'pk': self.object.id})
 
     def tearDown(self) -> None:
         self._restore_log_level()

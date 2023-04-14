@@ -8,10 +8,10 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from api.pagination import (CategoryPageNumberPagination,
-                            CommentPageNumberPagination,
-                            RecipePageNumberPagination)
-from api.serializers.recipe import (CategorySerializer, CommentSerializer,
+from api.recipe.pagination import (CategoryPageNumberPagination,
+                                   CommentPageNumberPagination,
+                                   RecipePageNumberPagination)
+from api.recipe.serializers import (CategorySerializer, CommentSerializer,
                                     IngredientSerializer,
                                     RecipeBookmarkSerializer, RecipeSerializer)
 from recipe.models import Category, Comment, Ingredient, Recipe, RecipeBookmark

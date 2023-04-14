@@ -1,13 +1,20 @@
 from typing import List
 
+from django.urls import URLPattern
 
-def is_url_allowed(url_pattern, allowed_urls: List[str]) -> bool:
+
+def filter_urls(urls: List[URLPattern], allowed_names: List[str]) -> List[URLPattern]:
     """
-    Allows to exclude unnecessary routes, checks whether the received
-    route matches the allowed ones.
+    Filters a list of URL patterns based on their name.
+
+    Parameters:
+        urls : A list of URL patterns to filter.
+        allowed_names : A list of allowed URL names.
+
+    Returns:
+        List[URLPattern] : A filtered list of URL patterns with names in the allowed_names list.
     """
-    for url in allowed_urls:
-        match = url_pattern.resolve(url)
-        if match:
-            return True
-    return False
+    filtered_urls = list(
+        filter(lambda url: url.name in allowed_names, urls),
+    )
+    return filtered_urls

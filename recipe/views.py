@@ -49,10 +49,10 @@ class RecipesListView(TitleMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
 
-        categories = Category.objects.get_cached_queryset()
+        categories = Category.objects.get_cached_queryset().order_by('name')
         popular_recipes = self.model.objects.get_cached_popular_recipes()
 
-        context['categories'] = categories.order_by('name')[:settings.CATEGORIES_PAGINATE_BY]
+        context['categories'] = categories[:settings.CATEGORIES_PAGINATE_BY]
         context['popular_recipes'] = popular_recipes[:3]
 
         context['has_more_categories'] = categories.count() > settings.CATEGORIES_PAGINATE_BY

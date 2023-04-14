@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
 
+from accounts.managers import EmailVerificationManager
 from common.mail import convert_html_to_email_message
 
 logger = logging.getLogger('mailings')
@@ -50,12 +51,6 @@ class User(AbstractUser):
     def verify(self):
         self.is_verified = True
         self.save()
-
-
-class EmailVerificationManager(models.Manager):
-
-    def get_valid_user_verifications(self, user):
-        return self.filter(user=user, expiration__gt=now())
 
 
 class EmailVerification(models.Model):

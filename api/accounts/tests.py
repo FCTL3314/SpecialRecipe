@@ -61,10 +61,10 @@ class UserTestCase(APITestCase):
             'last_name': 'NewUser',
             'email': 'Newtestuser@mail.com',
         }
-        self.list_path = reverse('api:users-list')
-        self.me_path = reverse('api:users-me')
-        self.login_path = reverse('api:login')
-        self.logout_path = reverse('api:logout')
+        self.list_path = reverse('api:accounts:users-list')
+        self.me_path = reverse('api:accounts:users-me')
+        self.login_path = reverse('api:accounts:login')
+        self.logout_path = reverse('api:accounts:logout')
 
     def tearDown(self) -> None:
         self._restore_log_level()
@@ -152,8 +152,8 @@ class PasswordResetTestCase(APITestCase):
         self._create_user_and_token()
 
         self.data = {'email': user_data['email']}
-        self.password_reset_path = reverse('api:users-reset-password')
-        self.password_reset_confirm_path = reverse('api:users-reset-password-confirm')
+        self.password_reset_path = reverse('api:accounts:users-reset-password')
+        self.password_reset_confirm_path = reverse('api:accounts:users-reset-password-confirm')
 
     def test_password_reset(self):
         response = self.client.post(self.password_reset_path, self.data)
@@ -207,7 +207,7 @@ class PasswordChangeTestCase(APITestCase):
 
         self.data = {'current_password': user_data['password'], 'new_password': 'L0x60&fq!^ni'}
         self.token, self.created = Token.objects.get_or_create(user=self.user)
-        self.path = reverse('api:users-set-password')
+        self.path = reverse('api:accounts:users-set-password')
 
     def tearDown(self) -> None:
         self._restore_log_level()
@@ -246,7 +246,7 @@ class SendEmailVerificationTestCase(APITestCase):
 
         self.data = {'email': user_data['email']}
         self.token, self.created = Token.objects.get_or_create(user=self.user)
-        self.path = reverse('api:send-verification-email')
+        self.path = reverse('api:accounts:send-verification-email')
 
     def test_send_email_verification(self):
         response = self.client.post(self.path, self.data, HTTP_AUTHORIZATION=f'Token {self.token}')
@@ -277,7 +277,7 @@ class EmailVerificationTest(APITestCase):
 
         self.data = {'email': user_data['email'], 'code': self.email_verification.code}
         self.token, self.created = Token.objects.get_or_create(user=self.user)
-        self.path = reverse('api:email-verification')
+        self.path = reverse('api:accounts:email-verification')
 
     def test_email_verification(self):
         response = self.client.patch(self.path, self.data, HTTP_AUTHORIZATION=f'Token {self.token}')

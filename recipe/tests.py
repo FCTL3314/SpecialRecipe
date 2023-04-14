@@ -78,7 +78,7 @@ class RecipesListViewTestCase(TestCase):
         self.assertEqual(response.context_data['selected_category_slug'], None)
 
 
-class DescriptionViewTestCase(TestCase):
+class RecipeDetailViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json', 'ingredient.json']
 
     def setUp(self) -> None:
@@ -100,7 +100,10 @@ class DescriptionViewTestCase(TestCase):
         self.assertEqual(response.context_data['recipe'], self.object)
         self.assertEqual(list(response.context_data['ingredients']), list(ingredients))
         self.assertGreater(self.object.views, initial_views)
-        cache.delete((self.remote_addr, self.object.slug))
+
+    def tearDown(self) -> None:
+        key = f'{self.remote_addr}_{self.object.slug}'
+        cache.delete(key)
 
 
 class AddToBookmarksViewTestCase(TestCase):

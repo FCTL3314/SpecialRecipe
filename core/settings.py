@@ -311,12 +311,12 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     'EMAIL': {
-        'password_reset': 'api.views.accounts.PasswordResetEmail'
+        'password_reset': 'api.accounts.views.PasswordResetEmail'
     },
 
     'PASSWORD_RESET_CONFIRM_URL': 'accounts/reset/{uid}/{token}',
     'SERIALIZERS': {
-        'user': 'api.serializers.accounts.UserSerializer',
-        'current_user': 'api.serializers.accounts.UserSerializer',
+        'user': 'api.accounts.serializers.UserSerializer',
+        'current_user': 'api.accounts.serializers.UserSerializer',
     },
 }

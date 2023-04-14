@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.serializers.accounts import UserSerializer
+from api.accounts.serializers import UserSerializer
 from recipe.models import Category, Comment, Ingredient, Recipe, RecipeBookmark
 
 

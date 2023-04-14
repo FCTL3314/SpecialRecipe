@@ -143,7 +143,7 @@ function showMoreCategories() {
                     categoryItem.classList.add('text-dark', 'bg-body-secondary', 'disabled');
                 }
 
-                showMoreCategoriesButton.insertAdjacentElement('afterend', categoryItem);
+                showMoreCategoriesButton.insertAdjacentElement('beforebegin', categoryItem);
             }
 
             if (jsonResponse.next === null) {

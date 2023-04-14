@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from accounts.models import EmailVerification, User
 from accounts.tasks import send_verification_email
-from api.serializers.accounts import EmailVerificationSerializer
+from api.accounts.serializers import EmailVerificationSerializer
 from utils.uid import is_valid_uuid
 
 
