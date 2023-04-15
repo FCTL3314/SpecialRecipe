@@ -11,12 +11,12 @@ app_name = 'accounts'
 djoser_router = routers.DefaultRouter()
 djoser_router.register(r'users', UserViewSet, basename='users')
 allowed_djoser_url_names = [
-    'users-list',
     'users-me',
+    'users-detail',
+    'users-list',
     'users-set-password',
     'users-reset-password',
     'users-reset-password-confirm',
-    'users-detail',
 ]
 filtered_djoser_router_urls = filter_urls(djoser_router.urls, allowed_djoser_url_names)
 

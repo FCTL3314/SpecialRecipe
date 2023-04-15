@@ -47,7 +47,7 @@
           </div>
           <div class="carousel-inner rounded-2">
             {% for recipe in popular_recipes %}
-              <a href="{% url 'recipe:description' recipe.slug %}">
+              <a href="{% url 'recipe:detail' recipe.slug %}">
                 <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
                   <img src="{{ recipe.image.url }}" class="carousel-img d-block w-100" alt="carousel_first_image">
                   <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-25 rounded-2 p-0 pb-2">

@@ -2,14 +2,14 @@
 
 
 <div class="card h-100">
-  <a href="{% url 'recipe:description' recipe.slug %}">
+  <a href="{% url 'recipe:detail' recipe.slug %}">
     <div class="card-img-scale-wrp">
       <img src="{{ recipe.image.url }}" class="card-img-top" alt="recipe_img">
     </div>
   </a>
   <div class="card-body d-flex flex-column">
     <a class="link-dark text-decoration-none"
-       href="{% url 'recipe:description' recipe.slug %}">
+       href="{% url 'recipe:detail' recipe.slug %}">
       <h5 class="card-title">{{ recipe.name }}</h5>
     </a>
     <p class="card-text">{{ recipe.description }}</p>

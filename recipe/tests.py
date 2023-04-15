@@ -6,22 +6,13 @@ from django.db.models import Count, Q
 from django.test import TestCase
 from django.urls import reverse
 
-from recipe.models import Category, Ingredient, Recipe, User
-
-user_data = {
-    'username': 'TestUser',
-    'first_name': 'Test',
-    'last_name': 'User',
-    'email': 'testuser@mail.com',
-    'password': 'qnjCmk27yzKTCWWiwdYH',
-    'slug': 'test',
-}
+from recipe.models import Category, Ingredient, Recipe
 
 
 class RecipesListViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json']
 
-    def setUp(self) -> None:
+    def setUp(self):
         self.queryset = Recipe.objects.order_by('name')
         self.categories = Category.objects.order_by('name')[:settings.CATEGORIES_PAGINATE_BY]
 
@@ -74,16 +65,17 @@ class RecipesListViewTestCase(TestCase):
             list(response.context_data['object_list']),
             list(
                 self.queryset.filter(Q(name__icontains=search) | Q(description__icontains=search)).order_by('name')
-            )[:settings.RECIPES_PAGINATE_BY])
+            )[:settings.RECIPES_PAGINATE_BY],
+        )
         self.assertEqual(response.context_data['selected_category_slug'], None)
 
 
 class RecipeDetailViewTestCase(TestCase):
     fixtures = ['category.json', 'recipe.json', 'ingredient.json']
 
-    def setUp(self) -> None:
+    def setUp(self):
         self.object = Recipe.objects.first()
-        self.path = reverse('recipe:description', kwargs={'recipe_slug': self.object.slug})
+        self.path = reverse('recipe:detail', kwargs={'recipe_slug': self.object.slug})
         # The address is specified in order to delete the cache created by the test.
         self.remote_addr = '127.0.0.1'
 
@@ -101,61 +93,6 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertEqual(list(response.context_data['ingredients']), list(ingredients))
         self.assertGreater(self.object.views, initial_views)
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         key = f'{self.remote_addr}_{self.object.slug}'
         cache.delete(key)
-
-
-class AddToBookmarksViewTestCase(TestCase):
-    fixtures = ['category.json', 'recipe.json']
-
-    def setUp(self) -> None:
-        self.user = User.objects.create_user(
-            username=user_data['username'],
-            first_name=user_data['first_name'],
-            last_name=user_data['last_name'],
-            email=user_data['email'],
-            password=user_data['password'],
-        )
-        self.client.login(**user_data)
-        self.object = Recipe.objects.first()
-        self.path = reverse('recipe:add-to-bookmarks', args=(self.object.id,))
-
-    def test_view(self):
-        self.assertFalse(self.object.bookmarks.filter(id=self.user.id))
-
-        response = self.client.get(self.path, HTTP_REFERER=reverse('recipe:index'))
-
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('recipe:index'))
-        self.assertTrue(self.object.bookmarks.filter(id=self.user.id))
-
-
-class RemoveFromBookmarksViewTestCase(TestCase):
-    fixtures = ['category.json', 'recipe.json']
-
-    def _create_user(self, username=user_data['username'], first_name=user_data['first_name'],
-                     last_name=user_data['last_name'], email=user_data['email'], password=user_data['password']):
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-
-    def setUp(self) -> None:
-        self._create_user()
-        self.client.login(**user_data)
-        self.object = Recipe.objects.first()
-        self.object.bookmarks.add(self.user, through_defaults=None)
-        self.path = reverse('recipe:remove-from-bookmarks', args=(self.object.id,))
-
-    def test_view(self):
-        self.assertTrue(self.object.bookmarks.filter(id=self.user.id))
-
-        response = self.client.get(self.path, HTTP_REFERER=reverse('recipe:index'))
-
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('recipe:index'))
-        self.assertFalse(self.object.bookmarks.filter(id=self.user.id))

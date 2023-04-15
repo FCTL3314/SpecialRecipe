@@ -1,8 +1,7 @@
 from django.db import models
 
-from accounts.models import User
-from recipe.managers import (CategoryManager, RecipeBookmarkManager,
-                             RecipeManager)
+from interactions.models import RecipeComment
+from recipe.managers import CategoryManager, RecipeManager
 
 
 class Category(models.Model):
@@ -25,7 +24,7 @@ class Recipe(models.Model):
     cooking_description = models.TextField()
     category = models.ForeignKey(to=Category, on_delete=models.PROTECT)
     slug = models.SlugField(unique=True)
-    bookmarks = models.ManyToManyField(User, blank=True, through='RecipeBookmark')
+    bookmarks = models.ManyToManyField('accounts.User', blank=True, through='interactions.RecipeBookmark')
     views = models.PositiveBigIntegerField(default=0)
 
     objects = RecipeManager()
@@ -37,7 +36,7 @@ class Recipe(models.Model):
         return Ingredient.objects.filter(recipe=self)
 
     def get_comments(self):
-        return Comment.objects.filter(recipe=self).prefetch_related('author')
+        return RecipeComment.objects.filter(recipe=self).prefetch_related('author')
 
     def bookmarks_count(self):
         return self.bookmarks.count()
@@ -49,24 +48,3 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class RecipeBookmark(models.Model):
-    recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    created_date = models.DateTimeField(auto_now_add=True)
-
-    objects = RecipeBookmarkManager()
-
-    def __str__(self):
-        return f'{self.user.username} | {self.recipe.name}'
-
-
-class Comment(models.Model):
-    recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
-    author = models.ForeignKey(to=User, null=True, on_delete=models.SET_NULL)
-    text = models.CharField(max_length=516)
-    created_date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.text

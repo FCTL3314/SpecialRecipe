@@ -1,4 +1,3 @@
-import logging
 from datetime import timedelta
 from uuid import uuid4
 
@@ -13,76 +12,44 @@ from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 from accounts.models import EmailVerification, User
+from common.tests import DisableLoggingMixin, TestUser
 
-user_data = {
-    'username': 'TestUser',
-    'first_name': 'Test',
-    'last_name': 'User',
-    'email': 'testuser@mail.com',
-    'password': 'qnjCmk27yzKTCWWiwdYH',
-    'slug': 'test',
-}
+test_user = TestUser()
 
 
-class UserTestCase(APITestCase):
+class UserTestCase(DisableLoggingMixin, APITestCase):
 
-    def _reduce_log_level(self):
-        """Reduce the log level to avoid messages like 'bad_request'."""
-        logger = logging.getLogger('django.request')
-        self.previous_level = logger.getEffectiveLevel()
-        logger.setLevel(logging.ERROR)
+    def setUp(self):
+        super().setUp()
 
-    def _restore_log_level(self):
-        """Restore the normal log level."""
-        logger = logging.getLogger('django.request')
-        logger.setLevel(self.previous_level)
-
-    def _create_user_and_token(self, username=user_data['username'], first_name=user_data['first_name'],
-                               last_name=user_data['last_name'], email=user_data['email'],
-                               password=user_data['password']):
-        """Create a new user and auth token."""
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-        self.token, self.created = Token.objects.get_or_create(user=self.user)
-
-    def setUp(self) -> None:
-        self._reduce_log_level()
-
-        self._create_user_and_token()
+        self.user = test_user.create_user()
+        self.token = test_user.get_user_token(self.user)
 
         self.data = {
-            'username': 'NewTestUser',
-            'first_name': 'NewTest',
-            'last_name': 'NewUser',
-            'email': 'Newtestuser@mail.com',
+            'username': 'New' + test_user.username,
+            'first_name': 'New' + test_user.first_name,
+            'last_name': 'New' + test_user.last_name,
+            'email': 'New' + test_user.email,
         }
         self.list_path = reverse('api:accounts:users-list')
         self.me_path = reverse('api:accounts:users-me')
         self.login_path = reverse('api:accounts:login')
         self.logout_path = reverse('api:accounts:logout')
 
-    def tearDown(self) -> None:
-        self._restore_log_level()
-
     def test_user_me(self):
         response = self.client.get(self.me_path, HTTP_AUTHORIZATION=f'Token {self.token}')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(self.user.username, user_data['username'])
-        self.assertEqual(self.user.first_name, user_data['first_name'])
-        self.assertEqual(self.user.last_name, user_data['last_name'])
-        self.assertEqual(self.user.email, user_data['email'])
+        self.assertEqual(self.user.username, test_user.username)
+        self.assertEqual(self.user.first_name, test_user.first_name)
+        self.assertEqual(self.user.last_name, test_user.last_name)
+        self.assertEqual(self.user.email, test_user.email)
 
     def test_user_create(self):
         user_create_data = self.data.copy()
         del user_create_data['first_name']
         del user_create_data['last_name']
-        user_create_data['password'] = user_data['password']
+        user_create_data['password'] = test_user.password
 
         self.assertFalse(User.objects.filter(username=user_create_data['username']).exists())
 
@@ -108,8 +75,8 @@ class UserTestCase(APITestCase):
 
     def test_user_login_success(self):
         data = {
-            'username': user_data['username'],
-            'password': user_data['password'],
+            'username': test_user.username,
+            'password': test_user.password,
         }
 
         response = self.client.post(self.login_path, data)
@@ -118,7 +85,7 @@ class UserTestCase(APITestCase):
 
     def test_user_login_bad_request(self):
         data = {
-            'username': user_data['username'],
+            'username': test_user.username,
             'password': 'wrong_password',
         }
 
@@ -135,23 +102,11 @@ class UserTestCase(APITestCase):
 
 class PasswordResetTestCase(APITestCase):
 
-    def _create_user_and_token(self, username=user_data['username'], first_name=user_data['first_name'],
-                               last_name=user_data['last_name'], email=user_data['email'],
-                               password=user_data['password']):
-        """Create a new user and auth token."""
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-        self.token, self.created = Token.objects.get_or_create(user=self.user)
+    def setUp(self):
+        self.user = test_user.create_user()
+        self.token = test_user.get_user_token(self.user)
 
-    def setUp(self) -> None:
-        self._create_user_and_token()
-
-        self.data = {'email': user_data['email']}
+        self.data = {'email': test_user.email}
         self.password_reset_path = reverse('api:accounts:users-reset-password')
         self.password_reset_confirm_path = reverse('api:accounts:users-reset-password-confirm')
 
@@ -166,7 +121,7 @@ class PasswordResetTestCase(APITestCase):
         reset_data = {
             'uid': uid,
             'token': token,
-            'new_password': 'L0x60&fq!^ni',
+            'new_password': test_user.new_password,
         }
 
         response = self.client.post(self.password_reset_confirm_path, reset_data, )
@@ -174,43 +129,17 @@ class PasswordResetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class PasswordChangeTestCase(APITestCase):
+class PasswordChangeTestCase(DisableLoggingMixin, APITestCase):
 
-    def _reduce_log_level(self):
-        """Reduce the log level to avoid messages like 'bad_request'."""
-        logger = logging.getLogger('django.request')
-        self.previous_level = logger.getEffectiveLevel()
-        logger.setLevel(logging.ERROR)
+    def setUp(self):
+        super().setUp()
 
-    def _restore_log_level(self):
-        """Restore the normal log level."""
-        logger = logging.getLogger('django.request')
-        logger.setLevel(self.previous_level)
+        self.user = test_user.create_user()
+        self.token = test_user.get_user_token(self.user)
 
-    def _create_user_and_token(self, username=user_data['username'], first_name=user_data['first_name'],
-                               last_name=user_data['last_name'], email=user_data['email'],
-                               password=user_data['password']):
-        """Create a new user and auth token."""
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-        self.token, self.created = Token.objects.get_or_create(user=self.user)
-
-    def setUp(self) -> None:
-        self._reduce_log_level()
-
-        self._create_user_and_token()
-
-        self.data = {'current_password': user_data['password'], 'new_password': 'L0x60&fq!^ni'}
+        self.data = {'current_password': test_user.password, 'new_password': test_user.new_password}
         self.token, self.created = Token.objects.get_or_create(user=self.user)
         self.path = reverse('api:accounts:users-set-password')
-
-    def tearDown(self) -> None:
-        self._restore_log_level()
 
     def test_password_change_success(self):
         response = self.client.post(self.path, self.data, HTTP_AUTHORIZATION=f'Token {self.token}')
@@ -219,7 +148,7 @@ class PasswordChangeTestCase(APITestCase):
 
     def test_password_change_bad_request(self):
         wrong_data = self.data.copy()
-        wrong_data['new_password'] = 'G*&njN'
+        wrong_data['new_password'] = test_user.weak_password
 
         response = self.client.post(self.path, wrong_data, HTTP_AUTHORIZATION=f'Token {self.token}')
 
@@ -228,23 +157,11 @@ class PasswordChangeTestCase(APITestCase):
 
 class SendEmailVerificationTestCase(APITestCase):
 
-    def _create_user_and_token(self, username=user_data['username'], first_name=user_data['first_name'],
-                               last_name=user_data['last_name'], email=user_data['email'],
-                               password=user_data['password']):
-        """Create a new user and auth token."""
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-        self.token, self.created = Token.objects.get_or_create(user=self.user)
+    def setUp(self):
+        self.user = test_user.create_user()
+        self.token = test_user.get_user_token(self.user)
 
-    def setUp(self) -> None:
-        self._create_user_and_token()
-
-        self.data = {'email': user_data['email']}
+        self.data = {'email': test_user.email}
         self.token, self.created = Token.objects.get_or_create(user=self.user)
         self.path = reverse('api:accounts:send-verification-email')
 
@@ -256,26 +173,14 @@ class SendEmailVerificationTestCase(APITestCase):
 
 class EmailVerificationTest(APITestCase):
 
-    def _create_user_and_token(self, username=user_data['username'], first_name=user_data['first_name'],
-                               last_name=user_data['last_name'], email=user_data['email'],
-                               password=user_data['password']):
-        """Create a new user and auth token."""
-        self.user = User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-        self.token, self.created = Token.objects.get_or_create(user=self.user)
-
-    def setUp(self) -> None:
-        self._create_user_and_token()
+    def setUp(self):
+        self.user = test_user.create_user()
+        self.token = test_user.get_user_token(self.user)
 
         expiration = now() + timedelta(hours=48)
         self.email_verification = EmailVerification.objects.create(code=uuid4(), user=self.user, expiration=expiration)
 
-        self.data = {'email': user_data['email'], 'code': self.email_verification.code}
+        self.data = {'email': test_user.email, 'code': self.email_verification.code}
         self.token, self.created = Token.objects.get_or_create(user=self.user)
         self.path = reverse('api:accounts:email-verification')
 

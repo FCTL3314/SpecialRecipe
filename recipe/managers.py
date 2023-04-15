@@ -27,9 +27,3 @@ class RecipeManager(models.Manager):
 
     def get_user_bookmarked_recipes(self, user):
         return self.filter(bookmarks=user) if user.is_authenticated else None
-
-
-class RecipeBookmarkManager(models.Manager):
-
-    def get_user_bookmarks(self, user):
-        return self.filter(user=user).prefetch_related('recipe__bookmarks', 'recipe')

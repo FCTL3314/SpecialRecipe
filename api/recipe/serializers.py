@@ -1,7 +1,9 @@
+
 from rest_framework import serializers
 
 from api.accounts.serializers import UserSerializer
-from recipe.models import Category, Comment, Ingredient, Recipe, RecipeBookmark
+from interactions.models import RecipeBookmark, RecipeComment
+from recipe.models import Category, Ingredient, Recipe
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -53,5 +55,5 @@ class CommentSerializer(serializers.ModelSerializer):
     recipe_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Recipe.objects.all(), source='recipe')
 
     class Meta:
-        model = Comment
+        model = RecipeComment
         fields = ('id', 'text', 'author', 'recipe_id', 'created_date')

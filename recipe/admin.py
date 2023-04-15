@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
 
+from interactions.admin import RecipeCommentInlineAdmin
 from recipe.models import Category, Ingredient, Recipe
 
 
@@ -30,4 +31,4 @@ class RecipeAdmin(SummernoteModelAdmin):
     search_fields = ('name',)
     ordering = ('name',)
     prepopulated_fields = {'slug': ('name',)}
-    inlines = (IngredientInlineAdmin,)
+    inlines = (IngredientInlineAdmin, RecipeCommentInlineAdmin)

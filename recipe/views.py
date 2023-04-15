@@ -1,17 +1,16 @@
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.db.models import Q
-from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormMixin, FormView
+from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
 
+from common.urls import get_referer_or_default
 from common.views import TitleMixin
-from recipe.forms import CommentForm, SearchForm
-from recipe.models import Category, Comment, Recipe, RecipeBookmark
+from interactions.forms import RecipeCommentForm
+from recipe.forms import SearchForm
+from recipe.models import Category, Recipe
 
 
 class RecipesListView(TitleMixin, ListView):
@@ -39,12 +38,10 @@ class RecipesListView(TitleMixin, ListView):
         search = self.request.GET.get('search')
 
         if selected_category_slug:
-            paginator_url = reverse('recipe:category', args=(selected_category_slug,)) + '?page='
+            return reverse('recipe:category', args=(selected_category_slug,)) + '?page='
         elif search:
-            paginator_url = f'?search={search}&page='
-        else:
-            paginator_url = reverse('recipe:index') + '?page='
-        return paginator_url
+            return f'?search={search}&page='
+        return reverse('recipe:index') + '?page='
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
@@ -68,7 +65,7 @@ class RecipeDetailView(FormMixin, DetailView):
     model = Recipe
     slug_url_kwarg = 'recipe_slug'
     template_name = 'recipe/recipe_description.html'
-    form_class = CommentForm
+    form_class = RecipeCommentForm
 
     def _has_viewed(self, request):
         remote_addr = request.META.get('REMOTE_ADDR')
@@ -104,54 +101,3 @@ class RecipeDetailView(FormMixin, DetailView):
         context['title'] = f'Special Recipe | {self.object.name}'
         context['ingredients'] = self.object.get_ingredients()
         return context
-
-
-class BookmarksListView(LoginRequiredMixin, TitleMixin, ListView):
-    model = RecipeBookmark
-    template_name = 'recipe/recipe_bookmarks.html'
-    ordering = ('-created_date',)
-    title = 'Special Recipe | Bookmarks'
-
-    def get_queryset(self):
-        queryset = self.model.objects.get_user_bookmarks(self.request.user)
-        return queryset.order_by(*self.ordering)[:settings.RECIPES_PAGINATE_BY]
-
-
-class AddCommentCreateView(LoginRequiredMixin, FormView):
-    model = Comment
-    form_class = CommentForm
-
-    def form_valid(self, form):
-        text = form.cleaned_data.get('text')
-        recipe_id = self.kwargs.get('recipe_id')
-
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-
-        Comment.objects.create(text=text, author=self.request.user, recipe=recipe)
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        referer = self.request.META.get('HTTP_REFERER')
-        if referer:
-            return referer
-        return reverse('recipe:index')
-
-
-@login_required()
-def add_to_bookmarks(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    recipe.bookmarks.add(request.user, through_defaults=None)
-    referer = request.META.get('HTTP_REFERER')
-    if referer:
-        return HttpResponseRedirect(referer)
-    return HttpResponseRedirect(reverse('recipe:index'))
-
-
-@login_required()
-def remove_from_bookmarks(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    recipe.bookmarks.remove(request.user)
-    referer = request.META.get('HTTP_REFERER')
-    if referer:
-        return HttpResponseRedirect(referer)
-    return HttpResponseRedirect(reverse('recipe:index'))

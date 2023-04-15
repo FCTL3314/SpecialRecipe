@@ -1,5 +1,3 @@
-import logging
-from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -71,6 +69,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
 
     'recipe',
+    'interactions',
     'accounts',
     'api',
 ]

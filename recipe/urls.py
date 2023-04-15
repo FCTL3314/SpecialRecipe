@@ -1,17 +1,11 @@
 from django.urls import path
 
-from recipe.views import (AddCommentCreateView, BookmarksListView,
-                          RecipeDetailView, RecipesListView, add_to_bookmarks,
-                          remove_from_bookmarks)
+from recipe.views import RecipeDetailView, RecipesListView
 
 app_name = 'recipe'
 
 urlpatterns = [
     path('', RecipesListView.as_view(), name='index'),
-    path('description/<slug:recipe_slug>/', RecipeDetailView.as_view(), name='description'),
+    path('detail/<slug:recipe_slug>/', RecipeDetailView.as_view(), name='detail'),
     path('category/<slug:category_slug>/', RecipesListView.as_view(), name='category'),
-    path('bookmarks/add/<int:recipe_id>/', add_to_bookmarks, name='add-to-bookmarks'),
-    path('bookmarks/remove/<int:recipe_id>/', remove_from_bookmarks, name='remove-from-bookmarks'),
-    path('bookmarks/', BookmarksListView.as_view(), name='bookmarks'),
-    path('comment/add/<int:recipe_id>/', AddCommentCreateView.as_view(), name='comment-add'),
 ]
