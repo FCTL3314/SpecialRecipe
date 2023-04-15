@@ -1,7 +1,6 @@
 from django.db import models
 
-from interactions.models import RecipeComment
-from recipe.managers import CategoryManager, RecipeManager
+from recipe.managers import CategoryManager, IngredientManager, RecipeManager
 
 
 class Category(models.Model):
@@ -32,12 +31,6 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
-    def get_ingredients(self):
-        return Ingredient.objects.filter(recipe=self)
-
-    def get_comments(self):
-        return RecipeComment.objects.filter(recipe=self).prefetch_related('author')
-
     def bookmarks_count(self):
         return self.bookmarks.count()
 
@@ -45,6 +38,8 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=256)
     recipe = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
+
+    objects = IngredientManager()
 
     def __str__(self):
         return self.name

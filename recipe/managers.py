@@ -27,3 +27,9 @@ class RecipeManager(models.Manager):
 
     def get_user_bookmarked_recipes(self, user):
         return self.filter(bookmarks=user) if user.is_authenticated else None
+
+
+class IngredientManager(models.Manager):
+
+    def get_recipe_ingredients(self, recipe_id):
+        return self.filter(recipe_id=recipe_id)

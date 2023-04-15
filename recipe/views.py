@@ -8,8 +8,9 @@ from django.views.generic.list import ListView
 
 from common.views import TitleMixin
 from interactions.forms import RecipeCommentForm
+from interactions.models import RecipeComment
 from recipe.forms import SearchForm
-from recipe.models import Category, Recipe
+from recipe.models import Category, Ingredient, Recipe
 
 
 class RecipesListView(TitleMixin, ListView):
@@ -90,13 +91,12 @@ class RecipeDetailView(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
 
-        comments = self.object.get_comments().order_by('-created_date')
+        comments = RecipeComment.objects.get_recipe_comments(self.object.id).order_by('-created_date')
         comments_count = comments.count()
 
         context['comments'] = comments[:settings.COMMENTS_PAGINATE_BY]
         context['comments_count'] = comments_count
         context['has_more_comments'] = comments_count > settings.COMMENTS_PAGINATE_BY
-
+        context['ingredients'] = Ingredient.objects.get_recipe_ingredients(self.object.id)
         context['title'] = f'Special Recipe | {self.object.name}'
-        context['ingredients'] = self.object.get_ingredients()
         return context

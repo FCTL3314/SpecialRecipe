@@ -1,6 +1,6 @@
 from django.db import models
 
-from interactions.managers import RecipeBookmarkManager
+from interactions.managers import RecipeBookmarkManager, RecipeCommentManager
 
 
 class RecipeBookmark(models.Model):
@@ -19,6 +19,8 @@ class RecipeComment(models.Model):
     author = models.ForeignKey(to='accounts.User', null=True, on_delete=models.SET_NULL)
     text = models.CharField(max_length=516)
     created_date = models.DateTimeField(auto_now_add=True)
+
+    objects = RecipeCommentManager()
 
     def __str__(self):
         return self.text

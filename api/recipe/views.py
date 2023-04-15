@@ -78,7 +78,7 @@ class CommentGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMixin):
         recipe_id = request.GET.get('recipe_id')
         if not recipe_id:
             return Response({'recipe_id': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        comments = RecipeComment.objects.filter(recipe_id=recipe_id).order_by('-created_date')
+        comments = RecipeComment.objects.get_recipe_comments(recipe_id).order_by('-created_date')
         paginated_comments = self.paginate_queryset(comments)
         serializer = self.serializer_class(paginated_comments, many=True)
         return self.get_paginated_response(serializer.data)
@@ -104,7 +104,7 @@ class RecipeBookmarkGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMi
     ordering = ('-created_date',)
 
     def list(self, request, *args, **kwargs):
-        bookmarks = self.model.objects.get_user_bookmarks(request.user).order_by(*self.ordering)
+        bookmarks = RecipeBookmark.objects.get_user_bookmarks(request.user).order_by(*self.ordering)
         paginated_bookmarks = self.paginate_queryset(bookmarks)
         serializer = self.serializer_class(paginated_bookmarks, many=True)
         return self.get_paginated_response(serializer.data)
