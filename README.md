@@ -138,7 +138,7 @@ Additionally, the website enables users to create or edit an account, reset lost
 
 * **Authentication pages**
 
-![firefox_z9ORAIUYAf](https://user-images.githubusercontent.com/97694131/220067677-08dd1c7c-29a9-45db-9bb5-24f453c1e017.png)
+![firefox_B4E9sQRVKS](https://user-images.githubusercontent.com/97694131/232253448-ebed7762-8c42-4222-94dc-53b07174ee0e.png)
 ![firefox_OHwLoPAKEr](https://user-images.githubusercontent.com/97694131/220067688-9b4f426a-edc5-4aba-baab-b6756febe96e.png)
 
 * **Adding / removing from bookmarks**
