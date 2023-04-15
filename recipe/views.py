@@ -6,7 +6,6 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
 
-from common.urls import get_referer_or_default
 from common.views import TitleMixin
 from interactions.forms import RecipeCommentForm
 from recipe.forms import SearchForm
