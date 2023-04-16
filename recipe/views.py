@@ -8,9 +8,8 @@ from django.views.generic.list import ListView
 
 from common.views import TitleMixin
 from interactions.forms import RecipeCommentForm
-from interactions.models import RecipeComment
 from recipe.forms import SearchForm
-from recipe.models import Category, Ingredient, Recipe
+from recipe.models import Category, Recipe
 
 
 class RecipesListView(TitleMixin, ListView):
@@ -21,7 +20,7 @@ class RecipesListView(TitleMixin, ListView):
     paginate_by = settings.RECIPES_PAGINATE_BY
 
     def get_queryset(self):
-        queryset = self.model.objects.get_cached_queryset()
+        queryset = self.model.objects.cached_queryset()
 
         selected_category_slug = self.kwargs.get('category_slug')
         search = self.request.GET.get('search')
@@ -46,8 +45,8 @@ class RecipesListView(TitleMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
 
-        categories = Category.objects.get_cached_queryset().order_by('name')
-        popular_recipes = self.model.objects.get_cached_popular_recipes()
+        categories = Category.objects.cached_queryset().order_by('name')
+        popular_recipes = self.model.objects.cached_popular_recipes()
 
         context['categories'] = categories[:settings.CATEGORIES_PAGINATE_BY]
         context['popular_recipes'] = popular_recipes[:3]
@@ -55,7 +54,7 @@ class RecipesListView(TitleMixin, ListView):
         context['has_more_categories'] = categories.count() > settings.CATEGORIES_PAGINATE_BY
         context['selected_category_slug'] = self.kwargs.get('category_slug')
         context['paginator_url'] = self.get_paginator_url()
-        context['user_bookmarks'] = self.model.objects.get_user_bookmarked_recipes(self.request.user)
+        context['user_bookmarks'] = self.model.objects.user_bookmarked_recipes(self.request.user)
         context['form'] = SearchForm(initial={'search': self.request.GET.get('search')})
 
         return context
@@ -91,12 +90,12 @@ class RecipeDetailView(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
 
-        comments = RecipeComment.objects.get_recipe_comments(self.object.id).order_by('-created_date')
+        comments = self.object.comments().order_by('-created_date')
         comments_count = comments.count()
 
         context['comments'] = comments[:settings.COMMENTS_PAGINATE_BY]
         context['comments_count'] = comments_count
         context['has_more_comments'] = comments_count > settings.COMMENTS_PAGINATE_BY
-        context['ingredients'] = Ingredient.objects.get_recipe_ingredients(self.object.id)
+        context['ingredients'] = self.object.ingredients()
         context['title'] = f'Special Recipe | {self.object.name}'
         return context

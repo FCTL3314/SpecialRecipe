@@ -148,7 +148,7 @@ class PasswordChangeTestCase(DisableLoggingMixin, APITestCase):
 
     def test_password_change_bad_request(self):
         wrong_data = self.data.copy()
-        wrong_data['new_password'] = test_user.weak_password
+        wrong_data['new_password'] = test_user.invalid_password
 
         response = self.client.post(self.path, wrong_data, HTTP_AUTHORIZATION=f'Token {self.token}')
 

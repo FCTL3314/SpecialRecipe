@@ -30,5 +30,5 @@ class BookmarksListViewTestCase(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertCountEqual(
             response.context_data['object_list'],
-            RecipeBookmark.objects.get_user_bookmarks(self.user)
+            RecipeBookmark.objects.user_bookmarks(self.user)
         )

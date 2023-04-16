@@ -34,7 +34,7 @@ class User(AbstractUser):
         return super().clean()
 
     def seconds_since_last_email_verification(self):
-        valid_verifications = EmailVerification.objects.get_valid_user_verifications(user=self).order_by('-created')
+        valid_verifications = EmailVerification.objects.valid_user_verifications(user=self).order_by('-created')
         if valid_verifications.exists():
             elapsed_time = now() - valid_verifications.first().created
         else:

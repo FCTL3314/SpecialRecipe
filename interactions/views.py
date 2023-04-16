@@ -17,7 +17,7 @@ class BookmarksListView(LoginRequiredMixin, TitleMixin, ListView):
     title = 'Special Recipe | Bookmarks'
 
     def get_queryset(self):
-        queryset = self.model.objects.get_user_bookmarks(self.request.user)
+        queryset = self.model.objects.user_bookmarks(self.request.user)
         return queryset.order_by(*self.ordering)[:settings.RECIPES_PAGINATE_BY]
 
 

@@ -54,7 +54,7 @@ class UserRegistrationViewTestCase(TestCase):
         self.assertTrue(user.slug, user.username.lower())
 
     def test_user_registration_post_short_username(self):
-        username = 'abc'
+        username = test_user.invalid_username
 
         data = self.data.copy()
         data['username'] = username
@@ -82,7 +82,7 @@ class UserRegistrationViewTestCase(TestCase):
         self.assertFormError(response, 'form', 'email', 'User with this Email already exists.')
 
     def test_user_registration_post_weak_password(self):
-        password = test_user.weak_password
+        password = test_user.invalid_password
 
         data = self.data.copy()
         data['password1'] = password
@@ -215,7 +215,7 @@ class SendVerificationEmailViewTestCase(TestCase):
                                       'Just click on the link in that email to complete your verification if you '
                                       'don\'t see it, you may need to check your spam folder.', html=True)
 
-        email_verification = EmailVerification.objects.get_valid_user_verifications(self.user).order_by('-created')
+        email_verification = EmailVerification.objects.valid_user_verifications(self.user).order_by('-created')
 
         self.assertTrue(email_verification)
         self.assertEqual(

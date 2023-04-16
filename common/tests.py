@@ -1,4 +1,5 @@
 import logging
+from dataclasses import dataclass
 
 from django.test import TestCase
 from rest_framework.authtoken.models import Token
@@ -6,26 +7,30 @@ from rest_framework.authtoken.models import Token
 from accounts.models import User
 
 
+@dataclass(frozen=True)
 class TestUser:
-    username = 'TestUser'
-    first_name = 'Test'
-    last_name = 'User'
-    email = 'testuser@mail.com'
-    password = 'qnjCmk27yzKTCWWiwdYH'
-    slug = 'test'
-    new_password = 'L0x60&fq!^ni'
-    weak_password = '123'
+    username: str = 'TestUser'
+    first_name: str = 'Test'
+    last_name: str = 'User'
+    email: str = 'testuser@mail.com'
+    password: str = 'qnjCmk27yzKTCWWiwdYH'
+    slug: str = 'test'
 
-    @classmethod
-    def create_user(cls, username=None, first_name=None, last_name=None, email=None, password=None):
-        user = User.objects.create_user(
-            username=username if username else cls.username,
-            first_name=first_name if first_name else cls.first_name,
-            last_name=last_name if last_name else cls.last_name,
-            email=email if email else cls.email,
-            password=password if password else cls.password,
-        )
-        return user
+    new_password: str = 'L0x60&fq!^ni'
+
+    invalid_password: str = '123'
+    invalid_username: str = 'abc'
+
+    def create_user(self, **kwargs):
+        defaults = {
+            'username': self.username,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'password': self.password,
+        }
+        defaults.update(kwargs)
+        return User.objects.create_user(**defaults)
 
     @staticmethod
     def get_user_token(user):

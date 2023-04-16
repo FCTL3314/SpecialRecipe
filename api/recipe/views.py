@@ -15,7 +15,7 @@ from api.recipe.pagination import (CategoryPageNumberPagination,
 from api.recipe.serializers import (CategorySerializer, CommentSerializer,
                                     IngredientSerializer,
                                     RecipeBookmarkSerializer, RecipeSerializer)
-from interactions.models import RecipeBookmark, RecipeComment
+from interactions.models import RecipeBookmark
 from recipe.models import Category, Ingredient, Recipe
 
 
@@ -25,7 +25,7 @@ class CategoryModelViewSet(ModelViewSet):
     pagination_class = CategoryPageNumberPagination
 
     def get_queryset(self):
-        queryset = self.model.objects.get_cached_queryset()
+        queryset = self.model.objects.cached_queryset()
         return queryset.order_by('name')
 
     def get_permissions(self):
@@ -41,7 +41,7 @@ class RecipeModelViewSet(ModelViewSet):
     ordering = ('name',)
 
     def get_queryset(self):
-        queryset = self.model.objects.get_cached_queryset()
+        queryset = self.model.objects.cached_queryset()
 
         selected_category_slug = self.request.query_params.get('category_slug')
         search = self.request.query_params.get('search')
@@ -78,7 +78,8 @@ class CommentGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMixin):
         recipe_id = request.GET.get('recipe_id')
         if not recipe_id:
             return Response({'recipe_id': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        comments = RecipeComment.objects.get_recipe_comments(recipe_id).order_by('-created_date')
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        comments = recipe.comments().order_by('-created_date')
         paginated_comments = self.paginate_queryset(comments)
         serializer = self.serializer_class(paginated_comments, many=True)
         return self.get_paginated_response(serializer.data)
@@ -104,7 +105,7 @@ class RecipeBookmarkGenericViewSet(GenericViewSet, ListModelMixin, CreateModelMi
     ordering = ('-created_date',)
 
     def list(self, request, *args, **kwargs):
-        bookmarks = RecipeBookmark.objects.get_user_bookmarks(request.user).order_by(*self.ordering)
+        bookmarks = RecipeBookmark.objects.user_bookmarks(request.user).order_by(*self.ordering)
         paginated_bookmarks = self.paginate_queryset(bookmarks)
         serializer = self.serializer_class(paginated_bookmarks, many=True)
         return self.get_paginated_response(serializer.data)

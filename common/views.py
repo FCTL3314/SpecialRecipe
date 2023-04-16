@@ -4,7 +4,7 @@ from django.views.generic.base import ContextMixin, View
 
 
 class TitleMixin(ContextMixin):
-    title = None
+    title: str = 'Untitled'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -15,5 +15,5 @@ class TitleMixin(ContextMixin):
 class LogoutRequiredMixin(View):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return HttpResponseRedirect(reverse('accounts:profile', args={request.user.slug}))
+            return HttpResponseRedirect(reverse('accounts:profile', args=(request.user.slug,)))
         return super().dispatch(request, *args, **kwargs)

@@ -15,25 +15,21 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark navbar-expand-sm bg-dark" data-bs-theme="dark">
+<nav class="navbar navbar-dark navbar-expand-lg bg-dark" data-bs-theme="dark">
   <div class="container">
-    <p class="navbar-brand mb-1">Special Recipe</p>
+    <span class="navbar-brand mb-1">Special Recipe</span>
     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
             aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link" aria-current="page" href="{% url 'recipe:index' %}">Recipes</a>
         </li>
         <li class="nav-item">
-          <div class="d-inline-block" tabindex="0" data-bs-toggle="tooltip">
-            <a class="nav-link" href="{% url 'interactions:bookmarks' %}">
-              My bookmarks
-            </a>
-          </div>
+          <a class="nav-link" href="{% url 'interactions:bookmarks' %}">My bookmarks</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" aria-current="page" href="#footer">About</a>
@@ -43,8 +39,8 @@
         <div class="dropdown">
           <a class="dropdown-toggle text-decoration-none link-light" role="button" data-bs-toggle="dropdown"
              aria-expanded="false">
-            {{ request.user.username }}
-            <img class="rounded-circle object-fit-cover mb-1" width="32" height="32"
+            <span>{{ request.user.username }}</span>
+            <img class="rounded-circle object-fit-cover mb-1 ms-1" width="32" height="32"
                  src="{% if request.user.image %}
                         {{ request.user.image.url }}
                       {% else %}

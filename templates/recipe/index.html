@@ -17,14 +17,14 @@
                                                             text-dark bg-body-secondary disabled
                                                           {% endif %}"
              href="{% url 'recipe:index' %}">
-            All Recipes
+            <span>All Recipes</span>
           </a>
           {% for category in categories %}
             <a class="list-group-item list-group-item-action {% if selected_category_slug == category.slug %}
                                                                text-dark bg-body-secondary disabled
                                                              {% endif %}"
                href="{% url 'recipe:category' category.slug %}">
-              {{ category.name }}
+              <span>{{ category.name }}</span>
             </a>
           {% endfor %}
           {% if has_more_categories %}
