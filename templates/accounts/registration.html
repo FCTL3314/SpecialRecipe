@@ -17,9 +17,11 @@
             <div class="alert alert-warning" role="alert">
               {% for field, errors in form.errors.items %}
                 {% for error in errors %}
-                  <li>
-                    {{ error }}
-                  </li>
+                  <ul class="m-0">
+                    <li>
+                      {{ error }}
+                    </li>
+                  </ul>
                 {% endfor %}
               {% endfor %}
             </div>

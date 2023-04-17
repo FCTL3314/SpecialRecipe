@@ -12,6 +12,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from accounts import forms as account_forms
 from accounts.models import EmailVerification, User
 from accounts.tasks import send_verification_email
+from common.urls import get_referer_or_default
 from common.views import LogoutRequiredMixin, TitleMixin
 from utils.uid import is_valid_uuid
 
@@ -31,7 +32,7 @@ class UserLoginView(LogoutRequiredMixin, TitleMixin, auth_views.LoginView):
     title = 'Special Recipe | Registration'
 
     def get(self, request, *args, **kwargs):
-        request.session['before_login_url'] = request.META.get('HTTP_REFERER')
+        request.session['before_login_url'] = get_referer_or_default(self.request, None)
         return super().get(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -50,20 +51,17 @@ class UserLoginView(LogoutRequiredMixin, TitleMixin, auth_views.LoginView):
 
 
 class LogoutView(auth_views.LogoutView):
-
-    def get_next_page(self):
-        referer = self.request.META.get('HTTP_REFERER')
-        if referer:
-            return referer
-        return super().get_next_page()
+    def get_redirect_url(self):
+        next_page = get_referer_or_default(self.request)
+        return next_page
 
 
 class UserProfileView(SuccessMessageMixin, TitleMixin, UpdateView):
     model = User
     form_class = account_forms.UserProfileForm
-    success_message = 'Profile updated successfully!'
     template_name = 'accounts/profile/profile.html'
     title = 'Special Recipe | Account'
+    success_message = 'Profile updated successfully!'
 
     def get_success_url(self):
         return reverse_lazy('accounts:profile', args=(self.object.slug,))
@@ -74,9 +72,9 @@ class UserProfileView(SuccessMessageMixin, TitleMixin, UpdateView):
 
 
 class UserProfilePasswordView(SuccessMessageMixin, auth_views.PasswordChangeView):
+    form_class = account_forms.PasswordChangeForm
     template_name = 'accounts/profile/profile.html'
     title = 'Special Recipe | Password'
-    form_class = account_forms.PasswordChangeForm
     success_message = 'Your password has been successfully updated!'
 
     def get_success_url(self):
@@ -84,9 +82,9 @@ class UserProfilePasswordView(SuccessMessageMixin, auth_views.PasswordChangeView
 
 
 class UserProfileEmailView(SuccessMessageMixin, auth_views.PasswordChangeView):
+    form_class = account_forms.EmailChangeForm
     template_name = 'accounts/profile/profile.html'
     title = 'Special Recipe | Email'
-    form_class = account_forms.EmailChangeForm
     success_message = 'Your email has been successfully changed!'
 
     def get_success_url(self):

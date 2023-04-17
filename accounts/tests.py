@@ -107,6 +107,7 @@ class UserLoginViewTestCase(TestCase):
             'password': test_user.password,
         }
         self.user = test_user.create_user()
+        self.user_profile_url = reverse('accounts:profile', args=(self.user.slug,))
         self.path = reverse('accounts:login')
 
     def _common_tests(self, response):
@@ -126,7 +127,7 @@ class UserLoginViewTestCase(TestCase):
         response = self.client.post(self.path, self.data)
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('accounts:profile', args=(self.user.slug,)))
+        self.assertRedirects(response, self.user_profile_url)
 
     def test_user_login_post_via_email(self):
         data = self.data.copy()
@@ -138,7 +139,7 @@ class UserLoginViewTestCase(TestCase):
         response = self.client.post(self.path, data)
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse('accounts:profile', args=(self.user.slug,)))
+        self.assertRedirects(response, self.user_profile_url)
 
     def test_user_login_post_with_remember_be(self):
         username = self.data['username']
@@ -152,7 +153,7 @@ class UserLoginViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertEqual(response.cookies['sessionid']['max-age'], 1209600)
-        self.assertRedirects(response, reverse('accounts:profile', args=(self.user.slug,)))
+        self.assertRedirects(response, self.user_profile_url)
 
     def test_user_login_post_without_remember_me(self):
         username = self.data['username']
@@ -163,7 +164,7 @@ class UserLoginViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertEqual(response.cookies['sessionid']['max-age'], 1800)
-        self.assertRedirects(response, reverse('accounts:profile', args=(self.user.slug,)))
+        self.assertRedirects(response, self.user_profile_url)
 
     def test_user_login_post_invalid_username(self):
         username = 'InvalidUsername'
