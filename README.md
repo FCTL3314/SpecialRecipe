@@ -94,6 +94,7 @@ Additionally, the website enables users to create or edit an account, reset lost
 1. Clone or download the repository and go to its directory.
 2. Create an **.env** file or rename **.env.dist** in **.env** and populate it with all variables from **.env.dist**
    file.
+   * In the REDIS_HOST, you need to specify not the local ip, but the name of the redis container, like this: REDIS_HOST=redis.
 3. Open data/nginx/**nginx.conf** file and change `server_name example.com www.example.com;` to your domains.
 4. Grant executable rights to the **entrypoint.sh** script: `chmod +x ./entrypoint.sh`
 5. Start the services: `docker-compose up --build -d`
