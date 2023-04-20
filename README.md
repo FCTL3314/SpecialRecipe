@@ -116,11 +116,11 @@ Additionally, the website enables users to create or edit an account, reset lost
 
 * **Recipe description pages**
 
-![firefox_RNYPzBbz9v](https://user-images.githubusercontent.com/97694131/229228829-e268ba81-0a81-45cf-a75e-499face2f4e1.png)
+![firefox_0Va647qBB5](https://user-images.githubusercontent.com/97694131/233475974-8447eb09-5066-4b72-8af6-c56475c35cd6.png)
 ![firefox_uhRx1ulqbD](https://user-images.githubusercontent.com/97694131/229228840-fecdb5ba-a536-4ff0-9562-4701f4f67b92.png)
 <hr>
 
-![firefox_xpquxh9W0j](https://user-images.githubusercontent.com/97694131/229228895-8dec7d6c-e270-4704-9165-550c2541963a.png)
+![firefox_zGW4EXLeQZ](https://user-images.githubusercontent.com/97694131/233475999-45de67fc-8ca1-442d-b9ce-5908cb15a0db.png)
 ![firefox_ukP1Xif2Bf](https://user-images.githubusercontent.com/97694131/229228903-47c32fc9-215a-4d47-b4bc-abe9304253e0.png)
 <hr>
 
