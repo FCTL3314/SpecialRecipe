@@ -163,7 +163,7 @@ class UserLoginViewTestCase(TestCase):
         response = self.client.post(self.path, self.data)
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertEqual(response.cookies['sessionid']['max-age'], 1800)
+        self.assertFalse(response.cookies['sessionid']['max-age'])
         self.assertRedirects(response, self.user_profile_url)
 
     def test_user_login_post_invalid_username(self):

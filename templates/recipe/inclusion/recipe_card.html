@@ -10,7 +10,7 @@
   <div class="card-body d-flex flex-column">
     <a class="link-dark text-decoration-none"
        href="{% url 'recipe:detail' recipe.slug %}">
-      <h5 class="card-title">{{ recipe.name }}</h5>
+      <h5 class="card-title text-truncate">{{ recipe.name }}</h5>
     </a>
     <p class="card-text">{{ recipe.description }}</p>
     <div class="d-flex mt-auto">
