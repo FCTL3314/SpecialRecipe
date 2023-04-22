@@ -109,25 +109,25 @@ Additionally, the website enables users to create or edit an account, reset lost
 
 * **Recipes page**
 
-![firefox_y1tY0Rbhep](https://user-images.githubusercontent.com/97694131/231889038-becbcc41-f3aa-4cca-9eb1-8ff913d00f89.jpg)
-![firefox_4isgaYhoh9](https://user-images.githubusercontent.com/97694131/229195293-cb6d7a62-00a6-4b3c-a5b1-4df77e45527f.png)
+![firefox_NeEAcpxcd3](https://user-images.githubusercontent.com/97694131/233777355-7822ee4d-78fc-451a-a878-d7ebe41ad0e5.jpg)
+![firefox_ojqwCSTJJx](https://user-images.githubusercontent.com/97694131/233777357-79e54ab7-0203-400c-82b7-0a7c5343bfea.png)
 <hr>
 
 
-* **Recipe description pages**
+* **Recipe detail pages**
 
-![firefox_0Va647qBB5](https://user-images.githubusercontent.com/97694131/233475974-8447eb09-5066-4b72-8af6-c56475c35cd6.png)
-![firefox_uhRx1ulqbD](https://user-images.githubusercontent.com/97694131/229228840-fecdb5ba-a536-4ff0-9562-4701f4f67b92.png)
+![firefox_0DKWb1eWkW](https://user-images.githubusercontent.com/97694131/233776917-2a9c4dcb-8b3f-412a-98da-3919fd1f9cb3.png)
+![firefox_9SFI9HVncg](https://user-images.githubusercontent.com/97694131/233776918-15f30af6-7209-45b6-847d-7ac630c0af3d.png)
 <hr>
 
-![firefox_zGW4EXLeQZ](https://user-images.githubusercontent.com/97694131/233475999-45de67fc-8ca1-442d-b9ce-5908cb15a0db.png)
-![firefox_ukP1Xif2Bf](https://user-images.githubusercontent.com/97694131/229228903-47c32fc9-215a-4d47-b4bc-abe9304253e0.png)
+![firefox_ea9Mhd9I3Y](https://user-images.githubusercontent.com/97694131/233776120-b23f27be-48a1-4fd3-844b-67511b48bf85.png)
+![firefox_ICgV4HS1TZ](https://user-images.githubusercontent.com/97694131/233776124-a02bee48-cc5c-45c7-a0a9-39725291fb34.png)
 <hr>
 
 
 * **Bookmarks page**
 
-![firefox_t9L3dG0iBa](https://user-images.githubusercontent.com/97694131/222557584-4e93b400-62d9-4954-8154-fd2b1eff4a92.png)
+![firefox_IrbXSTevJy](https://user-images.githubusercontent.com/97694131/233777363-01734e77-3154-4ac6-aa19-cc8925213cfb.png)
 <hr>
 
 * **Profile pages**
