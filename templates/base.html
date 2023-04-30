@@ -56,7 +56,7 @@
               <hr class="dropdown-divider bg-dark">
             </li>
             <li>
-              <a href="{% url 'accounts:profile' request.user.slug %}" class="dropdown-item text-white">
+              <a href="{% url 'accounts:profile' request.user.slug %}" class="dropdown-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-house-fill mb-1" viewBox="0 0 16 16">
                   <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0
@@ -67,7 +67,7 @@
               </a>
             </li>
             <li>
-              <a href="{% url 'interactions:bookmarks' %}" class="dropdown-item text-white">
+              <a href="{% url 'interactions:bookmarks' %}" class="dropdown-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-bookmarks-fill mb-1" viewBox="0 0 16 16">
                   <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7
@@ -81,9 +81,9 @@
             <li>
               <hr class="dropdown-divider bg-dark">
             </li>
-            {% if user.is_staff %}
+            {% if request.user.is_staff %}
               <li>
-                <a href="{% url 'admin:index' %}" class="dropdown-item text-white">
+                <a href="{% url 'admin:index' %}" class="dropdown-item">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                        class="bi bi-gear-fill mb-1" viewBox="0 0 16 16">
                     <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464
