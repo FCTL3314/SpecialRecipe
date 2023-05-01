@@ -39,20 +39,6 @@ Additionally, the website enables users to create or edit an account, reset lost
 * For correct display of images, their **aspect ratio must be 16:10**. Example: **1440×900, 1536×960, 1680:1050,
   1920x1200...**
 
-# 📜 Requirements
-
-* **Python - 3.11**
-* **Django - 3.2.16**
-* **django-debug-toolbar - 3.8.1**
-* **django-environ - 0.9.0**
-* **django-summernote - 0.8.20.0**
-* **django-redis - 5.2.0**
-* **django-cleanup - 7.0.0**
-* **django-widget-tweaks - 1.4.12**
-* **Pillow - 9.4.0**
-* **humanize - 4.6.0**
-* **celery - 5.2.7**
-
 # 💽 Local: Development
 
 1. Clone or download the repository.
