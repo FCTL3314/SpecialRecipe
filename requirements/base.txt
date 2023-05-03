@@ -1,4 +1,4 @@
-Django==3.2.16
+Django==4.2
 djangorestframework==3.14.0
 djoser==2.1.0
 django-environ==0.9.0
