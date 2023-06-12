@@ -26,6 +26,10 @@ Additionally, the website enables users to create or edit an account, reset lost
 ![firefox_ojqwCSTJJx](https://user-images.githubusercontent.com/97694131/233777357-79e54ab7-0203-400c-82b7-0a7c5343bfea.png)
 <hr>
 
+* **Adding / removing from bookmarks**
+
+![recipe-bookmark](https://user-images.githubusercontent.com/97694131/231538126-7de16b2c-2025-469b-be27-608033dda41e.gif)
+<hr>
 
 * **Recipe detail pages**
 
@@ -48,16 +52,11 @@ Additionally, the website enables users to create or edit an account, reset lost
 ![firefox_Rjwr6yUSXn](https://user-images.githubusercontent.com/97694131/228260132-94c3b088-46b7-4188-8f1b-a2279133ea9b.png)
 ![firefox_GVubZrCC1K](https://user-images.githubusercontent.com/97694131/228260184-ba6e80e7-1351-4273-9383-6293d5b673f1.png)
 ![firefox_aLKDOhKHSg](https://user-images.githubusercontent.com/97694131/228260189-13084b42-4231-4a65-8e80-e00b01a76e3f.png)
-<hr>
 
 * **Authentication pages**
 
 ![firefox_B4E9sQRVKS](https://user-images.githubusercontent.com/97694131/232253448-ebed7762-8c42-4222-94dc-53b07174ee0e.png)
 ![firefox_OHwLoPAKEr](https://user-images.githubusercontent.com/97694131/220067688-9b4f426a-edc5-4aba-baab-b6756febe96e.png)
-
-* **Adding / removing from bookmarks**
-
-![recipe-bookmark](https://user-images.githubusercontent.com/97694131/231538126-7de16b2c-2025-469b-be27-608033dda41e.gif)
 
 # 🔥 Features
 
