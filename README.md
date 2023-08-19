@@ -11,7 +11,7 @@
 
 # 📃 About
 
-**Special Recipe** is a website where you can search for recipes, bookmark them, and access them as needed. Each recipe
+**Special Recipe** is a webapp where you can search for recipes, bookmark them, and access them as needed. Each recipe
 can be viewed in detail along with its comments, and users can optionally leave a comment. The search functionality
 allows for both category and keyword searches, while users also have the option to browse all available recipes.
 Additionally, the website enables users to create or edit an account, reset lost passwords, and verify email addresses.
